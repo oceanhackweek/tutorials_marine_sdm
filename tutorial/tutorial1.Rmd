@@ -1,0 +1,13 @@
+---
+title: "Diamond sizes"
+date: 2016-08-25
+output: html_document
+---
+
+```{r setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+
+smaller <- diamonds %>% 
+  filter(carat <= 2.5)
+```
