@@ -1,13 +1,37 @@
 ---
-title: "Diamond sizes"
-date: 2016-08-25
+title: "Marine Species Distribution Models"
+subtitle: "Example tutorial"
+date: 2023-08-07
 output: html_document
 ---
 
-```{r setup, include = FALSE}
-library(ggplot2)
-library(dplyr)
+## Background on marine Species Distribution Models
 
-smaller <- diamonds %>% 
-  filter(carat <= 2.5)
-```
+* what are they
+* why are they useful
+* links to various review papers
+
+## What we need to run an SDM
+
+### Species presence/absence
+
+* where is this type of data typically found for ocean species
+
+### Environmental data
+
+* what sorts of environmental data are useful
+* does it depend if you are looking at pelagic, near-shore or estuary species
+* what format do the data need to be in
+
+### Fitting the models
+
+* brief overview of the approaches
+
+## Example
+
+Sea turtles in the Arabian Sea. Note this might not be a great example as I am not 100 percent sure that it will work but I have data available. 
+
+shared/marine-sdms folder
+
+* sea turtle csv 
+* INDIAN_OCEAN_025GRID_DAILY.zarr file has the environmental data
