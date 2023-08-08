@@ -1,6 +1,8 @@
 # ohw23_proj_marinesdms
 Tutorial for marine SDMs focusing on Arabian Sea and/or Bay of Bengal
 
+Add updates, barriers, etc. as issues.
+
 # Day 1
 
 Jam Board/team formation
