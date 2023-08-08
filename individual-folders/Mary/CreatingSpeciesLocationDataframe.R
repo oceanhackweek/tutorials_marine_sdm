@@ -1,8 +1,9 @@
 #Creating dataframe of species locations from Arabian Sea/Bay of Bengal from green_turtles.csv file
+#Still haven't identified a way to determine if location is on land or sea yet
 
 #Reading in green_turtles
 green_turtles<-read.csv("data/raw-bio/green_turtles.csv")
-latlong<-as.data.frame(green_turtles[,c("longitude", "latitude")]) #extracting lat/long values
+latlong<-as.data.frame(green_turtles[,c("longitude", "latitude", "date_max")]) #extracting lat/long values & day
 str(latlong)
 
 #Area of Arabian Sea & Bay of Bengal (International Hydrologic Org. boundaries)
@@ -15,8 +16,8 @@ min_lat<--0.7043
 min_long<-51.0223
 geographic_extent<-(x=c(min_long, max_long, min_lat, max_lat))
 
-latlong<-latlong[latlong$longitude>=51.0223 & latlong$longitude<=95.0488,] #extracting long within area of focus
-latlong<-latlong[latlong$latitude>=-0.7043 & latlong$latitude<=25.5972,] #extracting lat within area of interest
+latlong<-latlong[latlong$longitude>=51.0223 & latlong$longitude<=95.0488,] #limiting long to geographic area of interest
+latlong<-latlong[latlong$latitude>=-0.7043 & latlong$latitude<=25.5972,] #limiting lat to geographic area of interest
 
 #Plotting data on map:
 library(geodata)
