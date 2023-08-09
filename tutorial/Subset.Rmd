@@ -46,7 +46,6 @@ plot(subset(tmp_raster, 1))
 ## With the ncdf4 package
 
 ```{r}
-library(ncdf4)
 ncdf.sub <- nc_open("/home/jovyan/shared/marine-SDMs/IO_subset.nc")
 lat <- ncvar_get(ncdf.sub, "lat", verbose = F)
 lon <- ncvar_get(ncdf.sub, "lon")
@@ -57,7 +56,10 @@ fillvalue
 chl.array[chl.array == fillvalue$value] <- NA
 chl.slice <- chl.array[, , 1]
 r <- raster(t(chl.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
-r <- flip(r, direction='y')
 plot(r)
+```
+
+```{r}
+names(ncdf.sub$var)
 ```
 
