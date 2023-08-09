@@ -23,24 +23,27 @@ xr = import("xarray")
 xr$open_dataset("/home/jovyan/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr")
 ```
 
-You can also run python like so
-```{python}
-import xarray as xr
-```
-
-
-## Create rasters for R
-
-Somehow. I don't know reticulate.
+But I find it hard to remember reticulate syntax, so it is easier to just make a py script or some python text and run that:
 
 ```{r}
-# load packages  
-library(sf) 
-library(ncdf4)
-library(raster)
-library(rasterVis)
-library(RColorBrewer)
+python_code <- "
+import pandas as pd
+
+data = {'Name': ['Alice', 'Bob', 'Charlie'],
+        'Age': [25, 30, 22]}
+df = pd.DataFrame(data)
+"
+py_run_string(python_code)
 ```
 
+Now we can convert the pandas dataframe to an R dataframe:
+```{r}
+df <- py$df %>% as.data.frame()
+df
+```
 
+The py$ operator (provided by reticulate) gives you access to the objects in the Python environment. 
 
+## Extracting data from the zarr file
+
+So now we can use Python to extract from the zarr file the env vars at the occurance date, lat, lon values.
