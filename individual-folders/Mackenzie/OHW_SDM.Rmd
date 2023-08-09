@@ -2,6 +2,8 @@
 title: "OHW SDM_MF"
 output: html_document
 date: "2023-08-07"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -14,5 +16,73 @@ packages
 library(dismo)
 library(tidyverse)
 library(cmocean)
+library(stars)
+#library(Rarr) :(
+library(reticulate)
+library(raster)
+library(ncdf4)
+```
+
+## CHL A
+
+```{r}
+ncdf.sub <- nc_open("/home/jovyan/shared/marine-SDMs/IO_subset.nc")
+
+lat <- ncvar_get(ncdf.sub, "lat", verbose = F)
+lon <- ncvar_get(ncdf.sub, "lon")
+t <- ncvar_get(ncdf.sub, "time")
+
+chl.array <- ncvar_get(ncdf.sub, "CHL")
+
+fillvalue <- ncatt_get(ncdf.sub, "CHL", "_FillValue")
+fillvalue
+
+chl.array[chl.array == fillvalue$value] <- NA
+chl.slice <- chl.array[, , 1] 
+
+r <- raster(t(chl.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+# r <- flip(r, direction='y') # do we want to flip?
+plot(r)
+```
+
+## SST
+
+```{r}
+sst.array <- ncvar_get(ncdf.sub, "sst")
+
+sst.fillvalue <- ncatt_get(ncdf.sub, "sst", "_FillValue")
+sst.fillvalue
+
+#sst.array[sst.array == sst.fillvalue$value] <- NA
+sst.slice <- sst.array[, , 1] 
+
+r.sst <- raster(t(sst.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+r.sst <- flip(r.sst, direction='y')
+plot(r.sst) # hmmm it's blank
+```
+
+## trying to read in the zarr file using reticulate
+
+```{r}
+use_condaenv("xarray")
+xr = import("xarray")
+pd = import("pandas")
+env.dat <- xr$open_dataset("~/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr")
+chl <- env.dat$CHL
+
+xr$IndexVariable(list("time", "lat", "lon"), chl)
+
+unnest(vector(chl$coords))
+```
+
+```{python}
+import xarray as xr
+
+env_dat = xr.open_zarr("~/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr")
+#chl <- env.dat$CHL
+
+#xr.env_dat.Dataset.to_pandas()
+
+df = env_dat.CHL.coords.stack(z=("time","lat", "lon")).to_pandas().reset_index()
 ```
 
