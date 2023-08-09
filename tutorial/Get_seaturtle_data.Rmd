@@ -1,0 +1,40 @@
+---
+title: "get turtle"
+output: html_document
+date: "2023-08-08"
+---
+
+Use these examples to get some sea turtle data for 2000 to 2023
+https://eeholmes.github.io/Species-Dist-Modeling---Trillium/observation-data.html
+
+You might also look for OBIS data:
+
+```{r}
+# lon, lon, lat, lat
+ext <- raster::extent(41.875, 65.125, -0.125, 32.125)
+```
+
+Columns to get. Others? Gender?
+
+```{r}
+# select columns
+    colsWeNeed <- c("species", "lat", "lon", "locality", "year", 
+        "coordinateUncertaintyInMeters", "occurrenceID", "occurrenceRemarks", 
+        "geodeticDatum")
+```
+
+Get a data frame of loggerhead sea turtle data
+
+```{r}
+spp <- "Caretta caretta"
+loggerh <- dismo::gbif("Caretta", species = "caretta", 
+        nrecs = 300, geo = TRUE, removeZeros = TRUE, ext = ext)
+
+```
+
+## To do
+
+* Get more sea turtle data
+* plot the data
+* find the turtles that are at sea and not on land
+* add a column for "on land" so we can analyze those separately
