@@ -1,0 +1,46 @@
+---
+title: "env_vars"
+output: html_document
+date: "2023-08-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Second approach. Use Python from R
+
+From the terminal window, do
+```
+conda create -n xarray xarray netcdf4 zarr
+```
+
+Now we can use Python and xarray in R. We can use 
+```{r}
+library(reticulate)
+use_condaenv("xarray")
+xr = import("xarray")
+xr$open_dataset("/home/jovyan/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr")
+```
+
+You can also run python like so
+```{python}
+import xarray as xr
+```
+
+
+## Create rasters for R
+
+Somehow. I don't know reticulate.
+
+```{r}
+# load packages  
+library(sf) 
+library(ncdf4)
+library(raster)
+library(rasterVis)
+library(RColorBrewer)
+```
+
+
+
