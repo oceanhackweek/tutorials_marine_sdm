@@ -8,6 +8,10 @@ date: "2023-08-08"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# First approach
+
+Using the zarr file, xarray and python and saved that to netcdf. Red the netcdf file into R. Only worked because we set a small bounding box so the netcdf file was only 5G. This approach is not scalable and loads a lot of data into R that we don't need. We only need the environment variables where the species occurances are.
+
 ## With raster package
 
 ```{r}
