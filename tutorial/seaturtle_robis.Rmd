@@ -44,35 +44,3 @@ ggplot(data = world) + geom_sf() +
 
 ```
 
-Columns to get. Others? Gender?
-
-```{r}
-# select columns
-    colsWeNeed <- c("species", "lat", "lon", "locality", "year", 
-        "coordinateUncertaintyInMeters", "occurrenceID", "occurrenceRemarks", 
-        "geodeticDatum")
-```
-
-Get a data frame of loggerhead sea turtle data
-
-```{r}
-spp <- "Caretta caretta"
-loggerh <- dismo::gbif("Caretta", species = "caretta", 
-        nrecs = 300, geo = TRUE, removeZeros = TRUE, ext = ext)
-
-```
-
-## Get data from robis
-
-```{r}
-library(robis)
-df <- occurrence("Abra alba", geometry = "POLYGON ((2.59689 51.16772, 2.62436 51.14059, 2.76066 51.19225, 2.73216 51.20946, 2.59689 51.16772))")
-df <- occurrence("Caretta caretta", startdate = as.Date("2000-01-01"))
-```
-
-## To do
-
-* Get more sea turtle data
-* plot the data
-* find the turtles that are at sea and not on land
-* add a column for "on land" so we can analyze those separately
