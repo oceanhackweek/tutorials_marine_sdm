@@ -57,13 +57,15 @@ write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead
 We will download data for four sea turtles found in the Arabian sea.
 
 ```{r}
-spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea")
+spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea")
 library(robis)
-for(i in spp[3:4]){
-df <- occurrence(i, startdate = as.Date("2000-01-01"), geometry = st_as_text(wkt_geometry))
+for(i in spp[5:6]){
+df <- occurrence(i, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
+if(nrow(df)==0) next
 cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
                  "individualCount","lifeStage", "sex",
                  "bathymetry",  "shoredistance", "sst", "sss")
+if(!(all(cols.to.use %in% colnames(df)))) next
 df <- df[,cols.to.use]
 write.csv(df, file=file.path(
     "/home", "jovyan", "R", "ohw23_proj_marinesdms", "data", "raw-bio", paste0(stringr::str_replace(i, " ", "-"), ".csv")), quote=FALSE)
