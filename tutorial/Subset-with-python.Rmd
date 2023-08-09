@@ -47,3 +47,11 @@ The py$ operator (provided by reticulate) gives you access to the objects in the
 ## Extracting data from the zarr file
 
 So now we can use Python to extract from the zarr file the env vars at the occurance date, lat, lon values.
+
+
+```{r}
+py_code <- "
+import xarray as xr
+ds = xr.open_zarr('/home/jovyan/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr/')
+ds.sst.sel(lat=2, lon=45, method='nearest')
+"
