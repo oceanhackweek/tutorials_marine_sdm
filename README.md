@@ -25,6 +25,16 @@ Team Members
 
 -Catherine Courtier, Github: cacourtier
 
+# Day 2 / Day 3 check in
+
+- eli: got the zarr file into R!
+- caitlin:
+- laura: familiarizing with data and getting species occurrence data into R
+- paulo: learning about packages in R
+- mackenzie: getting data from the zarr file into dataframes to make working with it easier
+- mary: occurrence data and differentiating land and sea sitings
+- jade: occurrence data and SDM nitty gritty
+
 -Jade Hong, Github: sjhong0117
 
 -Collins Ongore, Github:

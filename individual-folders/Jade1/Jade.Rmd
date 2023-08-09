@@ -1,0 +1,69 @@
+---
+title: "SDM Tutorial - Jade"
+output: html_document
+date: "2023-08-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dismo
+
+```{r}
+install.packages("dimso")
+install.packages("sp")
+install.packages("raster")
+install.packages("terra")
+library("dismo")
+help("dismo")
+vignette('sdm','dismo')
+```
+
+
+
+## Green turtles
+
+```{r}
+library(readr)
+Occurrence <- read_csv("Downloads/e1dfe463-237b-41ce-8103-adbf286404b1/Occurrence.csv")
+View(Occurrence)
+
+summary(Occurrence)
+
+o_cols <- c('decimallongitude','decimallatitude','date_year','scientificname','coordinateuncertaintyinmeters','bathymetry','sst','sss')
+
+o_data <- data.frame(Occurrence)[o_cols]
+good <- which(o_data$coordinateuncertaintyinmeters < 200)
+o_data <- o_data[good,]
+summary(o_data)
+```
+
+```{r}
+install.packages('maptools')
+install.packages('sp')
+library(maptools)
+data("wrld_simpl")
+plot(wrld_simpl, xlim=c(30,90), ylim=c(-10,30), axes=TRUE, col="light yellow") +
+# restore the box around the map
+  box() +
+# add the points
+  points(o_data$decimallongitude, o_data$decimallatitude, col='orange', pch=20, cex=0.75) +
+# plot points again to add a border, for better visibility
+  points(o_data$decimallongitude, o_data$decimallatitude, col='red', cex=0.75)
+```
+
+
+# Training and testing data
+
+```{r}
+# presence train/test
+set.seed(10)
+group <- dismo::kfold(o_data, k = 5)  # 5 groups = 20 test/80 train split
+pres_train <- o_data[group != 1, ]
+pres_test <- o_data[group == 1, ]
+```
+
+
+
+
