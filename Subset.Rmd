@@ -1,0 +1,63 @@
+---
+title: "env_vars"
+output: html_document
+date: "2023-08-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## With raster package
+
+```{r}
+# load packages  
+library(sf) 
+library(ncdf4)
+library(raster)
+library(rasterVis)
+library(RColorBrewer)
+```
+
+## Read netCDF
+
+```{r}
+# set path and filename
+ncpath <- "/home/jovyan/shared/marine-SDMs/IO_subset.nc"
+tmp_raster <- raster::brick(ncpath, varname="CHL")
+tmp_raster
+```
+
+```{r}
+# rasterVis plot
+mapTheme <- rasterTheme(region = rev(brewer.pal(10, "RdBu")))
+cutpts <- c(-50,-40,-30,-20,-10,0,10,20,30,40,50)
+plt <- levelplot(subset(tmp_raster, 1), margin = F, at=cutpts, cuts=11, pretty=TRUE, par.settings = mapTheme)
+plt
+```
+
+
+
+```{r}
+# rasterVis plot
+plot(subset(tmp_raster, 1))
+```
+
+## With the ncdf4 package
+
+```{r}
+library(ncdf4)
+ncdf.sub <- nc_open("/home/jovyan/shared/marine-SDMs/IO_subset.nc")
+lat <- ncvar_get(ncdf.sub, "lat", verbose = F)
+lon <- ncvar_get(ncdf.sub, "lon")
+t <- ncvar_get(ncdf.sub, "time")
+chl.array <- ncvar_get(ncdf.sub, "CHL")
+fillvalue <- ncatt_get(ncdf.sub, "CHL", "_FillValue")
+fillvalue
+chl.array[chl.array == fillvalue$value] <- NA
+chl.slice <- chl.array[, , 1]
+r <- raster(t(chl.slice), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+r <- flip(r, direction='y')
+plot(r)
+```
+
