@@ -1,0 +1,99 @@
+---
+title: "import data"
+output: html_document
+date: "2023-08-08"
+---
+
+Packages
+```{r}
+library(stars)
+library(here)
+
+library(ncdf4) # package for netcdf manipulation
+library(raster) # package for raster manipulation
+library(rgdal) # package for geospatial analysis
+library(ggplot2) #
+```
+
+turtle data (.csv)
+```{r}
+turtle.df<-read.csv(here("~/R/ohw23_proj_marinesdms/data/raw-bio","green_turtles.csv"))
+
+#2000 onwards?
+#keep only indian ocean
+```
+
+Netcdf file import of subsetted zarr file
+```{r}
+#import netcdf data
+nc_data <- nc_open(here("~/shared/marine-SDMs","IO_subset.nc"))
+
+nc_data
+
+nc_data <- nc_open(here("~/shared/marine-SDMs","IO_subset.nc"))
+# Save the print(nc) dump to a text file
+{
+    sink('IO_subset_metadata.txt')
+ print(nc_data)
+    sink()
+}
+
+
+
+lon <- ncvar_get(nc_data, "lon")
+lat <- ncvar_get(nc_data, "lat", verbose = F)
+t <- ncvar_get(nc_data, "time")
+
+head(lon) #
+
+
+chl.array <- ncvar_get(nc_data, "CHL") # store the data in a 3-dimensional array
+dim(chl.array) 
+
+str(chl.array)
+plot(chl.array)
+```
+
+
+plot with netcdf
+```{r}
+fillvalue <- ncatt_get(nc_data, "pr", "_FillValue")
+fillvalue
+
+nc_close(nc_data) 
+
+
+
+r <- raster(t(chl.array), xmn=min(lon), xmx=max(lon), ymn=min(lat), ymx=max(lat), crs=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs+ towgs84=0,0,0"))
+
+r <- flip(r, direction='y')
+plot(r)
+```
+
+
+
+
+Attempting Valentina's code to create environment for `reticulate` and then import xarray to import .zarr file. 
+
+1. First set up a conda environment from the jupyter lab terminal with the needed Python packages:
+`conda create -n xarray xarray netcdf4 zarr`
+
+```{r, setup}
+
+#2. Go to RStudio and set up reticulate
+library(reticulate)
+
+use_condaenv("xarray")
+
+xr = import("xarray")
+
+#3. Now you can read the zarr file
+env.df<-xr$open_dataset("~/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr")
+
+env.df
+```
+
+
+
+
+
