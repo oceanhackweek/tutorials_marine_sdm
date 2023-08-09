@@ -63,3 +63,6 @@ group <- dismo::kfold(o_data, k = 5)  # 5 groups = 20 test/80 train split
 pres_train <- o_data[group != 1, ]
 pres_test <- o_data[group == 1, ]
 ```
+
+
+
