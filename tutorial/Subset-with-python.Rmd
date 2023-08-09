@@ -50,8 +50,9 @@ So now we can use Python to extract from the zarr file the env vars at the occur
 
 
 ```{r}
-py_code <- "
+py_code <- '
 import xarray as xr
 ds = xr.open_zarr('/home/jovyan/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr/')
-ds.sst.sel(time="2022-01-01", lat=[2,4], lon=[65, 66], method="nearest").to_pandas()
-"
+ds.sst.sel(time="2022-01-01", lat=2, lon=65, method="nearest").to_pandas()
+'
+```
