@@ -14,22 +14,24 @@ Species Distribution Models are used to predict a species' geographic and enviro
 --ADD MORE SOON--
 
 ## Goals
-Many tutorials exist to run SDM models, however most readily available tutorials focus on the terrestrial-based models. Our goal through this tutorial is to highlight a marine-based SDM tutorial.
+Many tutorials exist to run SDM models, however most readily available tutorials focus on terrestrial-based models. Our goal through this tutorial is to highlight a marine-based SDM tutorial.
 
 ## Datasets
+
 **Biological Data**
 
-Our model includes biological presence-only data of four species of sea turtles found in the Indian Ocean. The presence dataset includes four species of sea turtles:
+Our dataset includes biological presence-only data of four species of sea turtles found in the Indian Ocean. The presence dataset includes four species of sea turtles:
 
 - Loggerhead, *Caretta caretta*
 - Green, *Chelonia mydas*
 - Olive Ridley, *Lepidochelys olivacea*
 - Hawksbill, *Eretmochelys imbricata*
 
-However, for the tutorial example model, we will focus on Loggerhead sea turtles data from 2000 until 2023 sourced from the Ocean Biodiversity Information System (OBIS) via the `robis` package.
+However, for this tutorial example model, we will focus on Loggerhead sea turtles data from 2000 until 2023 sourced from the Ocean Biodiversity Information System (OBIS) via the `robis` package.
 
 
 **Environmental Data**
+
 This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the `SMDpredictor` R package and includes:
 
 -ENTER ALL FINAL PREDICTORS INCLUDED HERE
@@ -37,7 +39,7 @@ This tutorial focuses on regions in the northern Indian Sea, specifically the we
 - paulo working on background--link to
 
 ## Workflow/Roadmap
-This tutorial is based on the notes by Ben Tupper (Biglow Lab, Maine) https://github.com/BigelowLab/maxnet/wiki/stars, and highlights modeling presence-only data via `maxnet` R package.
+This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://github.com/BigelowLab/maxnet/wiki/stars), and highlights modeling presence-only data via `maxnet` R package.
 
 **Tutorial roadmap**
 
@@ -55,11 +57,10 @@ This tutorial is based on the notes by Ben Tupper (Biglow Lab, Maine) https://gi
 
 ## References
 
-- Bosch S, Fernandez S (2022). sdmpredictors: Species Distribution Modelling Predictor Datasets. R package version 0.2.14, http://lifewatch.github.io/sdmpredictors/.
+- Bosch S, Fernandez S (2022). sdmpredictors: Species Distribution Modelling Predictor Datasets. R package version 0.2.14, [http://lifewatch.github.io/sdmpredictors/](http://lifewatch.github.io/sdmpredictors/).
+- OBIS (2023) Ocean Biodiversity Information System. Intergovernmental Oceanographic Commission of UNESCO. [www.obis.org](https://obis.org/). Accessed: 2023-08-08.
 
-- OBIS (2023) Ocean Biodiversity Information System. Intergovernmental Oceanographic Commission of UNESCO. www.obis.org.Accessed: 2023-08-08.
-
-- Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: http://biodiversityinformatics.amnh.org/open_source/maxent/. Accessed on 2023-8-10.
+- Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: [http://biodiversityinformatics.amnh.org/open_source/maxent/](http://biodiversityinformatics.amnh.org/open_source/maxent/). Accessed on 2023-8-10.
 
 ## Tutorial developers
 
@@ -112,4 +113,3 @@ If you need additional support with `R` programming, you can check the following
 - [Data analysis and visualisation in `R` for ecologists](https://datacarpentry.org/R-ecology-lesson/)  
   
 For information on how to use `git` and `GitHub` with `R`, [Happy Git and GitHub for the useR](https://happygitwithr.com/) by Jenny Bryan is a great resource.  
-
