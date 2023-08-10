@@ -1,1 +1,2 @@
 library(dismo)
+library(stars)
