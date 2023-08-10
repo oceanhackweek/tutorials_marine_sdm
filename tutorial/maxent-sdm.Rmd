@@ -74,7 +74,8 @@ df <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry
 
 ```{r}
 spp <- "Chelonia mydas"
-occ <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv")
+fil <- file.path(here::here(), "data", "raw-bio", "io-sea-turtles.csv")
+occ <- read.csv(fil)
 occ <- occ %>% subset(scientificName == spp)
 ```
 
