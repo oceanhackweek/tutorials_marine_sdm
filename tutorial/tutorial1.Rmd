@@ -35,3 +35,13 @@ shared/marine-sdms folder
 
 * sea turtle csv 
 * INDIAN_OCEAN_025GRID_DAILY.zarr file has the environmental data
+
+```{sh}
+gdalmdiminfo 'ZARR:"/home/jovyan/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr"'
+```
+
+```{r}
+library(sf)
+fil = "/home/jovyan/shared/marine-SDMs/test.zarr"
+st_read(fil)
+```

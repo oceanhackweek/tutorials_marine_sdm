@@ -1,0 +1,72 @@
+---
+title: "get turtle data"
+output: html_document
+date: "2023-08-08"
+---
+
+Here we download from OBIS using the robis package.
+
+## Step 1 define the region of interest
+
+```{r}
+# lon, lon, lat, lat
+library(sf)
+lats <- c(-0.125, 32.125)
+lons <- c(41.875, 65.125)
+# raster extent is defined by west lon, east lon, south lat, north lat
+ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
+extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
+# we need to assign a coordinate system; 4326 is the default for maps in sf
+sf::st_crs(extent_polygon)<-4326
+# convert to a WKT format
+wkt_geometry <- extent_polygon$geometry %>% st_as_text()
+wkt_geometry
+```
+
+Make a map of our region so we know we have the right area.
+```{r}
+library(ggplot2)
+library(sf)
+library("rnaturalearth")
+library("rnaturalearthdata")
+world <- ne_countries(scale = "medium", returnclass = "sf")
+ggplot(data = world) + geom_sf() +
+  geom_sf(data = extent_polygon, color = "red", fill=NA)
+```
+
+## Get occurrence data from robis
+
+```{r}
+library(robis)
+spp <- "Caretta caretta" # loggerhead
+df <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
+```
+
+Subset columns and save.
+```{r}
+cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
+                 "individualCount","lifeStage", "sex",
+                 "bathymetry",  "shoredistance", "sst", "sss")
+df <- df[,cols.to.use]
+write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv", quote=FALSE)
+```
+
+
+## Download data 
+
+We will download data for four sea turtles found in the Arabian sea.
+
+```{r}
+spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea")
+df <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
+cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
+                 "individualCount","lifeStage", "sex",
+                 "bathymetry",  "shoredistance", "sst", "sss")
+if(!(all(cols.to.use %in% colnames(df)))) next
+df <- df[,cols.to.use]
+fil=file.path(
+    "/home", "jovyan", "R", "ohw23_proj_marinesdms", "data", "raw-bio", "io-sea-turtles.csv")
+write.csv(df, file=fil, quote=FALSE, row.names = FALSE)
+```
+
+

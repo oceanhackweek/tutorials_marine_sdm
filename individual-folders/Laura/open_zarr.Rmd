@@ -13,6 +13,30 @@ https://github.com/gdkrmr/zarr-R
 Following github zarr R package
 
 ```{r}
+#install.packages("devtools")
 
+library(stars)
+library(devtools)
+
+methods(class = "stars_proxy")
+
+file = 'ZARR:"/Home/shared/marine-SDMs/INDIAN_OCEAN_025GRID_DAILY.zarr"'
+
+?methods
 ```
 
+Giving up and just loading the IO subset nc file
+
+```{r}
+library(ncdf4) # package for netcdf manipulation
+library(raster) # package for raster manipulation
+library(rgdal) # package for geospatial analysis
+library(ggplot2) # package for plotting
+
+nc_data = nc_open('~/shared/marine-SDMs/IO_subset.nc')
+
+lon <- ncvar_get(nc_data, "lon")
+lat <- ncvar_get(nc_data, "lat", verbose = F)
+t <- ncvar_get(nc_data, "time")
+head(lon)
+```
