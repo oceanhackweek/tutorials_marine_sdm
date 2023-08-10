@@ -2,8 +2,8 @@
 
 In this notebook, we will show how you can get some [Loggerhead sea
 turtle (*Caretta
-caretta*)](https://www.iucnredlist.org/species/3897/119333622) data
-between 2000 and 2023 from the [Ocean Biodiversity Information System
+caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from
+2000 until present from the [Ocean Biodiversity Information System
 (OBIS)](https://obis.org/). We will use the `robis` package to search
 the OBIS library and download relevant data.
 
@@ -12,52 +12,14 @@ the OBIS library and download relevant data.
 ``` r
 #Dealing with spatial data
 library(sf)
-```
-
-    ## Linking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.0; sf_use_s2() is TRUE
-
-``` r
 #Getting base maps
 library(rnaturalearth)
-library(rnaturalearthdata)
-```
-
-    ## 
-    ## Attaching package: 'rnaturalearthdata'
-
-    ## The following object is masked from 'package:rnaturalearth':
-    ## 
-    ##     countries110
-
-``` r
 #Access to OBIS
 library(robis)
 #Data manipulation and visualisation
 library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.0     ✔ readr     2.1.4
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-    ## ✔ ggplot2   3.4.1     ✔ tibble    3.1.8
-    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-    ## ✔ purrr     1.0.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors
-
-``` r
 library(janitor)
 ```
-
-    ## 
-    ## Attaching package: 'janitor'
-    ## 
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     chisq.test, fisher.test
 
 # Creating a bounding box
 
@@ -88,7 +50,9 @@ turtles (*C. caretta*) published in OBIS.
 caretta_obs <- occurrence("Caretta caretta", 
                           startdate = as.Date("2000-01-01"),
                           #Apply spatial constraint
-                          geometry = pol_geometry)
+                          geometry = pol_geometry,
+                          #Include absence records if available
+                          absence = "include")
 ```
 
     ## Retrieved 5000 records of approximately 5269 (94%)Retrieved 5269 records of
@@ -221,36 +185,196 @@ manual](https://manual.obis.org/darwin_core.html) and the OBIS webpage
 about [Data Access](https://obis.org/data/access/).
 
 ``` r
-#Checking values in 
+#Checking values in basis of record column
 caretta_obs %>% 
-  #Removing observations for which there is no date
-  drop_na(eventDate)
+  distinct(basisOfRecord)
 ```
 
-    ## # A tibble: 5,269 × 103
-    ##    associatedR…¹ basis…² bibli…³ catal…⁴ colle…⁵ coord…⁶ coord…⁷ datas…⁸ datas…⁹
-    ##    <chr>         <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <chr>   <chr>  
-    ##  1 "[{\"crossre… Machin… "[{\"c… 1014_8… 1014    9.9999… 0.11    1014    IFREME…
-    ##  2 "[{\"crossre… Machin… "[{\"c… 1014_9… 1014    9.9999… 0.11    1014    IFREME…
-    ##  3 "[{\"crossre… Machin… "[{\"c… 1014_8… 1014    9.9999… 0.11    1014    IFREME…
-    ##  4 "[{\"crossre… Machin… "[{\"c… 1014_1… 1014    9.9999… 0.11    1014    IFREME…
-    ##  5 "[{\"crossre… Machin… "[{\"c… 1014_1… 1014    9.9999… 0.11    1014    IFREME…
-    ##  6 "[{\"crossre… Machin… "[{\"c… 1014_1… 1014    9.9999… 0.11    1014    IFREME…
-    ##  7 "[{\"crossre… Machin… "[{\"c… 1014_1… 1014    9.9999… 0.11    1014    IFREME…
-    ##  8 "[{\"crossre… Machin… "[{\"c… 1014_1… 1014    9.9999… 0.11    1014    IFREME…
-    ##  9 "[{\"crossre… Machin… "[{\"c… 1014_2… 1014    9.9999… 0.11    1014    IFREME…
-    ## 10 "[{\"crossre… Machin… "[{\"c… 1014_1… 1014    9.9999… 0.11    1014    IFREME…
-    ## # … with 5,259 more rows, 94 more variables: dateIdentified <chr>,
-    ## #   decimalLatitude <dbl>, decimalLongitude <dbl>, eventDate <chr>,
-    ## #   eventTime <chr>, family <chr>, footprintWKT <chr>, genus <chr>,
-    ## #   geodeticDatum <chr>, georeferencedDate <chr>, identificationRemarks <chr>,
-    ## #   individualCount <chr>, institutionCode <chr>, kingdom <chr>, license <chr>,
-    ## #   lifeStage <chr>, modified <chr>, nomenclaturalCode <chr>,
-    ## #   occurrenceID <chr>, occurrenceRemarks <chr>, occurrenceStatus <chr>, …
+    ## # A tibble: 2 × 1
+    ##   basisOfRecord     
+    ##   <chr>             
+    ## 1 MachineObservation
+    ## 2 Occurrence
+
+In this context, `MachineObservation` refers to records obtained with
+satellite tags. While `Occurrence` refers to records obtained by human
+observers on the field. These two datasets cannot be treated in the same
+way as `MachineObservation` records are not independent as they record
+the movements of a single individual.
+
+We can also check whether or not absence data is available for the
+loggerhead se a turtles in our area of interest.
 
 ``` r
-  #Removing any empty columns
-  # remove_empty("cols")
+caretta_obs %>% 
+  distinct(absence)
+```
+
+    ## # A tibble: 1 × 1
+    ##   absence
+    ##   <lgl>  
+    ## 1 FALSE
+
+We only have presence data available, which is an important factor to
+consider when designing our species distribution model workflow.
+
+We can also check the `coordinateUncertaintyInMeters`, which gives us an
+indication of the error associated with a particular record. If we look
+at the names of the columns printed at the beginning of the script, you
+may notice that this column has been read as characters. We will change
+it to numbers before looking at the values in the column.
+
+``` r
+#Changing column from characters to numeric
+caretta_obs <- caretta_obs %>% 
+  mutate(coordinateUncertaintyInMeters = as.numeric(coordinateUncertaintyInMeters))
+
+#Checking uncertainty values for coordinates
+caretta_obs %>% 
+  distinct(coordinateUncertaintyInMeters)
+```
+
+    ## # A tibble: 3 × 1
+    ##   coordinateUncertaintyInMeters
+    ##                           <dbl>
+    ## 1                          0.11
+    ## 2                     111319.  
+    ## 3                         NA
+
+It is worth noting that not all providers share a measurement of
+uncertainty, but we can use this whenever is available to apply some
+sort of quality control to our data.
+
+Here, we see that some observations have uncertainty of centimeters
+(0.11 m), but there are other observations with uncertainty over 100 km.
+For this example, we will remove these observations with large
+uncertainties.
+
+## Checking quality control flags
+
+OBIS provides some quality control (QC) flags for each record that may
+help us identify observations of lower quality. For an explanation of
+OBIS flags, check [this repository](https://github.com/iobis/obis-qc).
+
+First, we will check the quality flags included in our results.
+
+``` r
+caretta_obs %>% 
+  distinct(flags)
+```
+
+    ## # A tibble: 4 × 1
+    ##   flags             
+    ##   <chr>             
+    ## 1 NO_DEPTH          
+    ## 2 NO_DEPTH,ON_LAND  
+    ## 3 DEPTH_EXCEEDS_BATH
+    ## 4 <NA>
+
+We will now plot our dataset on a map and use the information in the
+`flags` column to color code the observations. This can help us decide
+whether we should include or exclude them from further analyses.
+
+``` r
+#Getting a world base map
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+#Starting a plot
+ggplot()+
+  #Adding base layer (world map)
+  geom_sf(data = world)+
+  #Adding sea turtle observations
+  geom_point(data = caretta_obs, 
+             #Using coordinates to plot and color based on value in flags column
+             aes(decimalLongitude, decimalLatitude, color = flags))+
+  #Constraining map to original bounding box
+  lims(x = c(st_bbox(extent_polygon)$xmin, st_bbox(extent_polygon)$xmax),
+       y = c(st_bbox(extent_polygon)$ymin, st_bbox(extent_polygon)$ymax))+
+  #Applying theme without background
+  theme_bw()
+```
+
+![](Get_seaturtle_data_files/figure-markdown_github/plot_qc-1.png)
+
+From the plot above, we should consider removing at least some of the
+observations classified as `NO_DEPTH,ON_LAND`. This is because
+loggerhead sea turtles are not present inland. Instead, they are found
+in temperate and subtropical ocean waters and in sandy beaches.
+
+Some of these observations appear to be quite close to the shore, so
+they may have occurred in a sandy beach. We can check the proximity of
+the observation to the shore using the `shoredistance` column, which
+provides the distance to shore in meters.
+
+``` r
+caretta_obs %>% 
+  filter(flags == "NO_DEPTH,ON_LAND") %>% 
+  select(shoredistance) %>% 
+  arrange(desc(shoredistance))
+```
+
+    ## # A tibble: 25 × 1
+    ##    shoredistance
+    ##            <int>
+    ##  1          -231
+    ##  2          -394
+    ##  3          -971
+    ##  4         -1403
+    ##  5         -3895
+    ##  6         -5896
+    ##  7         -8319
+    ##  8         -8562
+    ##  9        -17661
+    ## 10        -19763
+    ## # … with 15 more rows
+
+The inland observations are at least 231 meters away from the coast and
+up to 515 kilometers. For simplicity, we will remove all points flagged
+as `NO_DEPTH,ON_LAND`, but it is recommended that locations are looked
+more in depth and determine how likely it was that an individual was
+present at that location.
+
+We can also check if any other observations have been reported in land.
+We will filter out the `NO_DEPTH,ON_LAND` flags and check for any
+negative values in the `shoredistance` column.
+
+``` r
+caretta_obs %>% 
+  filter(flags != "NO_DEPTH,ON_LAND" & shoredistance < 0)
+```
+
+    ## # A tibble: 0 × 103
+    ## # … with 103 variables: associatedReferences <chr>, basisOfRecord <chr>,
+    ## #   bibliographicCitation <chr>, catalogNumber <chr>, collectionCode <chr>,
+    ## #   coordinatePrecision <chr>, coordinateUncertaintyInMeters <dbl>,
+    ## #   datasetID <chr>, datasetName <chr>, dateIdentified <chr>,
+    ## #   decimalLatitude <dbl>, decimalLongitude <dbl>, eventDate <chr>,
+    ## #   eventTime <chr>, family <chr>, footprintWKT <chr>, genus <chr>,
+    ## #   geodeticDatum <chr>, georeferencedDate <chr>, …
+
+No observations were returned, which is good news.
+
+Another feature worth pointing out in our data is that some of the
+observations appear to be gridded as they are evenly spaced. This is
+confirmed by the `occurrenceRemarks` column, which states that some
+observations are:
+`Telemetry locations aggregated per species per 1-degree cell`. This is
+not ideal and you may need to consider if the inclusion of these data
+points are suitable for your project. In this example, we will remove
+them from our analysis.
+
+## Removing problematic observations
+
+In this step, we will remove observations with coordinate uncertainty
+over 100 km, any observations with the `NO_DEPTH,ON_LAND` flag, and any
+records that have been aggregated to a 1-degree cell.
+
+``` r
+# caretta_obs %>% 
+#   #Removing on land observations
+#   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %>% 
+#   #        | coordinateUncertaintyInMeters > 100000) %>% 
+#   # filter(!str_detect(occurrenceRemarks, "degree"))
 ```
 
 ## Keeping relevant columns
@@ -264,7 +388,6 @@ write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead
 ```
 
 ``` r
-world <- ne_countries(scale = "medium", returnclass = "sf")
 ggplot(data = world) + geom_sf() +
   geom_sf(data = extent_polygon, color = "red", fill=NA)
 ```
@@ -284,13 +407,6 @@ Get a data frame of loggerhead sea turtle data
 spp <- "Caretta caretta"
 loggerh <- dismo::gbif("Caretta", species = "caretta", 
         nrecs = 300, geo = TRUE, removeZeros = TRUE, ext = ext)
-```
-
-## Get data from robis
-
-``` r
-df <- occurrence("Abra alba", geometry = "POLYGON ((2.59689 51.16772, 2.62436 51.14059, 2.76066 51.19225, 2.73216 51.20946, 2.59689 51.16772))")
-df <- occurrence("Caretta caretta", startdate = as.Date("2000-01-01"))
 ```
 
 ## To do

@@ -7,15 +7,14 @@ date: "2023-08-08"
 ---
 
 # Goal of the notebook
-In this notebook, we will show how you can get some [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data between 2000 and 2023 from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  
+In this notebook, we will show how you can get some [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  
   
 # Loading relevant libraries
-```{r libraries, warning = F}
+```{r libraries, warning = F, message = F}
 #Dealing with spatial data
 library(sf)
 #Getting base maps
 library(rnaturalearth)
-library(rnaturalearthdata)
 #Access to OBIS
 library(robis)
 #Data manipulation and visualisation
@@ -47,7 +46,9 @@ We will use the `robis` package to find observations of Loggerhead sea turtles (
 caretta_obs <- occurrence("Caretta caretta", 
                           startdate = as.Date("2000-01-01"),
                           #Apply spatial constraint
-                          geometry = pol_geometry)
+                          geometry = pol_geometry,
+                          #Include absence records if available
+                          absence = "include")
 
 #Check structure of results
 glimpse(caretta_obs)
@@ -60,15 +61,103 @@ In this section, we will explore the results of our OBIS search so we can design
 
 You may want to refer to the [OBIS manual](https://manual.obis.org/darwin_core.html) and the OBIS webpage about [Data Access](https://obis.org/data/access/).
   
-```{r}
-#Checking values in 
+```{r basis_record}
+#Checking values in basis of record column
 caretta_obs %>% 
-  #Removing observations for which there is no date
-  drop_na(eventDate)
+  distinct(basisOfRecord)
+```
+ 
+In this context, `MachineObservation` refers to records obtained with satellite tags. While `Occurrence` refers to records obtained by human observers on the field. These two datasets cannot be treated in the same way as `MachineObservation` records are not independent as they record the movements of a single individual.  
+    
+We can also check whether or not absence data is available for the loggerhead se a turtles in our area of interest.  
   
-  #Removing any empty columns
-  # remove_empty("cols")
+```{r absence}
+caretta_obs %>% 
+  distinct(absence)
+```
   
+We only have presence data available, which is an important factor to consider when designing our species distribution model workflow.  
+  
+We can also check the `coordinateUncertaintyInMeters`, which gives us an indication of the error associated with a particular record. If we look at the names of the columns printed at the beginning of the script, you may notice that this column has been read as characters. We will change it to numbers before looking at the values in the column.  
+  
+```{r coord_unc}
+#Changing column from characters to numeric
+caretta_obs <- caretta_obs %>% 
+  mutate(coordinateUncertaintyInMeters = as.numeric(coordinateUncertaintyInMeters))
+
+#Checking uncertainty values for coordinates
+caretta_obs %>% 
+  distinct(coordinateUncertaintyInMeters)
+```
+  
+It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.  
+  
+Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.  
+  
+## Checking quality control flags
+OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check [this repository](https://github.com/iobis/obis-qc).  
+  
+First, we will check the quality flags included in our results.  
+  
+```{r qc_flags}
+caretta_obs %>% 
+  distinct(flags)
+```
+  
+We will now plot our dataset on a map and use the information in the `flags` column to color code the observations. This can help us decide whether we should include or exclude them from further analyses. 
+  
+```{r plot_qc}
+#Getting a world base map
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+#Starting a plot
+ggplot()+
+  #Adding base layer (world map)
+  geom_sf(data = world)+
+  #Adding sea turtle observations
+  geom_point(data = caretta_obs, 
+             #Using coordinates to plot and color based on value in flags column
+             aes(decimalLongitude, decimalLatitude, color = flags))+
+  #Constraining map to original bounding box
+  lims(x = c(st_bbox(extent_polygon)$xmin, st_bbox(extent_polygon)$xmax),
+       y = c(st_bbox(extent_polygon)$ymin, st_bbox(extent_polygon)$ymax))+
+  #Applying theme without background
+  theme_bw()
+```
+  
+From the plot above, we should consider removing at least some of the observations classified as `NO_DEPTH,ON_LAND`. This is because loggerhead sea turtles are not present inland. Instead, they are found in temperate and subtropical ocean waters and in sandy beaches.  
+  
+Some of these observations appear to be quite close to the shore, so they may have occurred in a sandy beach. We can check the proximity of the observation to the shore using the `shoredistance` column, which provides the distance to shore in meters.  
+
+```{r on_land_flag}
+caretta_obs %>% 
+  filter(flags == "NO_DEPTH,ON_LAND") %>% 
+  select(shoredistance) %>% 
+  arrange(desc(shoredistance))
+```
+  
+The inland observations are at least 231 meters away from the coast and up to 515 kilometers. For simplicity, we will remove all points flagged as `NO_DEPTH,ON_LAND`, but it is recommended that locations are looked more in depth and determine how likely it was that an individual was present at that location.  
+  
+We can also check if any other observations have been reported in land. We will filter out the `NO_DEPTH,ON_LAND` flags and check for any negative values in the `shoredistance` column.  
+  
+```{r no_onflag_dist}
+caretta_obs %>% 
+  filter(flags != "NO_DEPTH,ON_LAND" & shoredistance < 0)
+```
+  
+No observations were returned, which is good news.  
+  
+Another feature worth pointing out in our data is that some of the observations appear to be gridded as they are evenly spaced. This is confirmed by the `occurrenceRemarks` column, which states that some observations are: `Telemetry locations aggregated per species per 1-degree cell`. This is not ideal and you may need to consider if the inclusion of these data points are suitable for your project. In this example, we will remove them from our analysis.
+  
+## Removing problematic observations
+In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the `NO_DEPTH,ON_LAND` flag, and any records that have been aggregated to a 1-degree cell.  
+  
+```{r}
+# caretta_obs %>% 
+#   #Removing on land observations
+#   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %>% 
+#   #        | coordinateUncertaintyInMeters > 100000) %>% 
+#   # filter(!str_detect(occurrenceRemarks, "degree"))
 ```
 
 
@@ -86,7 +175,7 @@ write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead
 ```{r,eval=F}
 
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
+
 ggplot(data = world) + geom_sf() +
   geom_sf(data = extent_polygon, color = "red", fill=NA)
 
@@ -110,13 +199,6 @@ loggerh <- dismo::gbif("Caretta", species = "caretta",
 
 ```
 
-## Get data from robis
-
-```{r,eval=F}
-
-df <- occurrence("Abra alba", geometry = "POLYGON ((2.59689 51.16772, 2.62436 51.14059, 2.76066 51.19225, 2.73216 51.20946, 2.59689 51.16772))")
-df <- occurrence("Caretta caretta", startdate = as.Date("2000-01-01"))
-```
 
 ## To do
 
