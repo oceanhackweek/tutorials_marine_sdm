@@ -26,10 +26,7 @@ vignette('sdm','dismo')
 
 ```{r}
 library(readr)
-Occurrence <- read_csv("Downloads/e1dfe463-237b-41ce-8103-adbf286404b1/Occurrence.csv")
-View(Occurrence)
-
-summary(Occurrence)
+Occurrence <- read_csv("~/Downloads/e1dfe463-237b-41ce-8103-adbf286404b1/Occurrence.csv")
 
 o_cols <- c('decimallongitude','decimallatitude','date_year','scientificname','coordinateuncertaintyinmeters','bathymetry','sst','sss')
 
@@ -37,6 +34,8 @@ o_data <- data.frame(Occurrence)[o_cols]
 good <- which(o_data$coordinateuncertaintyinmeters < 200)
 o_data <- o_data[good,]
 summary(o_data)
+write.csv(o_data, file = "~/ohw23_proj_marinesdms/data/raw-bio/o_data.csv")
+
 ```
 
 ```{r}
@@ -63,6 +62,128 @@ group <- dismo::kfold(o_data, k = 5)  # 5 groups = 20 test/80 train split
 pres_train <- o_data[group != 1, ]
 pres_test <- o_data[group == 1, ]
 ```
+
+
+# Trying out SDMpredictors with this particular data
+
+```{r}
+library(maxnet)
+library(dplyr)
+library(sf)
+library(stars)
+library(geodata)
+library(dismo)
+library(sdmpredictors)
+```
+Marine environmental datasets
+```{r}
+datasets <- list_datasets(terrestrial = FALSE, marine = TRUE)
+layers <- list_layers(datasets)
+View(layers)
+```
+
+Environmental data layers to use + cropping to the area of interest
+```{r}
+layercodes <- c("BO_sstmean","BO_salinity")
+env <- load_layers(layercodes)
+
+lons <- c(30, 90) 
+lats <- c(-10,30)
+
+ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
+extent_polygon <- as(ext, "SpatialPolygons") %>% 
+
+#sf::st_as_sf(obs, coords = c("lon", "lat"), crs = 4326) [data frame with the location information  consolidated into a list column]
+
+sf::st_crs(extent_polygon) <- 4326 # Not sure what this value 4326 means
+AreaOfInterest <- raster::crop(env, extent(extent_polygon))
+plot(AreaOfInterest)
+```
+
+```{r}
+library(sdmpredictors)
+devtools::install_github("zoonproject/zoon", force = TRUE)
+library('zoon')
+devtools::install_github("lifewatch/marinespeed", force = TRUE)
+library('marinespeed')
+```
+
+```{r}
+#Getting Turtle Occurence Data File in Correct Format for Zoon SDM:
+pointsTurtles <- SpatialPoints(o_data[,c("decimallongitude", "decimallatitude")])
+#pointsTurtles <- spTransform(pointsTurtles, CRSobj="+proj=longlat +ellps=GRS80") -> What was this?
+occfile <- tempfile(fileext = ".csv")
+write.csv(cbind(coordinates(pointsTurtles), value=1), occfile)
+
+workflow(
+  occurrence = LocalOccurrenceData(
+    occfile, occurrenceType="presence",
+    columns = c("decimallongitude", "decimallatitude", "date_year")), 
+  covariate = LocalRaster(stack(AreaOfInterest)),
+  process = OneHundredBackground(seed = 42), # why did you choose 42?
+  model = LogisticRegression,
+  output = PrintMap)
+```
+
+## Looking up statistics and correlations for marine annual layers (almost exact copy from http://lifewatch.github.io/sdmpredictors/)
+```{r}
+
+# filter out monthly layers
+layers_annual <- layers[is.na(layers$month),]
+    
+layers_annual_stats <- layer_stats(layers_annual)
+View(layers_annual_stats)
+    
+layers_annual_correlations <- layers_correlation(layers_annual)
+View(layers_annual_correlations)
+    
+# create groups of layers where no layers in one group have a correlation > 0.7 with a layer from another group
+layers_annual_groups <- correlation_groups(layers_annual_correlations, max_correlation=0.7)
+    
+# inspect groups ; heatmap plot for larger groups (if gplots library is installed)
+install.packages("gplots")
+library(gplots)    
+for(group in layers_annual_groups) {
+      group_correlation <- as.matrix(layers_annual_correlations[group, group, drop=FALSE])
+      if(require(gplots) && length(group) > 4){
+        heatmap.2(abs(group_correlation)
+                 ,main = "Correlation"
+                 ,col = "rainbow"      
+                 ,notecol="black"      # change font color of cell labels to black
+                 ,density.info="none"  # turns off density plot inside color legend
+                 ,trace="none"         # turns off trace lines inside the heat map
+                 ,margins = c(12,9)    # widens margins around plot
+                 )
+      } else {
+        print(group_correlation)
+      }
+    }
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
 
 
 
