@@ -36,38 +36,30 @@ ggplot(data = world) + geom_sf() +
 
 ## Get occurrence data from robis
 
-```{r}
+Download data for four species
+
+We will download data for four sea turtles found in the Arabian sea and save to one file. We will use the `occurrence()` function in the robis package.
+
+```{r eval = FALSE}
 library(robis)
-spp <- "Caretta caretta" # loggerhead
-df <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
-```
-
-Subset columns and save.
-```{r}
-cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
-                 "individualCount","lifeStage", "sex",
-                 "bathymetry",  "shoredistance", "sst", "sss")
-df <- df[,cols.to.use]
-```
-
-Save the data to a file for later use. The `here()` function is used so that we don't have to worry about where you have this Rmarkdown file loaded.
-```{r eval = FALSE}
-fil <- here::here("data", "raw-bio", "loggerhead-robis.csv")
-write.csv(df, file=fil, quote=FALSE)
-```
-
-
-## Download data for four species
-
-We will download data for four sea turtles found in the Arabian sea and save to one file.
-
-```{r eval = FALSE}
 spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea")
-obs <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
-cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
+
+obs <- robis::occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
+```
+
+This has many columns that we don't need. We will reduce to fewer columns.
+```{r}
+cols.to.use <- c("occurrenceID", "scientificName", 
+                 "dateIdentified", "eventDate", 
+                 "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
                  "individualCount","lifeStage", "sex",
                  "bathymetry",  "shoredistance", "sst", "sss")
 obs <- obs[,cols.to.use]
+```
+
+We will also add a cleaner date with YYYY-MM-DD format.
+```{r}
+obs$date <- as.Date(obs$eventDate)
 ```
 
 ## Save our data
@@ -89,7 +81,7 @@ obs_sf <- obs %>%
       crs = st_crs(4326))
 ```
 
-Save files.
+Save files in different formats.
 ```{r}
 redo   <- TRUE
 
