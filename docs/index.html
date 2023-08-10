@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2023 Ocean Hackweek</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./tutorial/Get_seaturtle_data.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">(Untitled)</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="./" class="sidebar-logo-link">
+      <img src="https://oceanhackweek.org/_static/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main">
+    <a href="https://oceanhackweek.org/" title="OceanHackWeek" class="sidebar-tool px-1"><i class="bi bi-globe"></i></a>
+    <a href="https://github.com/oceanhackweek" title="GitHub" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial/Get_seaturtle_data.html" class="sidebar-item-text sidebar-link">Getting sea turtle observations</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial/seaturtle_robis.html" class="sidebar-item-text sidebar-link">get turtle data</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial/background.html" class="sidebar-item-text sidebar-link">get background data</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial/maxent-sdm.html" class="sidebar-item-text sidebar-link">Marine Species Distribution Models</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="ohw23_proj_marinesdms-marine-species-distribution-model-sdm-tutorial" class="level1">
+<h1>ohw23_proj_marinesdms: Marine species distribution model (SDM) tutorial</h1>
+<p>This tutorial was developed during <a href="https://oceanhackweek.org/">OceanHackWeek</a> by members of the Marine Species Distribution Model group. It shows a simple workflow to develop a marine SDM focusing on the Arabian Sea and the Bay of Bengal.</p>
+<section id="requirements" class="level2">
+<h2 class="anchored" data-anchor-id="requirements">Requirements</h2>
+<p>Some experience programming in <code>R</code> is needed to make the most of this tutorial. To run this tutorial make sure you clone this repository into your local machine by creating a new project that uses version control (<code>git</code>).</p>
+<p>The tutorial content was developed in a <code>R</code> version 4.2.2 for Linux. Full session information is included below:</p>
+<pre><code>R version 4.2.2 (2022-10-31)
+Platform: x86_64-conda-linux-gnu (64-bit)
+Running under: Debian GNU/Linux 11 (bullseye)
+
+Matrix products: default
+BLAS/LAPACK: /opt/conda/lib/libopenblasp-r0.3.21.so
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+[1] compiler_4.2.2 tools_4.2.2   </code></pre>
+<section id="additional-resources" class="level3">
+<h3 class="anchored" data-anchor-id="additional-resources">Additional resources</h3>
+<p>If you need additional support with <code>R</code> programming, you can check the following resources:<br>
+- <a href="https://r4ds.hadley.nz/"><code>R</code> for Data Science - 2nd edition</a> by Wickham, Çetinkaya-Rundel and Grolemund.<br>
+- <a href="https://datacarpentry.org/R-ecology-lesson/">Data analysis and visualisation in <code>R</code> for ecologists</a></p>
+<p>For information on how to use <code>git</code> and <code>GitHub</code> with <code>R</code>, <a href="https://happygitwithr.com/">Happy Git and GitHub for the useR</a> by Jenny Bryan is a great resource.</p>
+</section>
+</section>
+<section id="tutorial-developers" class="level2">
+<h2 class="anchored" data-anchor-id="tutorial-developers">Tutorial developers</h2>
+<ul>
+<li><p><a href="https://github.com/eeholmes">Eli Holmes</a>: Research Fisheries Biologist, Northwest Fisheries Science Center, NOAA Fisheries.</p></li>
+<li><p><a href="https://github.com/mackenziefiss">Mackenzie Fiss</a>: Third-year PhD student at Northeastern University studying marine biogeochemistry (DOM) and microbial ecology.</p></li>
+<li><p><a href="https://github.com/Pfreire29">Paulo Freire</a></p></li>
+<li><p><a href="https://github.com/caitobrien">Caitlin O’Brien</a></p></li>
+<li><p><a href="https://github.com/marysolokas">Mary Solokas</a>: John A. Knauss Marine Policy Fellow, National Oceanic and Atmospheric Administration</p></li>
+<li><p><a href="https://github.com/lauratsang">Laura Tsang</a></p></li>
+<li><p><a href="https://github.com/7yl4r">Tylar Murray</a>: USF IMaRS Software Engineer - code whisperer, data viz enthusiast, scientific generalist, compulsive overengineerer, &amp; UX PhD</p></li>
+<li><p><a href="https://github.com/cacourtier">Catherine Courtier</a></p></li>
+<li><p><a href="https://github.com/sjhong0117">Jade Hong</a></p></li>
+<li><p>Collins Ongore</p></li>
+<li><p><a href="https://github.com/lidefi87">Denisse Fierro Arcos</a>: PhD candidate at the <a href="https://www.imas.utas.edu.au/">Institute for Marine and Antarctic Studies (IMAS)</a> and Data Officer at the <a href="https://imos.org.au/">Integrated Marine Observing System (IMOS)</a></p></li>
+</ul>
+<p>Add updates, barriers, etc. as issues.</p>
+</section>
+</section>
+<section id="day-1" class="level1">
+<h1>Day 1</h1>
+<p>Jam Board/team formation</p>
+</section>
+<section id="day-2-day-3-check-in" class="level1">
+<h1>Day 2 / Day 3 check in</h1>
+<ul>
+<li>eli: got the zarr file into R!</li>
+<li>caitlin:</li>
+<li>laura: familiarizing with data and getting species occurrence data into R</li>
+<li>paulo: learning about packages in R</li>
+<li>mackenzie: getting data from the zarr file into dataframes to make working with it easier</li>
+<li>mary: occurrence data and differentiating land and sea sitings</li>
+<li>jade: occurrence data and SDM nitty gritty</li>
+</ul>
+</section>
+<section id="day-2" class="level1">
+<h1>Day 2</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./tutorial/Get_seaturtle_data.html" class="pagination-link">
+        <span class="nav-page-text">Getting sea turtle observations</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">2023 OceanHackWeek</div>
+  </div>
+</footer>
+
+
+
+</body></html>
