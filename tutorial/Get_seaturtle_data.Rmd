@@ -1,13 +1,12 @@
 ---
-title: "Getting sea turtle observations"
+title: "Exploring OBIS sea turtle observations"
 output:
   md_document:
     variant: markdown_github
-date: "2023-08-08"
+date: "2023-08-10"
 ---
 
-# Goal of the notebook
-In this notebook, we will show how you can get some [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  
+In this section, we will explore [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).
   
 # Loading relevant libraries
 ```{r libraries, warning = F, message = F}
@@ -181,28 +180,5 @@ ggplot(data = world) + geom_sf() +
 
 ```
 
-Columns to get. Others? Gender?
-
-```{r,eval=F}
-# select columns
-    colsWeNeed <- c("species", "lat", "lon", "locality", "year", 
-        "coordinateUncertaintyInMeters", "occurrenceID", "occurrenceRemarks", 
-        "geodeticDatum")
-```
-
-Get a data frame of loggerhead sea turtle data
-
-```{r,eval=F}
-spp <- "Caretta caretta"
-loggerh <- dismo::gbif("Caretta", species = "caretta", 
-        nrecs = 300, geo = TRUE, removeZeros = TRUE, ext = ext)
-
-```
-
-
-## To do
-
-* Get more sea turtle data
-* plot the data
-* find the turtles that are at sea and not on land
-* add a column for "on land" so we can analyze those separately
+## Next steps
+Now that we've got explored the OBIS data we can finalize our dataset and import environmental data before running the SDM. For next steps, see `SDM Workflow` section.
