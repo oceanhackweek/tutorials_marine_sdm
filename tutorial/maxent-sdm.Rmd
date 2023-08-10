@@ -45,13 +45,19 @@ extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
 sf::st_crs(extent_polygon)<-4326
 ```
 
-Make a map of our region with the polygon of interest.
+Get a polygon of the world.
+```{r}
+library("rnaturalearth")
+library("rnaturalearthdata")
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+Make a map of our region with the polygon of interest. [reference](https://r-spatial.org/r/2018/10/25/ggplot2-sf.html)
 ```{r}
 library(ggplot2)
 library(sf)
-library("rnaturalearth")
-library("rnaturalearthdata")
-ggplot(data = world) + geom_sf() +
+ggplot(data = world) +
+    geom_sf() + 
   geom_sf(data = extent_polygon, color = "red", fill=NA)
 ```
 
