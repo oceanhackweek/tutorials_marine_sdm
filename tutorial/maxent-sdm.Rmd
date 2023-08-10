@@ -117,7 +117,9 @@ plt <- ggplot(data = world) +
 
 sf_use_s2(FALSE)
 plt + geom_text(data = world_points, aes(x=X, y=Y, label=name),
-          color = "darkblue", size=2, check_overlap = TRUE)
+          color = "darkblue", size=2, check_overlap = TRUE) +
+  xlab("longitude") + ylab("latitude") + 
+  ggtitle(spp, subtitle = "occurences since 2000")
 
 ```
 
