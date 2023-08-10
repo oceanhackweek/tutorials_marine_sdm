@@ -3,6 +3,7 @@ project:
   output-dir: docs
   render:
     - "*.*"
+    - "!individual-folders/ben/*"
     - "!individual-folders/Catherine/*"
     - "!individual-folders/COB/*"
     - "!individual-folders/Eli/*"
