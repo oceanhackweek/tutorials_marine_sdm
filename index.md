@@ -14,7 +14,7 @@ Species Distribution Models are used to predict a species' geographic and enviro
 --ADD MORE SOON--
 
 ## Goals
-Many tutorials exist to run SDM models, however most readily available tutorials focus on the terrestrial-based models. Our goal through this tutorial is to highlight a marine-based SDM tutorial.
+Many tutorials exist to run SDM models, however most readily available tutorials focus on terrestrial-based models. Our goal through this tutorial is to highlight a marine-based SDM tutorial.
 
 ## Datasets
 **Biological Data**
