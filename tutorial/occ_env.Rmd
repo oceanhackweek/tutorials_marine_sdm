@@ -1,0 +1,46 @@
+---
+title: "Get environmental data for the occurrence locationa"
+---
+
+We need to get a data frame with the environmental data for the occurrence locations.
+
+## Set up
+
+```{r}
+library(ggplot2)
+library(sdmpredictors)
+```
+
+Set the directory where we will save environmental data layers.
+
+```{r}
+dir_env <- here::here("data", "env")
+options(sdmpredictors_datadir = dir_env)
+```
+
+## Add datasets
+
+We will use the sdmpredictors R package which has marine data layers.
+
+```{r}
+# choose marine
+env_datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
+```
+
+## Show the available variables
+
+The dataframe is large. We will use the DT package to make the table pretty in html.
+```{r}
+env_layers <- sdmpredictors::list_layers(env_datasets$dataset_code)
+DT::datatable(env_layers)
+```
+
+## Variables
+
+
+#Loading in environmental marine data
+datasets <- list_datasets(terrestrial = FALSE, marine = TRUE)
+layers <- list_layers(datasets)
+#View(layers)
+layercodes <- c("BO_sstmean","BO_salinity")
+env <- load_layers(layercodes)
