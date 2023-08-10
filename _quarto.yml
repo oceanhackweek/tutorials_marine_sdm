@@ -1,0 +1,52 @@
+project: 
+  type: website
+  output-dir: docs
+  render:
+    - "*.*"
+    - "!individual-folders/Catherine/*"
+    - "!individual-folders/COB/*"
+    - "!individual-folders/Eli/*"
+    - "!individual-folders/Jade1/*"
+    - "!individual-folders/Laura/*"
+    - "!individual-folders/Mackenzie/*"
+    - "!individual-folders/Mary/*"
+    - "!individual-folders/Paulo/*"
+    - "!tutorial/Subset*"
+    - "!tutorial/tutorial1.Rmd"
+
+execute:
+  freeze: true
+  
+website:
+  page-navigation: true  
+  title: "2023 Ocean Hackweek"
+  site-url: https://oceanhackweek.org/
+  
+  repo-url: https://github.com/oceanhackweek/ohw23_proj_marinesdms
+  repo-actions: [edit, issue]
+  
+  page-footer: "2023 OceanHackWeek" 
+ 
+  sidebar:
+    logo: https://oceanhackweek.org/_static/logo.png
+    pinned: true
+    align: center
+    tools: 
+      - icon: globe
+        href: https://oceanhackweek.org/
+        text: "OceanHackWeek"
+      - icon: github
+        href: https://github.com/oceanhackweek
+        text: "GitHub"
+    
+    style: "docked"
+    search: true
+    collapse-level: 1
+    toc-expand: false
+    contents:
+      - text: "Welcome"
+        href: index.md
+      - tutorial/Get_seaturtle_data.Rmd
+      - tutorial/seaturtle_robis.Rmd
+      - tutorial/background.Rmd
+      - tutorial/maxent-sdm.Rmd
