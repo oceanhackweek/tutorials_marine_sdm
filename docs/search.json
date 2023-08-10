@@ -1,0 +1,156 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "2023 Ocean Hackweek",
+    "section": "",
+    "text": "Day 1\nJam Board/team formation\n\n\nDay 2 / Day 3 check in\n\neli: got the zarr file into R!\ncaitlin:\nlaura: familiarizing with data and getting species occurrence data into R\npaulo: learning about packages in R\nmackenzie: getting data from the zarr file into dataframes to make working with it easier\nmary: occurrence data and differentiating land and sea sitings\njade: occurrence data and SDM nitty gritty\n\n\n\nDay 2"
+  },
+  {
+    "objectID": "tutorial/Get_seaturtle_data.html",
+    "href": "tutorial/Get_seaturtle_data.html",
+    "title": "Getting sea turtle observations",
+    "section": "",
+    "text": "In this notebook, we will show how you can get some Loggerhead sea turtle (Caretta caretta) data from 2000 until present from the Ocean Biodiversity Information System (OBIS). We will use the robis package to search the OBIS library and download relevant data."
+  },
+  {
+    "objectID": "tutorial/Get_seaturtle_data.html#exploring-obis-results",
+    "href": "tutorial/Get_seaturtle_data.html#exploring-obis-results",
+    "title": "Getting sea turtle observations",
+    "section": "Exploring OBIS results",
+    "text": "Exploring OBIS results\nOur search produced 5269 results for the area of our interest. However, before we continue to use this data as input for our species distribution models, we must clean it first to ensure we have a good quality dataset.\nIn this section, we will explore the results of our OBIS search so we can design a data cleaning workflow. We will check the content of some of the columns in our data frame.\nYou may want to refer to the OBIS manual and the OBIS webpage about Data Access.\n\n#Checking values in basis of record column\ncaretta_obs %>% \n  distinct(basisOfRecord)\n\n# A tibble: 2 × 1\n  basisOfRecord     \n  <chr>             \n1 MachineObservation\n2 Occurrence        \n\n\nIn this context, MachineObservation refers to records obtained with satellite tags. While Occurrence refers to records obtained by human observers on the field. These two datasets cannot be treated in the same way as MachineObservation records are not independent as they record the movements of a single individual.\nWe can also check whether or not absence data is available for the loggerhead se a turtles in our area of interest.\n\ncaretta_obs %>% \n  distinct(absence)\n\n# A tibble: 1 × 1\n  absence\n  <lgl>  \n1 FALSE  \n\n\nWe only have presence data available, which is an important factor to consider when designing our species distribution model workflow.\nWe can also check the coordinateUncertaintyInMeters, which gives us an indication of the error associated with a particular record. If we look at the names of the columns printed at the beginning of the script, you may notice that this column has been read as characters. We will change it to numbers before looking at the values in the column.\n\n#Changing column from characters to numeric\ncaretta_obs <- caretta_obs %>% \n  mutate(coordinateUncertaintyInMeters = as.numeric(coordinateUncertaintyInMeters))\n\n#Checking uncertainty values for coordinates\ncaretta_obs %>% \n  distinct(coordinateUncertaintyInMeters)\n\n# A tibble: 3 × 1\n  coordinateUncertaintyInMeters\n                          <dbl>\n1                          0.11\n2                     111319.  \n3                         NA   \n\n\nIt is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.\nHere, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties."
+  },
+  {
+    "objectID": "tutorial/Get_seaturtle_data.html#checking-quality-control-flags",
+    "href": "tutorial/Get_seaturtle_data.html#checking-quality-control-flags",
+    "title": "Getting sea turtle observations",
+    "section": "Checking quality control flags",
+    "text": "Checking quality control flags\nOBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check this repository.\nFirst, we will check the quality flags included in our results.\n\ncaretta_obs %>% \n  distinct(flags)\n\n# A tibble: 4 × 1\n  flags             \n  <chr>             \n1 NO_DEPTH          \n2 NO_DEPTH,ON_LAND  \n3 DEPTH_EXCEEDS_BATH\n4 <NA>              \n\n\nWe will now plot our dataset on a map and use the information in the flags column to color code the observations. This can help us decide whether we should include or exclude them from further analyses.\n\n#Getting a world base map\nworld <- ne_countries(scale = \"medium\", returnclass = \"sf\")\n\n#Starting a plot\nggplot()+\n  #Adding base layer (world map)\n  geom_sf(data = world)+\n  #Adding sea turtle observations\n  geom_point(data = caretta_obs, \n             #Using coordinates to plot and color based on value in flags column\n             aes(decimalLongitude, decimalLatitude, color = flags))+\n  #Constraining map to original bounding box\n  lims(x = c(st_bbox(extent_polygon)$xmin, st_bbox(extent_polygon)$xmax),\n       y = c(st_bbox(extent_polygon)$ymin, st_bbox(extent_polygon)$ymax))+\n  #Applying theme without background\n  theme_bw()\n\n\n\n\nFrom the plot above, we should consider removing at least some of the observations classified as NO_DEPTH,ON_LAND. This is because loggerhead sea turtles are not present inland. Instead, they are found in temperate and subtropical ocean waters and in sandy beaches.\nSome of these observations appear to be quite close to the shore, so they may have occurred in a sandy beach. We can check the proximity of the observation to the shore using the shoredistance column, which provides the distance to shore in meters.\n\ncaretta_obs %>% \n  filter(flags == \"NO_DEPTH,ON_LAND\") %>% \n  select(shoredistance) %>% \n  arrange(desc(shoredistance))\n\n# A tibble: 25 × 1\n   shoredistance\n           <int>\n 1          -231\n 2          -394\n 3          -971\n 4         -1403\n 5         -3895\n 6         -5896\n 7         -8319\n 8         -8562\n 9        -17661\n10        -19763\n# … with 15 more rows\n\n\nThe inland observations are at least 231 meters away from the coast and up to 515 kilometers. For simplicity, we will remove all points flagged as NO_DEPTH,ON_LAND, but it is recommended that locations are looked more in depth and determine how likely it was that an individual was present at that location.\nWe can also check if any other observations have been reported in land. We will filter out the NO_DEPTH,ON_LAND flags and check for any negative values in the shoredistance column.\n\ncaretta_obs %>% \n  filter(flags != \"NO_DEPTH,ON_LAND\" & shoredistance < 0)\n\n# A tibble: 0 × 103\n# … with 103 variables: associatedReferences <chr>, basisOfRecord <chr>,\n#   bibliographicCitation <chr>, catalogNumber <chr>, collectionCode <chr>,\n#   coordinatePrecision <chr>, coordinateUncertaintyInMeters <dbl>,\n#   datasetID <chr>, datasetName <chr>, dateIdentified <chr>,\n#   decimalLatitude <dbl>, decimalLongitude <dbl>, eventDate <chr>,\n#   eventTime <chr>, family <chr>, footprintWKT <chr>, genus <chr>,\n#   geodeticDatum <chr>, georeferencedDate <chr>, …\n\n\nNo observations were returned, which is good news.\nAnother feature worth pointing out in our data is that some of the observations appear to be gridded as they are evenly spaced. This is confirmed by the occurrenceRemarks column, which states that some observations are: Telemetry locations aggregated per species per 1-degree cell. This is not ideal and you may need to consider if the inclusion of these data points are suitable for your project. In this example, we will remove them from our analysis."
+  },
+  {
+    "objectID": "tutorial/Get_seaturtle_data.html#removing-problematic-observations",
+    "href": "tutorial/Get_seaturtle_data.html#removing-problematic-observations",
+    "title": "Getting sea turtle observations",
+    "section": "Removing problematic observations",
+    "text": "Removing problematic observations\nIn this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the NO_DEPTH,ON_LAND flag, and any records that have been aggregated to a 1-degree cell.\n\n# caretta_obs %>% \n#   #Removing on land observations\n#   filter(flags != \"NO_DEPTH,ON_LAND\" | is.na(flags)) %>% \n#   #        | coordinateUncertaintyInMeters > 100000) %>% \n#   # filter(!str_detect(occurrenceRemarks, \"degree\"))"
+  },
+  {
+    "objectID": "tutorial/Get_seaturtle_data.html#keeping-relevant-columns",
+    "href": "tutorial/Get_seaturtle_data.html#keeping-relevant-columns",
+    "title": "Getting sea turtle observations",
+    "section": "Keeping relevant columns",
+    "text": "Keeping relevant columns\n\ncols.to.use <- c(\"occurrenceID\", \"scientificName\", \"dateIdentified\", \"eventDate\", \"decimalLatitude\", \"decimalLongitude\", \"coordinateUncertaintyInMeters\",\n                 \"individualCount\",\"lifeStage\", \"sex\",\n                 \"bathymetry\",  \"shoredistance\", \"sst\", \"sss\")\ndf <- df[,cols.to.use]\nwrite.csv(df, file=\"/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv\", quote=FALSE)\n\n\nggplot(data = world) + geom_sf() +\n  geom_sf(data = extent_polygon, color = \"red\", fill=NA)\n\nColumns to get. Others? Gender?\n\n# select columns\n    colsWeNeed <- c(\"species\", \"lat\", \"lon\", \"locality\", \"year\", \n        \"coordinateUncertaintyInMeters\", \"occurrenceID\", \"occurrenceRemarks\", \n        \"geodeticDatum\")\n\nGet a data frame of loggerhead sea turtle data\n\nspp <- \"Caretta caretta\"\nloggerh <- dismo::gbif(\"Caretta\", species = \"caretta\", \n        nrecs = 300, geo = TRUE, removeZeros = TRUE, ext = ext)"
+  },
+  {
+    "objectID": "tutorial/Get_seaturtle_data.html#to-do",
+    "href": "tutorial/Get_seaturtle_data.html#to-do",
+    "title": "Getting sea turtle observations",
+    "section": "To do",
+    "text": "To do\n\nGet more sea turtle data\nplot the data\nfind the turtles that are at sea and not on land\nadd a column for “on land” so we can analyze those separately"
+  },
+  {
+    "objectID": "tutorial/background.html",
+    "href": "tutorial/background.html",
+    "title": "get background data",
+    "section": "",
+    "text": "Here we explore 2 approaches."
+  },
+  {
+    "objectID": "tutorial/background.html#set-up",
+    "href": "tutorial/background.html#set-up",
+    "title": "get background data",
+    "section": "Set up",
+    "text": "Set up\n\nlibrary(ggplot2)\nlibrary(sf)\n\nLinking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.0; sf_use_s2() is TRUE\n\nlibrary(\"rnaturalearth\")\nlibrary(\"rnaturalearthdata\")\n\n\nAttaching package: 'rnaturalearthdata'\n\n\nThe following object is masked from 'package:rnaturalearth':\n\n    countries110\n\nlibrary(raster)\n\nLoading required package: sp\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.0     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ lubridate 1.9.2     ✔ tibble    3.1.8\n✔ purrr     1.0.1     ✔ tidyr     1.3.0\n\n\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ tidyr::extract() masks raster::extract()\n✖ dplyr::filter()  masks stats::filter()\n✖ dplyr::lag()     masks stats::lag()\n✖ dplyr::select()  masks raster::select()\nℹ Use the \u001b]8;;http://conflicted.r-lib.org/\u0007conflicted package\u001b]8;;\u0007 to force all conflicts to become errors\n\n\n\ndir_data <- file.path(here::here(), \"data\", \"raw-bio\")\ndir_env <- file.path(here::here(), \"data\", \"env\")\nredo <- TRUE"
+  },
+  {
+    "objectID": "tutorial/background.html#define-the-region-of-interest",
+    "href": "tutorial/background.html#define-the-region-of-interest",
+    "title": "get background data",
+    "section": "Define the region of interest",
+    "text": "Define the region of interest\n\n# lon, lon, lat, lat\nlibrary(sf)\nlats <- c(-0.125, 32.125)\nlons <- c(41.875, 65.125)\n# raster extent is defined by west lon, east lon, south lat, north lat\next <- raster::extent(lons[1], lons[2], lats[1], lats[2])\nextent_polygon <- as(ext, \"SpatialPolygons\") %>% st_as_sf()\n# we need to assign a coordinate system; 4326 is the default for maps in sf\nsf::st_crs(extent_polygon)<-4326\n# convert to a WKT format\nwkt_geometry <- extent_polygon$geometry %>% st_as_text()\nwkt_geometry\n\n[1] \"POLYGON ((41.875 -0.125, 41.875 32.125, 65.125 32.125, 65.125 -0.125, 41.875 -0.125))\"\n\n\nMake a map of our region so we know we have the right area.\n\nworld <- ne_countries(scale = \"medium\", returnclass = \"sf\")\nggplot(data = world) + geom_sf() +\n  geom_sf(data = extent_polygon, color = \"red\", fill=NA)"
+  },
+  {
+    "objectID": "tutorial/background.html#get-occurrence-data-from-robis",
+    "href": "tutorial/background.html#get-occurrence-data-from-robis",
+    "title": "get background data",
+    "section": "Get occurrence data from robis",
+    "text": "Get occurrence data from robis\n\ncols.to.use <- c(\"scientificName\", \"dateIdentified\", \"eventDate\", \"decimalLatitude\", \"decimalLongitude\", \"coordinateUncertaintyInMeters\", \"bathymetry\",  \"shoredistance\", \"sst\", \"sss\")\n\n\nlibrary(robis)\n\n\nAttaching package: 'robis'\n\n\nThe following object is masked from 'package:raster':\n\n    area\n\n# Alas no bathymetry is downloaded\ndf <- occurrence(geometry = wkt_geometry, wrims=TRUE, dna = FALSE, fields = cols.to.use)\n\n\nRetrieved 5000 records of approximately 21254 (23%)\n\n\n\nRetrieved 10000 records of approximately 21254 (47%)\nRetrieved 15000 records of\napproximately 21254 (70%)\nRetrieved 20000 records of approximately 21254\n(94%)\nRetrieved 21254 records of approximately 21254 (100%)\n\n\nSave the data to a file for later use.\n\nfil <- file.path(here::here(), \"data\", \"raw-bio\", \"io-background.csv\")\nwrite.csv(df, file=fil, quote=FALSE)\n\n\nRead in the background\n\nfil <- file.path(here::here(), \"data\", \"raw-bio\", \"io-background.csv\")\nback1 <- read.csv(fil)\n\n\n\nMake a plot of the background\nThis approach is not terribly random.\n\nlibrary(ggplot2)\nlibrary(\"ggspatial\")\nlibrary(\"sf\")\ntheme_set(theme_bw())\nworld <- st_make_valid(world)\nworld_points <- st_centroid(world)\n\nWarning in st_centroid.sf(world): st_centroid assumes attributes are constant\nover geometries of x\n\nworld_points <- cbind(world, st_coordinates(st_centroid(world$geometry)))\n\n\nplt <- ggplot(data = world) +\n    geom_sf(fill= \"antiquewhite\") +\n    geom_point(data = back1, aes(x=decimalLongitude, y=decimalLatitude), color = \"red\", size=0.1) +\n    annotation_scale(location = \"bl\", width_hint = 0.5) +\n    annotation_north_arrow(location = \"bl\", which_north = \"true\", \n        pad_x = unit(0.15, \"in\"), pad_y = unit(0.25, \"in\"),\n        style = north_arrow_fancy_orienteering) +\n    coord_sf(xlim = lons, ylim = lats) +\n    theme(panel.grid.major = element_line(color = gray(.5), linetype = \"dashed\", size = 0.5), panel.background = element_rect(fill = \"aliceblue\"))\n\nWarning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.\nℹ Please use the `linewidth` argument instead.\n\nsf_use_s2(FALSE)\n\nSpherical geometry (s2) switched off\n\nplt + geom_text(data = world_points, aes(x=X, y=Y, label=name),\n          color = \"darkblue\", size=2, check_overlap = TRUE) +\n  xlab(\"longitude\") + ylab(\"latitude\")\n\nScale on map varies by more than 10%, scale bar may be inaccurate"
+  },
+  {
+    "objectID": "tutorial/background.html#approach-2.-random-samples",
+    "href": "tutorial/background.html#approach-2.-random-samples",
+    "title": "get background data",
+    "section": "Approach 2. Random samples",
+    "text": "Approach 2. Random samples\nThis is adapted from here.\n\nGet a marine raster layer\nWe just need one because we use this to sample lat/lons from the marine environment.\n\n# set a default data directory\noptions(sdmpredictors_datadir = dir_env)\n\n# choosing marine\nenv_datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)\nenv_layers <- sdmpredictors::list_layers(\"MARSPEC\")\nenv_stack <- sdmpredictors::load_layers(\"MS_bathy_5m\")\nenv_stack <- env_stack %>% raster::crop(ext)\n\nNow we can plot the bathymetry in our study region.\n\nplot(env_stack)\n\n\n\n\n\n\nNext we sample points from this\n\nnsamp <- 1000\nabsence <- dismo::randomPoints(env_stack[[1]], nsamp) %>% \n    as_tibble() %>% \n    st_as_sf(coords = c(\"x\", \"y\"), crs = 4326)\n\n\nmapview::mapview(absence, col.regions = \"gray\")\n\nWarning in cbind(`Feature ID` = fid, mat): number of rows of result is not a\nmultiple of vector length (arg 1)\n\n\n\n\n\n\n\nSave the absence locations to a file.\n\nabsence_geo <- file.path(dir_data, \"absence.geojson\")\npts_absence_csv <- file.path(dir_data, \"pts_absence.csv\")\nst_write(absence, pts_absence_csv, layer_options = \"GEOMETRY=AS_XY\", append=FALSE)\n\nDeleting layer `pts_absence' using driver `CSV'\nWriting layer `pts_absence' to data source \n  `/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/pts_absence.csv' using driver `CSV'\noptions:        GEOMETRY=AS_XY \nUpdating existing layer pts_absence\nWriting 1000 features with 0 fields and geometry type Point."
+  },
+  {
+    "objectID": "tutorial/maxent-sdm.html",
+    "href": "tutorial/maxent-sdm.html",
+    "title": "Marine Species Distribution Models",
+    "section": "",
+    "text": "This example steps through the process of presence-only modeling using the maxnet package. The example is based on the notes by Ben Tupper (Biglow Lab, Maine) https://github.com/BigelowLab/maxnet/wiki/stars"
+  },
+  {
+    "objectID": "tutorial/maxent-sdm.html#step-1-define-the-region-of-interest",
+    "href": "tutorial/maxent-sdm.html#step-1-define-the-region-of-interest",
+    "title": "Marine Species Distribution Models",
+    "section": "Step 1: Define the region of interest",
+    "text": "Step 1: Define the region of interest\nWe are looking at the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea.\n\nlibrary(sf)\nlats <- c(-0.125, 32.125); lons <- c(41.875, 70.125)\n# raster extent is defined by west lon, east lon, south lat, north lat\next <- raster::extent(lons[1], lons[2], lats[1], lats[2])\nextent_polygon <- as(ext, \"SpatialPolygons\") %>% st_as_sf()\n# we need to assign a coordinate system; 4326 is the default for maps in sf\nsf::st_crs(extent_polygon)<-4326\n\nGet a polygon of the world.\n\nlibrary(\"rnaturalearth\")\nlibrary(\"rnaturalearthdata\")\n\n\nAttaching package: 'rnaturalearthdata'\n\n\nThe following object is masked from 'package:rnaturalearth':\n\n    countries110\n\nworld <- ne_countries(scale = \"medium\", returnclass = \"sf\")\n\nMake a map of our region with the polygon of interest. reference\n\nlibrary(ggplot2)\nlibrary(sf)\nggplot(data = world) +\n    geom_sf() + \n  geom_sf(data = extent_polygon, color = \"red\", fill=NA)"
+  },
+  {
+    "objectID": "tutorial/maxent-sdm.html#step-2-load-the-occurrence-data",
+    "href": "tutorial/maxent-sdm.html#step-2-load-the-occurrence-data",
+    "title": "Marine Species Distribution Models",
+    "section": "Step 2: Load the occurrence data",
+    "text": "Step 2: Load the occurrence data\nThis was queried using the robis package.\nspp <- c(\"Chelonia mydas\", \"Caretta caretta\", \"Eretmochelys imbricata\", \"Lepidochelys olivacea\", \"Natator depressus\", \"Dermochelys coriacea\")\nwkt_geometry <- extent_polygon$geometry %>% st_as_text()\ndf <- occurrence(spp, startdate = as.Date(\"2000-01-01\"), geometry = wkt_geometry)\n\nspp <- \"Chelonia mydas\"\nocc <- read.csv(\"/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv\")\nocc <- occ %>% subset(scientificName == spp)\n\nLook at the column names\n\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ forcats 1.0.0     ✔ stringr 1.5.0\n✔ purrr   1.0.1     ✔ tibble  3.1.8\n✔ readr   2.1.4     ✔ tidyr   1.3.0\n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ tidyr::extract() masks raster::extract(), terra::extract()\n✖ dplyr::filter()  masks stats::filter()\n✖ dplyr::lag()     masks stats::lag()\n✖ raster::select() masks dplyr::select()\nℹ Use the \u001b]8;;http://conflicted.r-lib.org/\u0007conflicted package\u001b]8;;\u0007 to force all conflicts to become errors\n\ncolnames(occ)\n\n [1] \"occurrenceID\"                  \"scientificName\"               \n [3] \"dateIdentified\"                \"eventDate\"                    \n [5] \"decimalLatitude\"               \"decimalLongitude\"             \n [7] \"coordinateUncertaintyInMeters\" \"individualCount\"              \n [9] \"lifeStage\"                     \"sex\"                          \n[11] \"bathymetry\"                    \"shoredistance\"                \n[13] \"sst\"                           \"sss\"                          \n\n\nMake sure the turtle was at sea.\n\nocc <- occ %>% subset(bathymetry > 0 & \n                        shoredistance > 0 & \n                        coordinateUncertaintyInMeters < 200)\ndim(occ)\n\n[1] 7060   14\n\n\nChange the occurrence data into an sf object with a coordinate system. Add a date column with YYYY-MM-DD format.\n\nocc$date <- as.Date(occ$eventDate)\nocc.sf <- sf::st_as_sf(occ, coords = c(\"decimalLongitude\", \"decimalLatitude\"), crs = 4326)\n\nPlot the occurrence data\n\nlibrary(ggplot2)\nlibrary(\"ggspatial\")\nlibrary(\"sf\")\ntheme_set(theme_bw())\nworld <- st_make_valid(world)\nworld_points <- st_centroid(world)\n\nWarning in st_centroid.sf(world): st_centroid assumes attributes are constant\nover geometries of x\n\nworld_points <- cbind(world, st_coordinates(st_centroid(world$geometry)))\n\n\nplt <- ggplot(data = world) +\n    geom_sf(fill= \"antiquewhite\") +\n    geom_point(data = occ, aes(x=decimalLongitude, y=decimalLatitude), color = \"red\", size=0.1) +\n    annotation_scale(location = \"bl\", width_hint = 0.5) +\n    annotation_north_arrow(location = \"bl\", which_north = \"true\", \n        pad_x = unit(0.15, \"in\"), pad_y = unit(0.25, \"in\"),\n        style = north_arrow_fancy_orienteering) +\n    coord_sf(xlim = lons, ylim = lats) +\n    theme(panel.grid.major = element_line(color = gray(.5), linetype = \"dashed\", size = 0.5), panel.background = element_rect(fill = \"aliceblue\"))\n\nWarning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.\nℹ Please use the `linewidth` argument instead.\n\nsf_use_s2(FALSE)\n\nSpherical geometry (s2) switched off\n\nplt + geom_text(data = world_points, aes(x=X, y=Y, label=name),\n          color = \"darkblue\", size=2, check_overlap = TRUE) +\n  xlab(\"longitude\") + ylab(\"latitude\") + \n  ggtitle(spp, subtitle = \"occurences since 2000\")\n\nScale on map varies by more than 10%, scale bar may be inaccurate"
+  },
+  {
+    "objectID": "tutorial/maxent-sdm.html#use-the-sdmpredictors-package-to-assemble-predictor-variable-data",
+    "href": "tutorial/maxent-sdm.html#use-the-sdmpredictors-package-to-assemble-predictor-variable-data",
+    "title": "Marine Species Distribution Models",
+    "section": "Use the sdmpredictors package to assemble predictor variable data",
+    "text": "Use the sdmpredictors package to assemble predictor variable data"
+  },
+  {
+    "objectID": "tutorial/maxent-sdm.html#collect-background-points-within-the-region-occupied-by-the-presence-points-using-sf-package",
+    "href": "tutorial/maxent-sdm.html#collect-background-points-within-the-region-occupied-by-the-presence-points-using-sf-package",
+    "title": "Marine Species Distribution Models",
+    "section": "Collect background points within the region occupied by the presence points using sf package",
+    "text": "Collect background points within the region occupied by the presence points using sf package"
+  },
+  {
+    "objectID": "tutorial/maxent-sdm.html#model-and-predict-using-the-maxnet-package",
+    "href": "tutorial/maxent-sdm.html#model-and-predict-using-the-maxnet-package",
+    "title": "Marine Species Distribution Models",
+    "section": "Model and predict using the maxnet package",
+    "text": "Model and predict using the maxnet package"
+  },
+  {
+    "objectID": "tutorial/seaturtle_robis.html",
+    "href": "tutorial/seaturtle_robis.html",
+    "title": "get turtle data",
+    "section": "",
+    "text": "Here we download from OBIS using the robis package."
+  },
+  {
+    "objectID": "tutorial/seaturtle_robis.html#step-1-define-the-region-of-interest",
+    "href": "tutorial/seaturtle_robis.html#step-1-define-the-region-of-interest",
+    "title": "get turtle data",
+    "section": "Step 1 define the region of interest",
+    "text": "Step 1 define the region of interest\n\n# lon, lon, lat, lat\nlibrary(sf)\n\nLinking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.0; sf_use_s2() is TRUE\n\nlats <- c(-0.125, 32.125)\nlons <- c(41.875, 65.125)\n# raster extent is defined by west lon, east lon, south lat, north lat\next <- raster::extent(lons[1], lons[2], lats[1], lats[2])\nextent_polygon <- as(ext, \"SpatialPolygons\") %>% st_as_sf()\n# we need to assign a coordinate system; 4326 is the default for maps in sf\nsf::st_crs(extent_polygon)<-4326\n# convert to a WKT format\nwkt_geometry <- extent_polygon$geometry %>% st_as_text()\nwkt_geometry\n\n[1] \"POLYGON ((41.875 -0.125, 41.875 32.125, 65.125 32.125, 65.125 -0.125, 41.875 -0.125))\"\n\n\nMake a map of our region so we know we have the right area.\n\nlibrary(ggplot2)\nlibrary(sf)\nlibrary(\"rnaturalearth\")\nlibrary(\"rnaturalearthdata\")\n\n\nAttaching package: 'rnaturalearthdata'\n\n\nThe following object is masked from 'package:rnaturalearth':\n\n    countries110\n\nworld <- ne_countries(scale = \"medium\", returnclass = \"sf\")\nggplot(data = world) + geom_sf() +\n  geom_sf(data = extent_polygon, color = \"red\", fill=NA)"
+  },
+  {
+    "objectID": "tutorial/seaturtle_robis.html#get-occurrence-data-from-robis",
+    "href": "tutorial/seaturtle_robis.html#get-occurrence-data-from-robis",
+    "title": "get turtle data",
+    "section": "Get occurrence data from robis",
+    "text": "Get occurrence data from robis\n\nlibrary(robis)\nspp <- \"Caretta caretta\" # loggerhead\ndf <- occurrence(spp, startdate = as.Date(\"2000-01-01\"), geometry = wkt_geometry)\n\n\nRetrieved 5000 records of approximately 5269 (94%)\nRetrieved 5269 records of\napproximately 5269 (100%)\n\n\nSubset columns and save.\n\ncols.to.use <- c(\"occurrenceID\", \"scientificName\", \"dateIdentified\", \"eventDate\", \"decimalLatitude\", \"decimalLongitude\", \"coordinateUncertaintyInMeters\",\n                 \"individualCount\",\"lifeStage\", \"sex\",\n                 \"bathymetry\",  \"shoredistance\", \"sst\", \"sss\")\ndf <- df[,cols.to.use]\n\nSave the data to a file for later use.\n\nwrite.csv(df, file=\"/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv\", quote=FALSE)"
+  },
+  {
+    "objectID": "tutorial/seaturtle_robis.html#download-data",
+    "href": "tutorial/seaturtle_robis.html#download-data",
+    "title": "get turtle data",
+    "section": "Download data",
+    "text": "Download data\nWe will download data for four sea turtles found in the Arabian sea and save to one file.\n\nspp <- c(\"Chelonia mydas\", \"Caretta caretta\", \"Eretmochelys imbricata\", \"Lepidochelys olivacea\", \"Natator depressus\", \"Dermochelys coriacea\")\ndf <- occurrence(spp, startdate = as.Date(\"2000-01-01\"), geometry = wkt_geometry)\ncols.to.use <- c(\"occurrenceID\", \"scientificName\", \"dateIdentified\", \"eventDate\", \"decimalLatitude\", \"decimalLongitude\", \"coordinateUncertaintyInMeters\",\n                 \"individualCount\",\"lifeStage\", \"sex\",\n                 \"bathymetry\",  \"shoredistance\", \"sst\", \"sss\")\nif(!(all(cols.to.use %in% colnames(df)))) next\ndf <- df[,cols.to.use]\nfil=file.path(\n    \"/home\", \"jovyan\", \"R\", \"ohw23_proj_marinesdms\", \"data\", \"raw-bio\", \"io-sea-turtles.csv\")\nwrite.csv(df, file=fil, quote=FALSE, row.names = FALSE)"
+  }
+]

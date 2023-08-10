@@ -91,10 +91,7 @@ lons <- c(30, 90)
 lats <- c(-10,30)
 
 ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
-extent_polygon <- as(ext, "SpatialPolygons") %>% 
-
-#sf::st_as_sf(obs, coords = c("lon", "lat"), crs = 4326) [data frame with the location information  consolidated into a list column]
-
+extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
 sf::st_crs(extent_polygon) <- 4326 # Not sure what this value 4326 means
 AreaOfInterest <- raster::crop(env, extent(extent_polygon))
 plot(AreaOfInterest)
@@ -120,7 +117,7 @@ workflow(
     occfile, occurrenceType="presence",
     columns = c("decimallongitude", "decimallatitude", "date_year")), 
   covariate = LocalRaster(stack(AreaOfInterest)),
-  process = OneHundredBackground(seed = 42), # why did you choose 42?
+  process = OneHundredBackground(seed = 42), # just the page number of random numbers
   model = LogisticRegression,
   output = PrintMap)
 ```
@@ -160,31 +157,186 @@ for(group in layers_annual_groups) {
     }
 ```
 
-```{r}
 
+##  Create SDM: Note that this requires the ZOON, ggplot2, cowplot and marinespeed packages to be installed.(NOT DONE)
+
+```{r}
+# Load equal area rasters and crop with the extent of the Baltic Sea
+library(sdmpredictors)
+library(zoon)
+library(raster)
+library(ggplot2)
+library(cowplot)
+library(marinespeed)
+
+layercodes_2 <- c("MS_biogeo05_dist_shore_5m", "MS_bathy_5m", "BO_sstrange", "BO_sstmean", "BO_salinity")
+env_2 <- load_layers(layercodes_2, rasterstack = FALSE)
+env_3 <- stack(env_2)
+ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
+extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
+sf::st_crs(extent_polygon) <- 4326 # crs -> reference system number WGS84 
+studyarea <- raster::crop(env_3, extent(extent_polygon))
+plot(studyarea)
+
+
+
+
+    # Compare statistics between the original and the Australian bathymetry
+   # View(rbind(layer_stats("MS_bathy_5m"),calculate_statistics("Bathymetry Australia", raster(australia, layer = 2))))
+
+    # Compare correlations between predictors, globally and for Australia
+    prettynames <- list(BO_salinity="Salinity", BO_sstmean="SST (mean)", 
+                        BO_sstrange="SST (range)", MS_bathy_5m="Bathymetry",
+                        MS_biogeo05_dist_shore_5m = "Shore distance")
+    
+   # p1 <- plot_corr(layers_correlation(layercodes), prettynames)
+   # australian_correlations <- pearson_correlation_matrix(australia)
+   # p2 <- plot_correlation(australian_correlations, prettynames)
+   # cowplot::plot_grid(p1, p2, labels=c("A", "B"), ncol = 2, nrow = 1)
+   # print(correlation_groups(australian_correlations))
+    
+# Fetch occurrences and prepare for ZOON
+   occ <- marinespeed::get_occurrences(o_data)
+    points <- SpatialPoints(occ[,c("longitude", "latitude")],
+                            lonlatproj)
+    points <- spTransform(points, equalareaproj)
+    occfile <- tempfile(fileext = ".csv")
+    write.csv(cbind(coordinates(points), value=1), occfile)
+    # Create SDM with ZOON
+    workflow(
+      occurrence = LocalOccurrenceData(
+        o_data, occurrenceType="presence",
+        columns = c("decimallongitude", "decimallatitude")), 
+      covariate = LocalRaster(studyarea),
+      process = OneHundredBackground(seed = 42),
+      model = LogisticRegression,
+      output = PrintMap)
+    # Layer citations
+    print(layer_citations(layercodes_2))
+```
+
+
+
+## Maxnet with stars
+```{r}
+suppressPackageStartupMessages({
+  library(maxnet)
+  library(dplyr)
+  library(maxnet)
+  library(sf)
+  library(stars)
+  library(geodata)
+  library(dismo)
+  library(lubridate)
+  library(sdmpredictors)
+})
 ```
 
 ```{r}
-
+library(sf)
+lats <- c(-0.125, 32.125); lons <- c(41.875, 70.125)
+# raster extent is defined by west lon, east lon, south lat, north lat
+ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
+extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
+# we need to assign a coordinate system; 4326 is the default for maps in sf
+sf::st_crs(extent_polygon)<-4326
 ```
 
 ```{r}
-
+library("rnaturalearth")
+library("rnaturalearthdata")
+world <- ne_countries(scale = "medium", returnclass = "sf")
 ```
 
 ```{r}
-
+library(ggplot2)
+library(sf)
+ggplot(data = world) +
+    geom_sf() + 
+  geom_sf(data = extent_polygon, color = "red", fill=NA)
 ```
 
 ```{r}
-
+spp <- "Chelonia mydas"
+fil <- file.path(here::here(), "data", "raw-bio", "io-sea-turtles.csv")
+occ <- read.csv(fil)
+occ <- occ %>% subset(scientificName == spp)
 ```
 
 ```{r}
+library(tidyverse)
+colnames(occ)
 
+occ <- occ %>% subset(bathymetry > 0 & 
+                        shoredistance > 0 & 
+                        coordinateUncertaintyInMeters < 200)
+dim(occ)
+
+occ$date <- as.Date(occ$eventDate)
+occ.sf <- sf::st_as_sf(occ, coords = c("decimalLongitude", "decimalLatitude"), crs = 4326)
+```
+
+```{r}
+library(ggplot2)
+library("ggspatial")
+library("sf")
+theme_set(theme_bw())
+world <- st_make_valid(world)
+world_points <- st_centroid(world)
+world_points <- cbind(world, st_coordinates(st_centroid(world$geometry)))
+
+
+plt <- ggplot(data = world) +
+    geom_sf(fill= "antiquewhite") +
+    geom_point(data = occ, aes(x=decimalLongitude, y=decimalLatitude), color = "red", size=0.1) +
+    annotation_scale(location = "bl", width_hint = 0.5) +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+        pad_x = unit(0.15, "in"), pad_y = unit(0.25, "in"),
+        style = north_arrow_fancy_orienteering) +
+    coord_sf(xlim = lons, ylim = lats) +
+    theme(panel.grid.major = element_line(color = gray(.5), linetype = "dashed", size = 0.5), panel.background = element_rect(fill = "aliceblue"))
+
+sf_use_s2(FALSE)
+plt + geom_text(data = world_points, aes(x=X, y=Y, label=name),
+          color = "darkblue", size=2, check_overlap = TRUE) +
+  xlab("longitude") + ylab("latitude") + 
+  ggtitle(spp, subtitle = "occurences since 2000")
+
+```
+```{r}
+path <- tempdir()
+recent <- geodata::worldclim_global(var="bio", res=10, path = path) |>
+  stars::st_as_stars() |>
+  split()
+names(recent) <- sprintf("bio%0.2i", seq_len(length(names(recent))))
 ```
 
 
+dataframe for the occurrence+env
+```{r}
+env_occ <- stars::st_extract(recent, sf::st_coordinates(occ.sf)) |>
+  dplyr::as_tibble() |>
+  na.omit()
+env_occ
+```
 
+dataframe for the absence(background)+env
+```{r}
+back <- read_csv("~/ohw23_proj_marinesdms/data/raw-bio/pts_absence.csv")
+colnames(back) <- c("decimallongitude","decimallatitude")
+back.sf <- sf::st_as_sf(back,coords= c("decimallongitude","decimallatitude"), crs = 4326)
 
+env_back <- stars::st_extract(recent, sf::st_coordinates(back.sf)) |>
+  dplyr::as_tibble() |>
+  na.omit()
+env_back
+
+```
+
+Build the model. Create a flag vector that distinguishes between occurrence (1) and background (0).
+```{r}
+pres <- c(rep(1, nrow(env_occ)), rep(0, nrow(env_back)))
+model <- maxnet::maxnet(pres,
+                    dplyr::bind_rows(env_occ, env_back))
+```
 
