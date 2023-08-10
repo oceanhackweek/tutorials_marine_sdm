@@ -220,12 +220,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
+<<<<<<< HEAD
   <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link active" data-scroll-target="#loading-libraries">Loading libraries</a></li>
   <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a></li>
   <li><a href="#get-observations" id="toc-get-observations" class="nav-link" data-scroll-target="#get-observations">Get observations</a>
   <ul class="collapse">
   <li><a href="#explore-obis-results" id="toc-explore-obis-results" class="nav-link" data-scroll-target="#explore-obis-results">Explore OBIS results</a></li>
   <li><a href="#quality-control-flags" id="toc-quality-control-flags" class="nav-link" data-scroll-target="#quality-control-flags">Quality control flags</a></li>
+=======
+  <li><a href="#loading-relevant-libraries" id="toc-loading-relevant-libraries" class="nav-link active" data-scroll-target="#loading-relevant-libraries">Loading relevant libraries</a></li>
+  <li><a href="#creating-a-bounding-box" id="toc-creating-a-bounding-box" class="nav-link" data-scroll-target="#creating-a-bounding-box">Creating a bounding box</a></li>
+  <li><a href="#get-observations" id="toc-get-observations" class="nav-link" data-scroll-target="#get-observations">Get Observations</a>
+  <ul class="collapse">
+  <li><a href="#exploring-obis-results" id="toc-exploring-obis-results" class="nav-link" data-scroll-target="#exploring-obis-results">Exploring OBIS results</a></li>
+  <li><a href="#check-quality-control-flags" id="toc-check-quality-control-flags" class="nav-link" data-scroll-target="#check-quality-control-flags">Check quality control flags</a></li>
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
   <li><a href="#problematic-observations" id="toc-problematic-observations" class="nav-link" data-scroll-target="#problematic-observations">Problematic observations</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
   </ul></li>
@@ -289,7 +298,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </section>
 <section id="get-observations" class="level1">
+<<<<<<< HEAD
 <h1>Get observations</h1>
+=======
+<h1>Get Observations</h1>
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 <p>We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Search OBIS for loggerhead observations from 2000</span></span>
@@ -466,8 +479,13 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <p>It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.</p>
 <p>Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.</p>
 </section>
+<<<<<<< HEAD
 <section id="quality-control-flags" class="level2">
 <h2 class="anchored" data-anchor-id="quality-control-flags">Quality control flags</h2>
+=======
+<section id="check-quality-control-flags" class="level2">
+<h2 class="anchored" data-anchor-id="check-quality-control-flags">Check quality control flags</h2>
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 <p>OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
 <p>First, we will check the quality flags included in our results.</p>
 <div class="cell">

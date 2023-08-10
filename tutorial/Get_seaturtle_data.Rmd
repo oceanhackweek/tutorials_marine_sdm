@@ -37,7 +37,11 @@ extent_polygon <- st_bbox(c(xmin = 41.875, xmax = 65.125,
 pol_geometry <- st_as_text(extent_polygon[[1]])
 ```
   
+<<<<<<< HEAD
 # Get observations
+=======
+# Get Observations
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
 
 ```{r obis_search}
@@ -93,7 +97,11 @@ It is worth noting that not all providers share a measurement of uncertainty, bu
   
 Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.  
   
+<<<<<<< HEAD
 ## Quality control flags
+=======
+## Check quality control flags
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check [this repository](https://github.com/iobis/obis-qc).  
   
 First, we will check the quality flags included in our results.  
