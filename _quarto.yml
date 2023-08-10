@@ -48,11 +48,21 @@ website:
     contents:
       - text: "Welcome"
         href: index.md
-      - text: Occurrence data
-        href: tutorial/Get_seaturtle_data.Rmd
-      - tutorial/seaturtle_robis.Rmd
-      - tutorial/background.Rmd
-      - tutorial/maxent-sdm.Rmd
+      - section: Background
+        contents:
+          - text: "Exploring OBIS data"
+            href: tutorial/Get_seaturtle_data.Rmd
+      - section: SDM Workflow
+        contents:
+          - text: "Presence Data"
+            href: tutorial/seaturtle_robis.Rmd
+          - text: "Absence Data"
+            href: tutorial/background.Rmd
+          - text: "Environmental Data"
+            href: tutorial/occ_env.Rmd
+          - text: "Model"
+            href: tutorial/maxent-sdm.Rmd
+          - text: "Visualization"
 
 format:
   html:
