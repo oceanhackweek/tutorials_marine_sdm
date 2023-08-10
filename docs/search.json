@@ -126,6 +126,41 @@
     "text": "Model and predict using the maxnet package"
   },
   {
+    "objectID": "tutorial/occ_env.html",
+    "href": "tutorial/occ_env.html",
+    "title": "Get environmental data for the occurrence locationa",
+    "section": "",
+    "text": "We need to get a data frame with the environmental data for the occurrence locations."
+  },
+  {
+    "objectID": "tutorial/occ_env.html#set-up",
+    "href": "tutorial/occ_env.html#set-up",
+    "title": "Get environmental data for the occurrence locationa",
+    "section": "Set up",
+    "text": "Set up\n\nlibrary(ggplot2)\nlibrary(sdmpredictors)\n\nSet the directory where we will save environmental data layers.\n\ndir_env <- here::here(\"data\", \"env\")\noptions(sdmpredictors_datadir = dir_env)"
+  },
+  {
+    "objectID": "tutorial/occ_env.html#add-datasets",
+    "href": "tutorial/occ_env.html#add-datasets",
+    "title": "Get environmental data for the occurrence locationa",
+    "section": "Add datasets",
+    "text": "Add datasets\nWe will use the sdmpredictors R package which has marine data layers.\n\n# choose marine\nenv_datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)"
+  },
+  {
+    "objectID": "tutorial/occ_env.html#show-the-available-variables",
+    "href": "tutorial/occ_env.html#show-the-available-variables",
+    "title": "Get environmental data for the occurrence locationa",
+    "section": "Show the available variables",
+    "text": "Show the available variables\nThe dataframe is large. We will use the DT package to make the table pretty in html.\n\nenv_layers <- sdmpredictors::list_layers(env_datasets$dataset_code)\nDT::datatable(env_layers)"
+  },
+  {
+    "objectID": "tutorial/occ_env.html#variables",
+    "href": "tutorial/occ_env.html#variables",
+    "title": "Get environmental data for the occurrence locationa",
+    "section": "Variables",
+    "text": "Variables\n#Loading in environmental marine data datasets <- list_datasets(terrestrial = FALSE, marine = TRUE) layers <- list_layers(datasets) #View(layers) layercodes <- c(“BO_sstmean”,“BO_salinity”) env <- load_layers(layercodes)"
+  },
+  {
     "objectID": "tutorial/seaturtle_robis.html",
     "href": "tutorial/seaturtle_robis.html",
     "title": "get turtle data",
