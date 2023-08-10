@@ -50,13 +50,14 @@ cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate"
 df <- df[,cols.to.use]
 ```
 
-Save the data to a file for later use.
+Save the data to a file for later use. The `here()` function is used so that we don't have to worry about where you have this Rmarkdown file loaded.
 ```{r eval = FALSE}
-write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv", quote=FALSE)
+fil <- here::here("data", "raw-bio", "loggerhead-robis.csv")
+write.csv(df, file=fil, quote=FALSE)
 ```
 
 
-## Download data 
+## Download data for four species
 
 We will download data for four sea turtles found in the Arabian sea and save to one file.
 
