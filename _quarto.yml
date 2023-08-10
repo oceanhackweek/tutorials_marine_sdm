@@ -14,6 +14,7 @@ project:
     - "!individual-folders/Paulo/*"
     - "!tutorial/Subset*"
     - "!tutorial/tutorial1.Rmd"
+    - "maxnet/*"
 
 execute:
   freeze: true
