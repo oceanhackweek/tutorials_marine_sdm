@@ -36,7 +36,7 @@ For information on how to use `git` and `GitHub` with `R`, [Happy Git and GitHub
 ## Tutorial developers
 - [Eli Holmes](https://github.com/eeholmes): Research Fisheries Biologist, Northwest Fisheries Science Center, NOAA Fisheries.  
 
-- [Mackenzie Fiss](https://github.com/mackenziefiss): Third-year PhD student at Northeastern University studying marine biogeochemistry (DOM) and microbial ecology.  
+- [Mackenzie Fiss](https://github.com/mackenziefiss): Fifth-year PhD student at Northeastern University studying carbon cycling and microbial interactions in salt marshes  
 
 - [Paulo Freire](https://github.com/Pfreire29)  
 
