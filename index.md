@@ -39,7 +39,7 @@ This tutorial focuses on regions in the northern Indian Sea, specifically the we
 - paulo working on background--link to
 
 ## Workflow/Roadmap
-This tutorial is based on the notes by Ben Tupper (Biglow Lab, Maine) https://github.com/BigelowLab/maxnet/wiki/stars, and highlights modeling presence-only data via `maxnet` R package.
+This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://github.com/BigelowLab/maxnet/wiki/stars), and highlights modeling presence-only data via `maxnet` R package.
 
 **Tutorial roadmap**
 
