@@ -27,9 +27,6 @@ vignette('sdm','dismo')
 ```{r}
 library(readr)
 Occurrence <- read_csv("~/Downloads/e1dfe463-237b-41ce-8103-adbf286404b1/Occurrence.csv")
-View(Occurrence)
-
-summary(Occurrence)
 
 o_cols <- c('decimallongitude','decimallatitude','date_year','scientificname','coordinateuncertaintyinmeters','bathymetry','sst','sss')
 
@@ -37,6 +34,8 @@ o_data <- data.frame(Occurrence)[o_cols]
 good <- which(o_data$coordinateuncertaintyinmeters < 200)
 o_data <- o_data[good,]
 summary(o_data)
+write.csv(o_data, file = "~/ohw23_proj_marinesdms/data/raw-bio/o_data.csv")
+
 ```
 
 ```{r}
@@ -122,6 +121,36 @@ workflow(
   model = LogisticRegression,
   output = PrintMap)
 ```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
 
 
 
