@@ -26,7 +26,7 @@ vignette('sdm','dismo')
 
 ```{r}
 library(readr)
-Occurrence <- read_csv("Downloads/e1dfe463-237b-41ce-8103-adbf286404b1/Occurrence.csv")
+Occurrence <- read_csv("~/Downloads/e1dfe463-237b-41ce-8103-adbf286404b1/Occurrence.csv")
 View(Occurrence)
 
 summary(Occurrence)
@@ -64,6 +64,64 @@ pres_train <- o_data[group != 1, ]
 pres_test <- o_data[group == 1, ]
 ```
 
+
+# Trying out SDMpredictors with this particular data
+
+```{r}
+library(maxnet)
+library(dplyr)
+library(sf)
+library(stars)
+library(geodata)
+library(dismo)
+library(sdmpredictors)
+```
+Marine environmental datasets
+```{r}
+datasets <- list_datasets(terrestrial = FALSE, marine = TRUE)
+layers <- list_layers(datasets)
+View(layers)
+```
+
+Environmental data layers to use + cropping to the area of interest
+```{r}
+layercodes <- c("BO_sstmean","BO_salinity")
+env <- load_layers(layercodes)
+
+lons <- c(30, 90) 
+lats <- c(-10,30)
+
+ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
+extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
+sf::st_crs(extent_polygon) <- 4326 #Not sure what this value 4326 means
+AreaOfInterest <- raster::crop(env, extent(extent_polygon))
+plot(AreaOfInterest)
+```
+
+```{r}
+library(sdmpredictors)
+devtools::install_github("zoonproject/zoon", force = TRUE)
+library('zoon')
+devtools::install_github("lifewatch/marinespeed", force = TRUE)
+library('marinespeed')
+```
+
+```{r}
+#Getting Turtle Occurence Data File in Correct Format for Zoon SDM:
+pointsTurtles <- SpatialPoints(o_data[,c("decimallongitude", "decimallatitude")])
+#pointsTurtles <- spTransform(pointsTurtles, CRSobj="+proj=longlat +ellps=GRS80") -> What was this?
+occfile <- tempfile(fileext = ".csv")
+write.csv(cbind(coordinates(pointsTurtles), value=1), occfile)
+
+workflow(
+  occurrence = LocalOccurrenceData(
+    occfile, occurrenceType="presence",
+    columns = c("decimallongitude", "decimallatitude", "date_year")), 
+  covariate = LocalRaster(stack(AreaOfInterest)),
+  process = OneHundredBackground(seed = 42), # why did you choose 42?
+  model = LogisticRegression,
+  output = PrintMap)
+```
 
 
 
