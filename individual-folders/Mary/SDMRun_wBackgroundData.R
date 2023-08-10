@@ -82,8 +82,8 @@ plt + geom_text(data = world_points, aes(x=X, y=Y, label=name),
 datasets <- list_datasets(terrestrial = FALSE, marine = TRUE)
 layers <- list_layers(datasets)
 #View(layers)
-layercodes <- c("BO_sstmean","BO_salinity")
-env <- load_layers(layercodes)
+layercodes <- c("BO_sstmean","BO_salinity", "BO_bathymean")
+env <- load_layers(layercodes, rasterstack=T)
 
 #Cropping env data to match polygon extent
 AreaOfInterest <- raster::crop(env, extent(extent_polygon))
@@ -91,6 +91,8 @@ plot(AreaOfInterest) #plots of SST & salinity on area of interest
 
 #Preparing env data for maxnet/stars
 env<-stars::st_as_stars(env)
+env<-split(env)
+env<-mutate(env, BO_bathymean=log10(abs(BO_bathymean)+.00000001))
 env_obs <- stars::st_extract(env, sf::st_coordinates(occ.sf)) |>
   dplyr::as_tibble()
 
@@ -100,11 +102,27 @@ colnames(background_data)<-c("decimalLongitude", "decimalLatitude")
 background_data.sf <- sf::st_as_sf(background_data, 
                                    coords = c("decimalLongitude", "decimalLatitude"),
                                    crs = 4326)
-
 env_back <- stars::st_extract(env, sf::st_coordinates(background_data.sf)) |>
   dplyr::as_tibble() |>
   na.omit()
-colnames(env_back)<-c("BO_sstmean", "BO_salinity")
+colnames(env_back)<-c("BO_sstmean", "BO_salinity", "BO_bathymean")
+
+#Trying different background data
+poly <- occ.sf |>                                # start with obs
+  sf::st_combine() |>                         # combine into a single multipoint
+  sf::st_convex_hull() |>                     # find convex hull
+  sf::st_transform(crs = sf::st_crs(5880)) |> # make planar
+  sf::st_buffer(dist = 200000) |>             # buffer by 200000m
+  sf::st_transform(crs = sf::st_crs(4326))    # make spherical
+
+sf_use_s2(T)
+N <- 1200
+back <- sf::st_sample(poly, N)
+
+env_back <- stars::st_extract(recent, sf::st_coordinates(back)) |>
+  dplyr::as_tibble() |>
+  na.omit()
+env_back
 
 
 col <- sf.colors(categorical = TRUE)
@@ -118,18 +136,24 @@ plot(background_data.sf, add = TRUE, col = col[8], pch = ".") #adds background d
 
 #Attempting to run model
 env_obs<-na.omit(env_obs)
-colnames(env_obs)<-c("BO_sstmean", "BO_salinity")
+colnames(env_obs)<-c("BO_sstmean", "BO_salinity", "BO_bathymean")
 
 pres <- c(rep(1, nrow(env_obs)), rep(0, nrow(env_back)))
 
 model <- maxnet::maxnet(pres, dplyr::bind_rows(env_obs, env_back))
-summary(model) #it works I think?
+summary(model) 
 plot(model, type = "cloglog")
 
 #Predicting something? not working yet
+#devtools::install_github("BigelowLab/maxnet")
+
 clamp <- TRUE       # see ?predict.maxnet for details
 type <- "cloglog"
 preds <- predict(model, env |> sf::st_crop(bb), 
                    clamp = clamp, type = type)
-str(model)
+plot(preds, reset=F)
+plot(st_geometry(occ.sf), add=T)
+
+plot(preds,
+     hook = function(){plot(obs, col = "orange", add = TRUE)})
 
