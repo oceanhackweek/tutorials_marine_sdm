@@ -220,14 +220,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#loading-relevant-libraries" id="toc-loading-relevant-libraries" class="nav-link active" data-scroll-target="#loading-relevant-libraries">Loading relevant libraries</a></li>
-  <li><a href="#creating-a-bounding-box" id="toc-creating-a-bounding-box" class="nav-link" data-scroll-target="#creating-a-bounding-box">Creating a bounding box</a></li>
-  <li><a href="#searching-for-sea-turtle-occurrence-from-obis" id="toc-searching-for-sea-turtle-occurrence-from-obis" class="nav-link" data-scroll-target="#searching-for-sea-turtle-occurrence-from-obis">Searching for sea turtle occurrence from OBIS</a>
+  <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link active" data-scroll-target="#loading-libraries">Loading libraries</a></li>
+  <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a></li>
+  <li><a href="#get-observations" id="toc-get-observations" class="nav-link" data-scroll-target="#get-observations">Get observations</a>
   <ul class="collapse">
-  <li><a href="#exploring-obis-results" id="toc-exploring-obis-results" class="nav-link" data-scroll-target="#exploring-obis-results">Exploring OBIS results</a></li>
-  <li><a href="#checking-quality-control-flags" id="toc-checking-quality-control-flags" class="nav-link" data-scroll-target="#checking-quality-control-flags">Checking quality control flags</a></li>
-  <li><a href="#removing-problematic-observations" id="toc-removing-problematic-observations" class="nav-link" data-scroll-target="#removing-problematic-observations">Removing problematic observations</a></li>
-  <li><a href="#keeping-relevant-columns" id="toc-keeping-relevant-columns" class="nav-link" data-scroll-target="#keeping-relevant-columns">Keeping relevant columns</a></li>
+  <li><a href="#explore-obis-results" id="toc-explore-obis-results" class="nav-link" data-scroll-target="#explore-obis-results">Explore OBIS results</a></li>
+  <li><a href="#quality-control-flags" id="toc-quality-control-flags" class="nav-link" data-scroll-target="#quality-control-flags">Quality control flags</a></li>
+  <li><a href="#problematic-observations" id="toc-problematic-observations" class="nav-link" data-scroll-target="#problematic-observations">Problematic observations</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
   </ul></li>
   </ul>
@@ -259,8 +258,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>In this section, we will explore <a href="https://www.iucnredlist.org/species/3897/119333622">Loggerhead sea turtle (<em>Caretta caretta</em>)</a> data from 2000 until present from the <a href="https://obis.org/">Ocean Biodiversity Information System (OBIS)</a>. We will use the <code>robis</code> package to search the OBIS library and download relevant data. We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).</p>
-<section id="loading-relevant-libraries" class="level1">
-<h1>Loading relevant libraries</h1>
+<section id="loading-libraries" class="level1">
+<h1>Loading libraries</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Dealing with spatial data</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
@@ -273,8 +272,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="creating-a-bounding-box" class="level1">
-<h1>Creating a bounding box</h1>
+<section id="create-a-bounding-box" class="level1">
+<h1>Create a bounding box</h1>
 <p>We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract <em>C. caretta</em> data relevant to our study area.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#We create a bounding box using minimum and maximum coordinate pairs</span></span>
@@ -289,8 +288,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="searching-for-sea-turtle-occurrence-from-obis" class="level1">
-<h1>Searching for sea turtle occurrence from OBIS</h1>
+<section id="get-observations" class="level1">
+<h1>Get observations</h1>
 <p>We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Search OBIS for loggerhead observations from 2000</span></span>
@@ -416,8 +415,8 @@ $ superdomain                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</code></pre>
 </div>
 </div>
-<section id="exploring-obis-results" class="level2">
-<h2 class="anchored" data-anchor-id="exploring-obis-results">Exploring OBIS results</h2>
+<section id="explore-obis-results" class="level2">
+<h2 class="anchored" data-anchor-id="explore-obis-results">Explore OBIS results</h2>
 <p>Our search produced 5269 results for the area of our interest. However, before we continue to use this data as input for our species distribution models, we must clean it first to ensure we have a good quality dataset.</p>
 <p>In this section, we will explore the results of our OBIS search so we can design a data cleaning workflow. We will check the content of some of the columns in our data frame.</p>
 <p>You may want to refer to the <a href="https://manual.obis.org/darwin_core.html">OBIS manual</a> and the OBIS webpage about <a href="https://obis.org/data/access/">Data Access</a>.</p>
@@ -467,8 +466,8 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <p>It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.</p>
 <p>Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.</p>
 </section>
-<section id="checking-quality-control-flags" class="level2">
-<h2 class="anchored" data-anchor-id="checking-quality-control-flags">Checking quality control flags</h2>
+<section id="quality-control-flags" class="level2">
+<h2 class="anchored" data-anchor-id="quality-control-flags">Quality control flags</h2>
 <p>OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
 <p>First, we will check the quality flags included in our results.</p>
 <div class="cell">
@@ -549,8 +548,8 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <p>No observations were returned, which is good news.</p>
 <p>Another feature worth pointing out in our data is that some of the observations appear to be gridded as they are evenly spaced. This is confirmed by the <code>occurrenceRemarks</code> column, which states that some observations are: <code>Telemetry locations aggregated per species per 1-degree cell</code>. This is not ideal and you may need to consider if the inclusion of these data points are suitable for your project. In this example, we will remove them from our analysis.</p>
 </section>
-<section id="removing-problematic-observations" class="level2">
-<h2 class="anchored" data-anchor-id="removing-problematic-observations">Removing problematic observations</h2>
+<section id="problematic-observations" class="level2">
+<h2 class="anchored" data-anchor-id="problematic-observations">Problematic observations</h2>
 <p>In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the <code>NO_DEPTH,ON_LAND</code> flag, and any records that have been aggregated to a 1-degree cell.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># caretta_obs %&gt;% </span></span>
@@ -558,20 +557,6 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %&gt;% </span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   #        | coordinateUncertaintyInMeters &gt; 100000) %&gt;% </span></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   # filter(!str_detect(occurrenceRemarks, "degree"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="keeping-relevant-columns" class="level2">
-<h2 class="anchored" data-anchor-id="keeping-relevant-columns">Keeping relevant columns</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"occurrenceID"</span>, <span class="st">"scientificName"</span>, <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, <span class="st">"decimalLatitude"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"coordinateUncertaintyInMeters"</span>,</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"individualCount"</span>,<span class="st">"lifeStage"</span>, <span class="st">"sex"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[,cols.to.use]</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(df, <span class="at">file=</span><span class="st">"/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv"</span>, <span class="at">quote=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> world) <span class="sc">+</span> <span class="fu">geom_sf</span>() <span class="sc">+</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> extent_polygon, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fill=</span><span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="next-steps" class="level2">
