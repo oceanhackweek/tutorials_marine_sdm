@@ -37,7 +37,7 @@ extent_polygon <- st_bbox(c(xmin = 41.875, xmax = 65.125,
 pol_geometry <- st_as_text(extent_polygon[[1]])
 ```
   
-# Searching for sea turtle occurrence from OBIS
+# Get Observations
 We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
 
 ```{r obis_search}
@@ -93,7 +93,7 @@ It is worth noting that not all providers share a measurement of uncertainty, bu
   
 Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.  
   
-## Checking quality control flags
+## Check quality control flags
 OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check [this repository](https://github.com/iobis/obis-qc).  
   
 First, we will check the quality flags included in our results.  
@@ -148,7 +148,7 @@ No observations were returned, which is good news.
   
 Another feature worth pointing out in our data is that some of the observations appear to be gridded as they are evenly spaced. This is confirmed by the `occurrenceRemarks` column, which states that some observations are: `Telemetry locations aggregated per species per 1-degree cell`. This is not ideal and you may need to consider if the inclusion of these data points are suitable for your project. In this example, we will remove them from our analysis.
   
-## Removing problematic observations
+## Problematic observations
 In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the `NO_DEPTH,ON_LAND` flag, and any records that have been aggregated to a 1-degree cell.  
   
 ```{r}
@@ -159,26 +159,6 @@ In this step, we will remove observations with coordinate uncertainty over 100 k
 #   # filter(!str_detect(occurrenceRemarks, "degree"))
 ```
 
-
-
-## Keeping relevant columns
-```{r, eval=F}
-cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
-                 "individualCount","lifeStage", "sex",
-                 "bathymetry",  "shoredistance", "sst", "sss")
-df <- df[,cols.to.use]
-write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv", quote=FALSE)
-```
-
-
-```{r,eval=F}
-
-
-
-ggplot(data = world) + geom_sf() +
-  geom_sf(data = extent_polygon, color = "red", fill=NA)
-
-```
 
 ## Next steps
 Now that we've got explored the OBIS data we can finalize our dataset and import environmental data before running the SDM. For next steps, see `SDM Workflow` section.
