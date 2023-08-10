@@ -62,15 +62,44 @@ We will download data for four sea turtles found in the Arabian sea and save to 
 
 ```{r eval = FALSE}
 spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea")
-df <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
+obs <- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
 cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
                  "individualCount","lifeStage", "sex",
                  "bathymetry",  "shoredistance", "sst", "sss")
-if(!(all(cols.to.use %in% colnames(df)))) next
-df <- df[,cols.to.use]
-fil=file.path(
-    "/home", "jovyan", "R", "ohw23_proj_marinesdms", "data", "raw-bio", "io-sea-turtles.csv")
-write.csv(df, file=fil, quote=FALSE, row.names = FALSE)
+obs <- obs[,cols.to.use]
 ```
 
+## Save our data
+
+Set up the file names
+```{r}
+dir_data <- here::here("data", "raw-bio")
+filname <- "io-sea-turtles"
+obs_csv <- file.path(dir_data, paste0(filname, ".csv"))
+obs_geo <- file.path(dir_data, paste0(filname, ".geojson"))
+obs_gpkg <- file.path(dir_data, paste0(filname, ".gpkg"))
+```
+
+Change the data frame to a sf dataframe.
+```{r}
+obs_sf <- obs %>% 
+    sf::st_as_sf(
+      coords = c("decimalLongitude", "decimalLatitude"),
+      crs = st_crs(4326))
+```
+
+Save files.
+```{r}
+redo   <- TRUE
+
+if (!file.exists(obs_csv) | redo)  readr::write_csv(obs, obs_csv)
+if (!file.exists(obs_geo) | redo)  sf::write_sf(obs_sf, obs_geo, delete_dsn=TRUE)
+if (!file.exists(obs_gpkg) | redo)  sf::write_sf(obs_sf, obs_gpkg, delete_dsn=TRUE)
+```
+
+We can reload our data as
+```{r}
+obs_sf2 <- sf::read_sf(obs_gpkg)
+class(obs_sf2)
+```
 
