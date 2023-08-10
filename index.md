@@ -17,6 +17,7 @@ Species Distribution Models are used to predict a species' geographic and enviro
 Many tutorials exist to run SDM models, however most readily available tutorials focus on terrestrial-based models. Our goal through this tutorial is to highlight a marine-based SDM tutorial.
 
 ## Datasets
+
 **Biological Data**
 
 Our model includes biological presence-only data of four species of sea turtles found in the Indian Ocean. The presence dataset includes four species of sea turtles:
@@ -30,6 +31,7 @@ However, for the tutorial example model, we will focus on Loggerhead sea turtles
 
 
 **Environmental Data**
+
 This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the `SMDpredictor` R package and includes:
 
 -ENTER ALL FINAL PREDICTORS INCLUDED HERE
