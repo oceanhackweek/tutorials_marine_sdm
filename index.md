@@ -20,14 +20,14 @@ Many tutorials exist to run SDM models, however most readily available tutorials
 
 **Biological Data**
 
-Our model includes biological presence-only data of four species of sea turtles found in the Indian Ocean. The presence dataset includes four species of sea turtles:
+Our dataset includes biological presence-only data of four species of sea turtles found in the Indian Ocean. The presence dataset includes four species of sea turtles:
 
 - Loggerhead, *Caretta caretta*
 - Green, *Chelonia mydas*
 - Olive Ridley, *Lepidochelys olivacea*
 - Hawksbill, *Eretmochelys imbricata*
 
-However, for the tutorial example model, we will focus on Loggerhead sea turtles data from 2000 until 2023 sourced from the Ocean Biodiversity Information System (OBIS) via the `robis` package.
+However, for this tutorial example model, we will focus on Loggerhead sea turtles data from 2000 until 2023 sourced from the Ocean Biodiversity Information System (OBIS) via the `robis` package.
 
 
 **Environmental Data**
@@ -57,11 +57,10 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
 
 ## References
 
-- Bosch S, Fernandez S (2022). sdmpredictors: Species Distribution Modelling Predictor Datasets. R package version 0.2.14, http://lifewatch.github.io/sdmpredictors/.
+- Bosch S, Fernandez S (2022). sdmpredictors: Species Distribution Modelling Predictor Datasets. R package version 0.2.14, [http://lifewatch.github.io/sdmpredictors/](http://lifewatch.github.io/sdmpredictors/).
+- OBIS (2023) Ocean Biodiversity Information System. Intergovernmental Oceanographic Commission of UNESCO. [www.obis.org](https://obis.org/). Accessed: 2023-08-08.
 
-- OBIS (2023) Ocean Biodiversity Information System. Intergovernmental Oceanographic Commission of UNESCO. www.obis.org.Accessed: 2023-08-08.
-
-- Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: http://biodiversityinformatics.amnh.org/open_source/maxent/. Accessed on 2023-8-10.
+- Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: [http://biodiversityinformatics.amnh.org/open_source/maxent/](http://biodiversityinformatics.amnh.org/open_source/maxent/). Accessed on 2023-8-10.
 
 ## Tutorial developers
 
