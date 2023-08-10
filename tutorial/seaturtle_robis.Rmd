@@ -92,7 +92,7 @@ if (!file.exists(obs_gpkg) | redo)  sf::write_sf(obs_sf, obs_gpkg, delete_dsn=TR
 
 We can reload our data as
 ```{r}
-obs_sf2 <- sf::read_sf(obs_gpkg)
-class(obs_sf2)
+tmp <- sf::read_sf(obs_gpkg)
+class(tmp)
 ```
 
