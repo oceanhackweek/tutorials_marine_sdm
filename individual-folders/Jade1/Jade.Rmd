@@ -91,8 +91,11 @@ lons <- c(30, 90)
 lats <- c(-10,30)
 
 ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
-extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
-sf::st_crs(extent_polygon) <- 4326 #Not sure what this value 4326 means
+extent_polygon <- as(ext, "SpatialPolygons") %>% 
+
+#sf::st_as_sf(obs, coords = c("lon", "lat"), crs = 4326) [data frame with the location information  consolidated into a list column]
+
+sf::st_crs(extent_polygon) <- 4326 # Not sure what this value 4326 means
 AreaOfInterest <- raster::crop(env, extent(extent_polygon))
 plot(AreaOfInterest)
 ```
@@ -122,8 +125,39 @@ workflow(
   output = PrintMap)
 ```
 
+## Looking up statistics and correlations for marine annual layers (almost exact copy from http://lifewatch.github.io/sdmpredictors/)
 ```{r}
 
+# filter out monthly layers
+layers_annual <- layers[is.na(layers$month),]
+    
+layers_annual_stats <- layer_stats(layers_annual)
+View(layers_annual_stats)
+    
+layers_annual_correlations <- layers_correlation(layers_annual)
+View(layers_annual_correlations)
+    
+# create groups of layers where no layers in one group have a correlation > 0.7 with a layer from another group
+layers_annual_groups <- correlation_groups(layers_annual_correlations, max_correlation=0.7)
+    
+# inspect groups ; heatmap plot for larger groups (if gplots library is installed)
+install.packages("gplots")
+library(gplots)    
+for(group in layers_annual_groups) {
+      group_correlation <- as.matrix(layers_annual_correlations[group, group, drop=FALSE])
+      if(require(gplots) && length(group) > 4){
+        heatmap.2(abs(group_correlation)
+                 ,main = "Correlation"
+                 ,col = "rainbow"      
+                 ,notecol="black"      # change font color of cell labels to black
+                 ,density.info="none"  # turns off density plot inside color legend
+                 ,trace="none"         # turns off trace lines inside the heat map
+                 ,margins = c(12,9)    # widens margins around plot
+                 )
+      } else {
+        print(group_correlation)
+      }
+    }
 ```
 
 ```{r}
