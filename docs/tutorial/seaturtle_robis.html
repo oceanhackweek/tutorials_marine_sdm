@@ -130,7 +130,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">get turtle data</h1>
+      <h1 class="quarto-secondary-nav-title">Get turtle data</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -258,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">get turtle data</h1>
+<h1 class="title d-none d-lg-block">Get turtle data</h1>
 </div>
 
 
@@ -326,7 +326,6 @@ Attaching package: 'rnaturalearthdata'</code></pre>
 </section>
 <section id="get-occurrence-data-from-robis" class="level2">
 <h2 class="anchored" data-anchor-id="get-occurrence-data-from-robis">Get occurrence data from robis</h2>
-<p>Download data for four species</p>
 <p>We will download data for four sea turtles found in the Arabian sea and save to one file. We will use the <code>occurrence()</code> function in the robis package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(robis)</span>
@@ -334,7 +333,7 @@ Attaching package: 'rnaturalearthdata'</code></pre>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> robis<span class="sc">::</span><span class="fu">occurrence</span>(spp, <span class="at">startdate =</span> <span class="fu">as.Date</span>(<span class="st">"2000-01-01"</span>), <span class="at">geometry =</span> wkt_geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This has many columns that we don’t need. We will reduce to fewer columns.</p>
+<p>This has many columns that we don’t need. We reduced to fewer columns.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"occurrenceID"</span>, <span class="st">"scientificName"</span>, </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, </span>
@@ -343,7 +342,7 @@ Attaching package: 'rnaturalearthdata'</code></pre>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> obs[,cols.to.use]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We will also add a cleaner date with YYYY-MM-DD format.</p>
+<p>We also added a cleaner date with YYYY-MM-DD format.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(obs<span class="sc">$</span>eventDate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -365,7 +364,7 @@ Attaching package: 'rnaturalearthdata'</code></pre>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"decimalLongitude"</span>, <span class="st">"decimalLatitude"</span>),</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">4326</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Save files in different formats.</p>
+<p>Save files in different formats to facilitate loading into geospatial packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>redo   <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -373,7 +372,7 @@ Attaching package: 'rnaturalearthdata'</code></pre>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(obs_geo) <span class="sc">|</span> redo)  sf<span class="sc">::</span><span class="fu">write_sf</span>(obs_sf, obs_geo, <span class="at">delete_dsn=</span><span class="cn">TRUE</span>)</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(obs_gpkg) <span class="sc">|</span> redo)  sf<span class="sc">::</span><span class="fu">write_sf</span>(obs_sf, obs_gpkg, <span class="at">delete_dsn=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can reload our data as</p>
+<p>Later we can reload our data as</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(obs_gpkg)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tmp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
