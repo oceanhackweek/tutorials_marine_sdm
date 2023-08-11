@@ -25,7 +25,7 @@ suppressPackageStartupMessages(
   library(ggplot2)
   library(cmocean)
   library(janitor)
-  library()
+  library(DT)
 })
 ```
 
