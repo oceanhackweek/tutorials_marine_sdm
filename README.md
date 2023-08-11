@@ -65,7 +65,7 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
   
 ## Tutorial developers
 - [Catherine Courtier](https://github.com/cacourtier):
-- [Mackenzie Fiss](https://github.com/mackenziefiss): Third-year PhD student at Northeastern University studying marine biogeochemistry (DOM) and microbial ecology.
+- [Mackenzie Fiss](https://github.com/mackenziefiss): Fifth-year PhD student at Northeastern University studying carbon cycling and microbial interactions in salt marshes.
 - [Denisse Fierro Arcos](https://github.com/lidefi87): PhD candidate at the [Institute for Marine and Antarctic Studies (IMAS)](https://www.imas.utas.edu.au/) and Data Officer at the [Integrated Marine Observing System (IMOS)](https://imos.org.au/)   
 - [Paulo Freire](https://github.com/Pfreire29): PhD candidate at the University of North Carolina at Charlotte (UNCC) studying marine microbial ecology.
 - [Eli Holmes](https://github.com/eeholmes): Research Fisheries Biologist, Northwest Fisheries Science Center, NOAA Fisheries.  
