@@ -69,10 +69,10 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
 - [Jade Hong](https://github.com/sjhong0117): 
 - [Tylar Murray](https://github.com/7yl4r): USF IMaRS Software Engineer - code whisperer, data viz enthusiast, scientific generalist, compulsive overengineerer, & UX PhD  
 - [Caitlin O'Brien](https://github.com/caitobrien): Research Scientist, [Columbia Basin Research](https://www.cbr.washington.edu/people), School of Aquatic Fishery and Sciences, University of Washington
-- [Collins Ongore] () 
+- Collins Ongore
 - [Mary Solokas](https://github.com/marysolokas): John A. Knauss Marine Policy Fellow, National Oceanic and Atmospheric Administration
 - [Laura Tsang](https://github.com/lauratsang):
-- [Ben Tupper](https://github.com/btupper)(helper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
+- [Ben Tupper](https://github.com/btupper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
 
 ---
 
