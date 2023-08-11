@@ -1,5 +1,5 @@
 ---
-title: "get turtle data"
+title: "Get turtle data"
 output: html_document
 date: "2023-08-08"
 ---
@@ -36,8 +36,6 @@ ggplot(data = world) + geom_sf() +
 
 ## Get occurrence data from robis
 
-Download data for four species
-
 We will download data for four sea turtles found in the Arabian sea and save to one file. We will use the `occurrence()` function in the robis package.
 
 ```{r eval = FALSE}
@@ -47,7 +45,7 @@ spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidoc
 obs <- robis::occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
 ```
 
-This has many columns that we don't need. We will reduce to fewer columns.
+This has many columns that we don't need. We reduced to fewer columns.
 ```{r eval = FALSE}
 cols.to.use <- c("occurrenceID", "scientificName", 
                  "dateIdentified", "eventDate", 
@@ -57,7 +55,7 @@ cols.to.use <- c("occurrenceID", "scientificName",
 obs <- obs[,cols.to.use]
 ```
 
-We will also add a cleaner date with YYYY-MM-DD format.
+We also added a cleaner date with YYYY-MM-DD format.
 ```{r eval = FALSE}
 obs$date <- as.Date(obs$eventDate)
 ```
@@ -81,7 +79,7 @@ obs_sf <- obs %>%
       crs = st_crs(4326))
 ```
 
-Save files in different formats.
+Save files in different formats to facilitate loading into geospatial packages.
 ```{r eval = FALSE}
 redo   <- TRUE
 
@@ -90,7 +88,7 @@ if (!file.exists(obs_geo) | redo)  sf::write_sf(obs_sf, obs_geo, delete_dsn=TRUE
 if (!file.exists(obs_gpkg) | redo)  sf::write_sf(obs_sf, obs_gpkg, delete_dsn=TRUE)
 ```
 
-We can reload our data as
+Later we can reload our data as
 ```{r eval = FALSE}
 tmp <- sf::read_sf(obs_gpkg)
 class(tmp)

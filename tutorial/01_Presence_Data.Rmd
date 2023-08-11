@@ -1,14 +1,10 @@
 ---
 title: "Obtaining presence data for loggerhead turtles from OBIS"
-output:
-  md_document:
-    variant: markdown_github
-date: "2023-08-10"
 ---
 
 In this section, we will explore [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).
   
-# Loading libraries
+## Load libraries
 ```{r libraries, warning = F, message = F}
 #Dealing with spatial data
 library(sf)
@@ -21,7 +17,7 @@ library(tidyverse)
 library(janitor)
 ```
 
-# Create a bounding box
+## Create a bounding box
 We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract *C. caretta* data relevant to our study area.  
   
 ```{r bounding_box}
@@ -40,7 +36,7 @@ pol_geometry <- st_as_text(extent_polygon[[1]])
 write_sf(extent_polygon, "../data/BoundingBox.shp")
 ```
   
-# Get Observations
+## Get Observations
 We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
 
 ```{r obis_search}
@@ -164,12 +160,12 @@ caretta_obs <- caretta_obs %>%
   filter(!str_detect(occurrenceRemarks, "degree"))
 ```
   
-# Saving clean data
+## Saving clean data
 Now that we have removed the problematic observations, we can save the new dataset into our local machine. We will save this under the `data` folder.  
 
 ```{r save_data}
 write_csv(caretta_obs, "../data/raw-bio/loggerhead-robis.csv")
 ```
   
-# Next steps
-Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see `Workflow/Roadmap` section in the [`README`](../README.md) file.
+## Next steps
+Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see the [Roadmap section](tutorial/00_Roadmap.html).

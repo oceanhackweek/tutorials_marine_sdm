@@ -1,17 +1,16 @@
 ---
 title: "Getting background data from OBIS"
-output: html_document
-date: "2023-08-08"
 ---
 
-In this notebook, we will explore two approaches to create background samples, which are needed for our choice of species distribution model algorithm.  
+In this notebook, we will explore three approaches to create background samples, aka pseudo absences. These are points where turtles were not recorded. These absences are needed for our choice of species distribution model algorithm. "Absences" does not mean that turtle could not be sighted here but that we have no records at these locations, either because we didn't look or looked and didn't see them.
   
-These two approaches are as follows:  
-- Get occurrences for marine species from OBIS using the `robis` package, and use this as background samples.  
+These three approaches are as follows:  
+- Get occurrences for marine species from OBIS using the `robis` package, and use their locations as the locations for absences. 
 - Select random locations using gridded environmental data as a base for our sampling.  
-In both cases, points will be constrain to fit within our area of interest.  
+- Select random locations using a polygon drawn around our presence locations.  
+In both cases, points will be constrained to fit within our area of interest.  
   
-# Loading libraries
+## Loading libraries
 
 ```{r libraries, message = F}
 #Deal with spatial data
@@ -30,8 +29,9 @@ library(robis)
 library(sdmpredictors)
 library(dismo)
 ```
-  
-# Setting base directories
+
+## Set-up
+### Setting base directories
 These directories contain the biological data (i.e., presence locations of loggerhead sea turtles) and environmental data.  
   
 ```{r base_dir}
@@ -40,7 +40,7 @@ dir_data <- file.path(here(), "data/raw-bio")
 dir_env <- file.path(here(), "data/env")
 ```
 
-# Loading bounding box for region of interest
+### Loading bounding box for region of interest
 In the `01_Presence_Data` notebook, we created a bounding box for our region of interest. We will load this bounding box here to spatially constrain our data.
 
 ```{r}
@@ -51,7 +51,7 @@ extent_polygon <- read_sf("../data/BoundingBox.shp")
 pol_geometry <- st_as_text(extent_polygon$geometry)
 ```
   
-## Plotting region of interest 
+### Plotting region of interest 
 This allows us to check our polygon of interest is located in the correct region.  
   
 ```{r map_aoi}
@@ -70,8 +70,11 @@ ggplot() +
   
 Our bounding box is definitely in the region we are interested in. We will use this bounding box to filter out presence data from OBIS.  
     
-# Approach 1. Other marine species presence as background samples
-## Getting occurrence data from OBIS
+## Approach 1: Use other species
+
+In this approach we use other marine species presence locations as our locations for our background samples.
+
+### Getting occurrence data from OBIS
 We will use `robis` to get observations for marine species from OBIS within our bounding box. OBIS data includes about 100 different columns, but not all of these columns are relevant to us. We will define the columns that we need and then we will perform a search of the OBIS database.  
   
 ### Defining relevant columns
@@ -90,7 +93,8 @@ background <- occurrence(geometry = pol_geometry, wrims = TRUE,
                          #Excluding records labelled as being on land
                          exclude = "ON_LAND")
 ```
-## Saving background data
+
+### Saving background data
 ```{r save_bg}
 #Setting full file path to save background information
 file_path_out <- file.path(dir_data, "io-background.csv")
@@ -99,18 +103,18 @@ file_path_out <- file.path(dir_data, "io-background.csv")
 write_csv(background, file_path_out)
 ```
   
-## (Optional) Load background data
+### (Optional) Load background data
 If you have previously downloaded the background data, you can simply load the data to the environment instead of downloading it again. To do this, you can use the code below.  
   
 ```{r load_bg}
 #Find background file in our biological data folder
-file_path_bg <- list.files(dir_data, pattern = "background", full.names = T)
+file_path_bg <- list.files(dir_data, pattern = "background", full.names = TRUE)
 
 #Load file
 background_1 <- read_csv(file_path_bg)
 ```
   
-## Plotting background data
+### Plotting background data
 We will create a map with all the observations we obtained from OBIS within our region of interest.  
   
 ```{r plot_bg1}
@@ -170,10 +174,10 @@ plt
   
 As you can see from the map above, this approach is not truly random. This is why we are including a second method to create background samples.
 
-# Approach 2. Random points as samples
+## Approach 2. Random points in our region
 This section has been adapted from  [this online tutorial](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html).  
   
-## Loading raster layer for area of interest
+### Loading raster layer for area of interest
 We need to load a raster layer so we can have a sample grid from where we can generate random points for our background samples.  
   
 Environmental data is downloaded using the `sdmpredictors` library.
@@ -192,7 +196,7 @@ We will use the `MARSPEC` dataset to get some environmental data. We will now ch
 list_layers("MARSPEC")
 ```
   
-We will use bathymetry data, so the `MS_bathy_5m` layer suits our needs. We will load this data and crop it using our bounding box.  
+We will use bathymetry data, so the `MS_bathy_5m` layer suits our needs. We can use any layer that will not have NAs. We will load this data and crop it using our bounding box.  
   
 ```{r load_bathy}
 #Loading bathymetry
@@ -209,7 +213,7 @@ plot(env_stack)
   
 We can see the outline of African and Asian continents, which matches our area of interest. Now we can continue with creating our background points.
   
-# Sample points from bathymetry layer
+### Sample points from bathymetry layer
 Using the `dismo` package, we will create random points over the bathymetry layer that we will use as background points. In this example, we have chosen to produce 1000 background points.  
   
 It is worth noting that the distribution and number of background points has a strong influence on SDM results. See the `README` file for resources discussing this issue.   
@@ -229,14 +233,14 @@ background <- randomPoints(env_stack, nsamp) %>%
   st_as_sf(coords = c("x", "y"), crs = 4326)
 ```
 
-## Plotting results
+### Plotting results
 We will plot results to make sure our background points are in the ocean only.  
   
 ```{r plot_bg_2}
 mapview(background, col.regions = "gray")
 ```
     
-# Saving background samples
+### Saving background samples
 There are no background points on land. We can now save the background locations to our local machine.  
     
 ```{r save_absence}
@@ -245,5 +249,10 @@ pts_absence_csv <- file.path(dir_data, "pts_absence.csv")
 st_write(background, pts_absence_csv, layer_options = "GEOMETRY=AS_XY", append = FALSE)
 ```
   
-The next notebook will show you how to get environmental data that we will use as inputs in our SDM from the `sdmpredictors` package.  
+## Approach 3. Random points a convex hull
+This section has been adapted from  [this online tutorial](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html) and [this online tutorial](https://github.com/BigelowLab/maxnet/wiki/stars).
+
+NEED TO ADD
+
+The next notebook will discuss how to get environmental data that we will use as inputs in our SDM from the `sdmpredictors` package.  
   
