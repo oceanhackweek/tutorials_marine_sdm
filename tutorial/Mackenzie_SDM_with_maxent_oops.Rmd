@@ -37,7 +37,7 @@ library(DT)
 
 ### Load data in
 
-```{r}
+```{r, warning=F}
 # presence data
 io.turtles <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv") 
 
@@ -70,7 +70,7 @@ occ.sub$eventDate <- lubridate::ymd_hms(occ.sub$eventDate) # changing to datetim
 colnames(occ.sub) <- c("sci.name", "obsv.datetime", "lat", "lon", "life.stage", "bathy", "SST", "SSS") # renaming
 ```
 
-```{r}
+```{r, warning=F}
 # format background/absence points
 
 colnames(pts.abs) <- c("lon","lat")
@@ -96,7 +96,7 @@ occ.points <- occ.points %>%
 
 Loading in
 
-```{r}
+```{r, warning=F}
 datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
 
 layers <- list_layers(datasets)
@@ -137,7 +137,7 @@ plot(io.rast) # look NOT a rectangle- your env variables cropped to the Indian O
 
 ### Pull in background data
 
-```{r}
+```{r, warning=F}
 env.back <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>% 
   dplyr::as_tibble() %>% 
   na.omit()
@@ -149,7 +149,7 @@ head(env.back)
 
 ### Running model
 
-```{r}
+```{r, warning=F}
 env.obs <- na.omit(env.obs); env.back <- na.omit(env.back) # remove NA values
 
 pres <- c(rep(1, nrow(env.obs)), rep(0, nrow(env.back))) # create values of 1 for presence data and 0 for absence data
@@ -159,13 +159,13 @@ sdm.model <- maxnet::maxnet(pres, rbind(env.obs, env.back))
 
 ### Model metrics
 
-```{r}
+```{r, warning=F}
 responses <- plot(sdm.model, type = "cloglog")
 ```
 
 ## Predicting
 
-```{r}
+```{r, warning=F}
 clamp <- TRUE       # see ?predict.maxnet for details
 type <- "cloglog"
 predicted <- predict(sdm.model, env.stars %>% sf::st_crop(bb), clamp = clamp, type = type)
@@ -221,7 +221,7 @@ ggplot() +
 ```
 
 
-```{r}
+```{r, warning=F}
 # ggplot - with occurrence (purple) and absence (green) data points
 
 ggplot() +
