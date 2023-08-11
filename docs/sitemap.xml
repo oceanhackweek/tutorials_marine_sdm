@@ -2,50 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://oceanhackweek.org/index.html</loc>
-    <lastmod>2023-08-11T17:17:07.965Z</lastmod>
+    <lastmod>2023-08-11T17:21:13.223Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/00_Roadmap.html</loc>
-    <lastmod>2023-08-11T17:17:09.418Z</lastmod>
+    <lastmod>2023-08-11T17:21:14.459Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/01_Presence_Data.html</loc>
-    <lastmod>2023-08-11T17:17:10.883Z</lastmod>
+    <lastmod>2023-08-11T17:21:15.371Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/02_Background_Data.html</loc>
-    <lastmod>2023-08-11T17:17:11.863Z</lastmod>
+    <lastmod>2023-08-11T17:21:16.417Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/03_sdmpredictors-variables.html</loc>
-    <lastmod>2023-08-11T17:17:20.553Z</lastmod>
+    <lastmod>2023-08-11T17:21:17.398Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/04_models.html</loc>
-    <lastmod>2023-08-11T17:17:21.072Z</lastmod>
+    <lastmod>2023-08-11T17:21:17.901Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/Mackenzie_SDM_with_maxent.html</loc>
-    <lastmod>2023-08-11T17:18:14.629Z</lastmod>
+    <lastmod>2023-08-11T17:22:10.877Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/Roadmap.html</loc>
-    <lastmod>2023-08-11T17:18:15.233Z</lastmod>
+    <lastmod>2023-08-11T17:22:11.400Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/background.html</loc>
-    <lastmod>2023-08-11T17:18:26.943Z</lastmod>
+    <lastmod>2023-08-11T17:22:12.211Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/maxent-sdm.html</loc>
-    <lastmod>2023-08-11T17:18:27.773Z</lastmod>
+    <lastmod>2023-08-11T17:22:13.021Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/occ_env.html</loc>
-    <lastmod>2023-08-11T17:18:28.536Z</lastmod>
+    <lastmod>2023-08-11T17:22:13.832Z</lastmod>
   </url>
   <url>
     <loc>https://oceanhackweek.org/tutorial/seaturtle_robis.html</loc>
-    <lastmod>2023-08-11T17:18:36.917Z</lastmod>
+    <lastmod>2023-08-11T17:22:14.591Z</lastmod>
   </url>
 </urlset>

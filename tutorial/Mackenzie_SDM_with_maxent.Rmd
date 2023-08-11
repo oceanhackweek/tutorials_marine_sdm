@@ -198,7 +198,7 @@ ggsave("SDM_loggerhead_green_w points.pdf", height = 6, width = 8.5)
 
 ```
 
-```{r, warning=F}
+```{r, warning=FALSE}
 # ggplot - without occurrence data points
 
 ggplot() +
@@ -222,7 +222,7 @@ ggsave("SDM_loggerhead_green.pdf", height = 6, width = 8.5)
 ```
 
 
-```{r}
+```{r, warning=F}
 # ggplot - with occurrence and absence data points
 
 ggplot() +

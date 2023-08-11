@@ -668,16 +668,6 @@ y  695 1082     90 -0.0833333 +proj=longlat +datum=WGS8...    NA   NULL [y]</cod
 <span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_continuous(breaks = seq(40, 70, 10), limits = c(42, 70))+</span></span>
 <span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
 <span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(abs.points, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">geometry =</span> geometry), <span class="at">stat =</span> <span class="st">"sf_coordinates"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"green"</span>) <span class="co"># adding in absence data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
-give correct results for longitude/latitude data
-
-Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
-give correct results for longitude/latitude data
-
-Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
-give correct results for longitude/latitude data</code></pre>
-</div>
 <div class="cell-output-display">
 <p><img src="Mackenzie_SDM_with_maxent_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
