@@ -37,11 +37,7 @@ extent_polygon <- st_bbox(c(xmin = 41.875, xmax = 65.125,
 pol_geometry <- st_as_text(extent_polygon[[1]])
 ```
   
-<<<<<<< HEAD
-# Get observations
-=======
 # Get Observations
->>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
 
 ```{r obis_search}
@@ -96,12 +92,8 @@ caretta_obs %>%
 It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.  
   
 Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.  
-  
-<<<<<<< HEAD
+    
 ## Quality control flags
-=======
-## Check quality control flags
->>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check [this repository](https://github.com/iobis/obis-qc).  
   
 First, we will check the quality flags included in our results.  
@@ -159,16 +151,22 @@ Another feature worth pointing out in our data is that some of the observations 
 ## Problematic observations
 In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the `NO_DEPTH,ON_LAND` flag, and any records that have been aggregated to a 1-degree cell.  
   
-```{r}
-caretta_obs %>%
+```{r remove_qc_bad}
+caretta_obs <- caretta_obs %>%
   #Removing on land observations
   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %>%
   #Removing observations with uncertainty over 100 km
   filter(coordinateUncertaintyInMeters <= 100000 | is.na(coordinateUncertaintyInMeters)) %>%
   #Removing records aggregated to 1 degree 
-#   # filter(!str_detect(occurrenceRemarks, "degree"))
+  filter(!str_detect(occurrenceRemarks, "degree"))
 ```
+  
+# Saving clean data
+Now that we have removed the problematic observations, we can save the new dataset into our local machine. We will save this under the `data` folder.  
 
-
-## Next steps
-Now that we've got explored the OBIS data we can finalize our dataset and import environmental data before running the SDM. For next steps, see `SDM Workflow` section.
+```{r save_data}
+write_csv(caretta_obs, "../data/raw-bio/loggerhead-robis.csv")
+```
+  
+# Next steps
+Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see `SDM Workflow` section.
