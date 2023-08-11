@@ -153,10 +153,12 @@ Another feature worth pointing out in our data is that some of the observations 
 In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the `NO_DEPTH,ON_LAND` flag, and any records that have been aggregated to a 1-degree cell.  
   
 ```{r}
-# caretta_obs %>% 
-#   #Removing on land observations
-#   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %>% 
-#   #        | coordinateUncertaintyInMeters > 100000) %>% 
+caretta_obs %>%
+  #Removing on land observations
+  filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %>%
+  #Removing observations with uncertainty over 100 km
+  filter(coordinateUncertaintyInMeters <= 100000 | is.na(coordinateUncertaintyInMeters)) %>%
+  #Removing records aggregated to 1 degree 
 #   # filter(!str_detect(occurrenceRemarks, "degree"))
 ```
 
