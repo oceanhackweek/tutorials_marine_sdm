@@ -220,21 +220,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-<<<<<<< HEAD
   <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link active" data-scroll-target="#loading-libraries">Loading libraries</a></li>
-  <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a></li>
-  <li><a href="#get-observations" id="toc-get-observations" class="nav-link" data-scroll-target="#get-observations">Get observations</a>
+  <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a>
   <ul class="collapse">
   <li><a href="#explore-obis-results" id="toc-explore-obis-results" class="nav-link" data-scroll-target="#explore-obis-results">Explore OBIS results</a></li>
-  <li><a href="#quality-control-flags" id="toc-quality-control-flags" class="nav-link" data-scroll-target="#quality-control-flags">Quality control flags</a></li>
-=======
-  <li><a href="#loading-relevant-libraries" id="toc-loading-relevant-libraries" class="nav-link active" data-scroll-target="#loading-relevant-libraries">Loading relevant libraries</a></li>
-  <li><a href="#creating-a-bounding-box" id="toc-creating-a-bounding-box" class="nav-link" data-scroll-target="#creating-a-bounding-box">Creating a bounding box</a></li>
-  <li><a href="#get-observations" id="toc-get-observations" class="nav-link" data-scroll-target="#get-observations">Get Observations</a>
-  <ul class="collapse">
-  <li><a href="#exploring-obis-results" id="toc-exploring-obis-results" class="nav-link" data-scroll-target="#exploring-obis-results">Exploring OBIS results</a></li>
-  <li><a href="#check-quality-control-flags" id="toc-check-quality-control-flags" class="nav-link" data-scroll-target="#check-quality-control-flags">Check quality control flags</a></li>
->>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
   <li><a href="#problematic-observations" id="toc-problematic-observations" class="nav-link" data-scroll-target="#problematic-observations">Problematic observations</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
   </ul></li>
@@ -296,14 +285,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract polygon geometry </span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="get-observations" class="level1">
-<<<<<<< HEAD
-<h1>Get observations</h1>
-=======
-<h1>Get Observations</h1>
->>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
-<p>We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD # Get observations ======= # Get Observations &gt;&gt;&gt;&gt;&gt;&gt;&gt; e1113d9383b2e57473ce9195a510bd71774ecfda We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Search OBIS for loggerhead observations from 2000</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(<span class="st">"Caretta caretta"</span>, </span>
@@ -478,15 +460,7 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 </div>
 <p>It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.</p>
 <p>Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.</p>
-</section>
-<<<<<<< HEAD
-<section id="quality-control-flags" class="level2">
-<h2 class="anchored" data-anchor-id="quality-control-flags">Quality control flags</h2>
-=======
-<section id="check-quality-control-flags" class="level2">
-<h2 class="anchored" data-anchor-id="check-quality-control-flags">Check quality control flags</h2>
->>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
-<p>OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD ## Quality control flags ======= ## Check quality control flags &gt;&gt;&gt;&gt;&gt;&gt;&gt; e1113d9383b2e57473ce9195a510bd71774ecfda OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
 <p>First, we will check the quality flags included in our results.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
@@ -544,7 +518,7 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
  8         -8562
  9        -17661
 10        -19763
-# ℹ 15 more rows</code></pre>
+# … with 15 more rows</code></pre>
 </div>
 </div>
 <p>The inland observations are at least 231 meters away from the coast and up to 515 kilometers. For simplicity, we will remove all points flagged as <code>NO_DEPTH,ON_LAND</code>, but it is recommended that locations are looked more in depth and determine how likely it was that an individual was present at that location.</p>
@@ -554,7 +528,7 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flags <span class="sc">!=</span> <span class="st">"NO_DEPTH,ON_LAND"</span> <span class="sc">&amp;</span> shoredistance <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 0 × 103
-# ℹ 103 variables: associatedReferences &lt;chr&gt;, basisOfRecord &lt;chr&gt;,
+# … with 103 variables: associatedReferences &lt;chr&gt;, basisOfRecord &lt;chr&gt;,
 #   bibliographicCitation &lt;chr&gt;, catalogNumber &lt;chr&gt;, collectionCode &lt;chr&gt;,
 #   coordinatePrecision &lt;chr&gt;, coordinateUncertaintyInMeters &lt;dbl&gt;,
 #   datasetID &lt;chr&gt;, datasetName &lt;chr&gt;, dateIdentified &lt;chr&gt;,

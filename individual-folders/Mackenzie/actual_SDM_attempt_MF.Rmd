@@ -11,18 +11,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-library(maxnet)
-library(dplyr)
-library(maxnet)
-library(sf)
-library(stars)
-library(geodata)
-library(dismo)
-library(lubridate)
-library(sdmpredictors)
-library(zoon)
-library(ggplot2)
-library(cmocean)
+suppressPackageStartupMessages({library(maxnet)
+  library(dplyr)
+  library(maxnet)
+  library(sf)
+  library(stars)
+  library(geodata)
+  library(dismo)
+  library(lubridate)
+  library(sdmpredictors)
+  library(zoon)
+  library(ggplot2)
+  library(cmocean)
+  library(janitor)
+  library()
+})
 ```
 
 # Pre-SDM
@@ -80,15 +83,6 @@ occ.points <- occ.points %>%
                                  sci.name == "Chelonia mydas" ~ "Green"))
 ```
 
-## Pull in background data
-
-```{r}
-env.back <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>% 
-  dplyr::as_tibble() %>% 
-  na.omit()
-env.back
-```
-
 ## SDM predictors
 
 ### Loading in
@@ -111,14 +105,9 @@ env <- load_layers(layercodes, rasterstack = T) # take out the equalarea arg or 
 env.stars <- stars::st_as_stars(env) # convert to stars object
 env.stars <- split(env.stars)
 
-plot(env.stars["BO_bathymean"] %>% sf::st_crop(bb)) # looking at bathymetry
-
-env.obs <- stars::st_extract(env.stars,
-                             sf::st_coordinates(occ.points)) %>%
-  dplyr::as_tibble()
-
 lats <- c(-0.125, 32.125); lons <- c(41.875, 70.125) # IO lat/lon range
 # raster extent is defined by west lon, east lon, south lat, north lat
+
 ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
 extent_polygon <- as(ext, "SpatialPolygons") %>% 
   st_as_sf()
@@ -127,25 +116,24 @@ sf::st_crs(extent_polygon) <- 4326 # applying a coordinate system
 
 plot(extent_polygon) # look a rectangle
 
+bb <- sf::st_bbox(extent_polygon) # make a bounding box (that maybe isn't what we need?)
+plot(env.stars["BO_bathymean"] %>% sf::st_crop(bb)) # looking at bathymetry
+
+env.obs <- stars::st_extract(env.stars,
+                             sf::st_coordinates(occ.points)) %>%
+  dplyr::as_tibble()
+
 io.rast <- raster::crop(env, extent(extent_polygon))
 plot(io.rast) # look NOT a rectangle- your env variables cropped to the Indian Ocean!
-
-bb <- sf::st_bbox(extent_polygon) # make a bounding box (that maybe isn't what we need?)
 ```
 
-```{r}
-# ignore for now
+## Pull in background data
 
-# points <- SpatialPoints(occ[,c("decimalLongitude", "decimalLatitude")],
-#                             lonlatproj)
-# workflow(
-#   occurrence = LocalOccurrenceData(
-#       points, occurrenceType="presence",
-#       columns = c("decimalLongitude", "decimalLatitude", "value")), 
-#     covariate = LocalRaster(stack(australia)),
-#     process = OneHundredBackground(seed = 42),
-#     model = LogisticRegression,
-#     output = PrintMap)
+```{r}
+env.back <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>% 
+  dplyr::as_tibble() %>% 
+  na.omit()
+env.back
 ```
 
 ## Combining env and occ data ?????
@@ -157,30 +145,6 @@ poly <- occ.points %>%                                 # start with obs
   sf::st_transform(crs = sf::st_crs(5880)) %>%  # make planar
   #sf::st_buffer(dist = 200000) |>             # buffer by 200000m
   sf::st_transform(crs = sf::st_crs(4326))    # make spherical
-```
-
-```{r}
-# ignore
-
-# N <- 1200
-# back <- sf::st_sample(poly, N)
-# 
-# env_back <- stars::st_extract(recent, sf::st_coordinates(back)) |>
-#   dplyr::as_tibble() |>
-#   na.omit()
-# env_back
-
-# plot.new()
-
-# col <- sf.colors(categorical = TRUE)
-
-# plot(io.rast %>%  
-#        sf::st_crop(bb), 
-#      main = "", axes = TRUE, key.pos = NULL, reset = FALSE)
-# maps::map('world', add = TRUE, lwd = 2)
-# plot(sf::st_geometry(occ.points), col = col[4], pch = 16, add = TRUE)
-#plot(sf::st_geometry(poly), add = TRUE, border = col[5], lwd = 2)
-#plot(back, add = TRUE, col = col[8], pch = ".")
 ```
 
 # SDM Model
