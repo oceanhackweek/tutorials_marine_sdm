@@ -59,8 +59,6 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
    -- run species distribution model and predict using `maxnet`
 6. Data Visualizations
 
-
-
 ## References
 - Bosch S, Fernandez S (2022). sdmpredictors: Species Distribution Modelling Predictor Datasets. R package version 0.2.14, [http://lifewatch.github.io/sdmpredictors/](http://lifewatch.github.io/sdmpredictors/).  
   
@@ -83,9 +81,6 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
 - [Ben Tupper](https://github.com/btupper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
 
 ---
-
-
-
 
 ## Who this tutorial is intended:
 Some experience programming in `R` is needed to make the most of this tutorial. To run this tutorial make sure you clone this repository into your local machine by creating a new project that uses version control (`git`).  
