@@ -58,7 +58,7 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
   
 - OBIS (2023) Ocean Biodiversity Information System. Intergovernmental Oceanographic Commission of UNESCO. [www.obis.org](https://obis.org/). Accessed: 2023-08-08.  
   
-- Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: [http://biodiversityinformatics.amnh.org/open_source/maxent/](http://biodiversityinformatics.amnh.org/open_source/maxent/). Accessed on 2023-8-10.  
+- Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: [http://biodiversityinformatics.amnh.org/open_source/maxent/](http://biodiversityinformatics.amnh.org/open_source/maxent/). Accessed on 2023-08-10.  
   
 ## Tutorial developers
 - [Catherine Courtier](https://github.com/cacourtier):
