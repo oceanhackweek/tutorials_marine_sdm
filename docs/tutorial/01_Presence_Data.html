@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-08-10">
 
-<title>2023 Ocean Hackweek - Exploring OBIS sea turtle observations</title>
+<title>2023 Ocean Hackweek - Obtaining presence data for loggerhead turtles from OBIS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -88,8 +87,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../tutorial/seaturtle_robis.html" rel="next">
-<link href="../index.html" rel="prev">
+<link href="../tutorial/02_Background_Data.html" rel="next">
+<link href="../tutorial/00_Roadmap.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -130,7 +129,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Exploring OBIS sea turtle observations</h1>
+      <h1 class="quarto-secondary-nav-title">Obtaining presence data for loggerhead turtles from OBIS</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -173,14 +172,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/Get_seaturtle_data.html" class="sidebar-item-text sidebar-link active">Exploring OBIS data</a>
+  <a href="../tutorial/00_Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link active">Marine Presence Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link">Generating Absence Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Environmental Variables</a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">SDM Workflow</a>
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">Our workflow</a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -213,7 +227,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">Turtle SDM!!</a>
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">Turtle SDMs!!</a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -221,7 +235,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../individual-folders/Mackenzie/actual_SDM_attempt_MF.html" class="sidebar-item-text sidebar-link">SDM</a>
+  <a href="../tutorial/Mackenzie_SDM_with_maxent.html" class="sidebar-item-text sidebar-link">SDM</a>
   </div>
 </li>
       </ul>
@@ -235,22 +249,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link active" data-scroll-target="#loading-libraries">Loading libraries</a></li>
-  <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a>
-  <ul class="collapse">
+  <li><a href="#load-libraries" id="toc-load-libraries" class="nav-link active" data-scroll-target="#load-libraries">Load libraries</a></li>
+  <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a></li>
+  <li><a href="#get-observations" id="toc-get-observations" class="nav-link" data-scroll-target="#get-observations">Get Observations</a></li>
   <li><a href="#explore-obis-results" id="toc-explore-obis-results" class="nav-link" data-scroll-target="#explore-obis-results">Explore OBIS results</a></li>
+  <li><a href="#quality-control-flags" id="toc-quality-control-flags" class="nav-link" data-scroll-target="#quality-control-flags">Quality control flags</a></li>
   <li><a href="#problematic-observations" id="toc-problematic-observations" class="nav-link" data-scroll-target="#problematic-observations">Problematic observations</a></li>
+  <li><a href="#saving-clean-data" id="toc-saving-clean-data" class="nav-link" data-scroll-target="#saving-clean-data">Saving clean data</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
-  </ul></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/Get_seaturtle_data.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/01_Presence_Data.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Exploring OBIS sea turtle observations</h1>
+<h1 class="title d-none d-lg-block">Obtaining presence data for loggerhead turtles from OBIS</h1>
 </div>
 
 
@@ -258,12 +273,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">August 10, 2023</p>
-    </div>
-  </div>
     
   </div>
   
@@ -271,8 +280,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>In this section, we will explore <a href="https://www.iucnredlist.org/species/3897/119333622">Loggerhead sea turtle (<em>Caretta caretta</em>)</a> data from 2000 until present from the <a href="https://obis.org/">Ocean Biodiversity Information System (OBIS)</a>. We will use the <code>robis</code> package to search the OBIS library and download relevant data. We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).</p>
-<section id="loading-libraries" class="level1">
-<h1>Loading libraries</h1>
+<section id="load-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="load-libraries">Load libraries</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Dealing with spatial data</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
@@ -285,8 +294,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="create-a-bounding-box" class="level1">
-<h1>Create a bounding box</h1>
+<section id="create-a-bounding-box" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-bounding-box">Create a bounding box</h2>
 <p>We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract <em>C. caretta</em> data relevant to our study area.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#We create a bounding box using minimum and maximum coordinate pairs</span></span>
@@ -298,9 +307,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sfc</span>()</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract polygon geometry </span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon[[<span class="dv">1</span>]])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#Saving bounding box for future use</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sf</span>(extent_polygon, <span class="st">"../data/BoundingBox.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD # Get observations ======= # Get Observations &gt;&gt;&gt;&gt;&gt;&gt;&gt; e1113d9383b2e57473ce9195a510bd71774ecfda We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
+</section>
+<section id="get-observations" class="level2">
+<h2 class="anchored" data-anchor-id="get-observations">Get Observations</h2>
+<p>We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Search OBIS for loggerhead observations from 2000</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(<span class="st">"Caretta caretta"</span>, </span>
@@ -425,6 +440,7 @@ $ superdomain                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</code></pre>
 </div>
 </div>
+</section>
 <section id="explore-obis-results" class="level2">
 <h2 class="anchored" data-anchor-id="explore-obis-results">Explore OBIS results</h2>
 <p>Our search produced 5269 results for the area of our interest. However, before we continue to use this data as input for our species distribution models, we must clean it first to ensure we have a good quality dataset.</p>
@@ -475,7 +491,10 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 </div>
 <p>It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.</p>
 <p>Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD ## Quality control flags ======= ## Check quality control flags &gt;&gt;&gt;&gt;&gt;&gt;&gt; e1113d9383b2e57473ce9195a510bd71774ecfda OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
+</section>
+<section id="quality-control-flags" class="level2">
+<h2 class="anchored" data-anchor-id="quality-control-flags">Quality control flags</h2>
+<p>OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
 <p>First, we will check the quality flags included in our results.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
@@ -509,7 +528,7 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Applying theme without background</span></span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Get_seaturtle_data_files/figure-html/plot_qc-1.png" class="img-fluid" width="672"></p>
+<p><img src="01_Presence_Data_files/figure-html/plot_qc-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>From the plot above, we should consider removing at least some of the observations classified as <code>NO_DEPTH,ON_LAND</code>. This is because loggerhead sea turtles are not present inland. Instead, they are found in temperate and subtropical ocean waters and in sandy beaches.</p>
@@ -559,19 +578,27 @@ $ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 
 <h2 class="anchored" data-anchor-id="problematic-observations">Problematic observations</h2>
 <p>In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the <code>NO_DEPTH,ON_LAND</code> flag, and any records that have been aggregated to a 1-degree cell.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># caretta_obs %&gt;% </span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   #Removing on land observations</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %&gt;% </span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   #        | coordinateUncertaintyInMeters &gt; 100000) %&gt;% </span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   # filter(!str_detect(occurrenceRemarks, "degree"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="ot">&lt;-</span> caretta_obs <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Removing on land observations</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flags <span class="sc">!=</span> <span class="st">"NO_DEPTH,ON_LAND"</span> <span class="sc">|</span> <span class="fu">is.na</span>(flags)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Removing observations with uncertainty over 100 km</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(coordinateUncertaintyInMeters <span class="sc">&lt;=</span> <span class="dv">100000</span> <span class="sc">|</span> <span class="fu">is.na</span>(coordinateUncertaintyInMeters)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Removing records aggregated to 1 degree </span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(occurrenceRemarks, <span class="st">"degree"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="saving-clean-data" class="level2">
+<h2 class="anchored" data-anchor-id="saving-clean-data">Saving clean data</h2>
+<p>Now that we have removed the problematic observations, we can save the new dataset into our local machine. We will save this under the <code>data</code> folder.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(caretta_obs, <span class="st">"../data/raw-bio/loggerhead-robis.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="next-steps" class="level2">
 <h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
-<p>Now that we’ve got explored the OBIS data we can finalize our dataset and import environmental data before running the SDM. For next steps, see <code>SDM Workflow</code> section.</p>
+<p>Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see the <a href="tutorial/00_Roadmap.html">Roadmap section</a>.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -777,13 +804,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      <a href="../tutorial/00_Roadmap.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Roadmap</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../tutorial/seaturtle_robis.html" class="pagination-link">
-        <span class="nav-page-text">Presence Data</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../tutorial/02_Background_Data.html" class="pagination-link">
+        <span class="nav-page-text">Generating Absence Data</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
