@@ -11,7 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-suppressPackageStartupMessages({library(maxnet)
+suppressPackageStartupMessages(
+  {library(maxnet)
   library(dplyr)
   library(maxnet)
   library(sf)
