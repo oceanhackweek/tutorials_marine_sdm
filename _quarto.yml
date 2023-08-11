@@ -1,19 +1,22 @@
 project: 
   type: website
+  resources: 
+    - "SDM-team.mp3"
   output-dir: docs
   render:
     - "*.*"
+    - "individual-folders/Mackenzie/actual_SDM_attempt_MF.Rmd"
     - "!individual-folders/ben/*"
     - "!individual-folders/Catherine/*"
     - "!individual-folders/COB/*"
     - "!individual-folders/Eli/*"
     - "!individual-folders/Jade1/*"
     - "!individual-folders/Laura/*"
-    - "!individual-folders/Mackenzie/*"
+    - "!individual-folders/Mackenzie/OHW*"
+    - "!individual-folders/Mackenzie/*.rmarkdown"
     - "!individual-folders/Mary/*"
     - "!individual-folders/Paulo/*"
     - "!tutorial/Subset*"
-    - "!tutorial/tutorial1.Rmd"
     - "maxnet/*"
 
 execute:
@@ -63,6 +66,10 @@ website:
           - text: "Model"
             href: tutorial/maxent-sdm.Rmd
           - text: "Visualization"
+      - section: Turtle SDM!!
+        contents:
+          - text: "SDM"
+            href: individual-folders/Mackenzie/actual_SDM_attempt_MF.Rmd
 
 format:
   html:

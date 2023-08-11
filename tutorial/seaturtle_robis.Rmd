@@ -48,7 +48,7 @@ obs <- robis::occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_
 ```
 
 This has many columns that we don't need. We will reduce to fewer columns.
-```{r}
+```{r eval = FALSE}
 cols.to.use <- c("occurrenceID", "scientificName", 
                  "dateIdentified", "eventDate", 
                  "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
@@ -58,14 +58,14 @@ obs <- obs[,cols.to.use]
 ```
 
 We will also add a cleaner date with YYYY-MM-DD format.
-```{r}
+```{r eval = FALSE}
 obs$date <- as.Date(obs$eventDate)
 ```
 
 ## Save our data
 
 Set up the file names
-```{r}
+```{r eval = FALSE}
 dir_data <- here::here("data", "raw-bio")
 filname <- "io-sea-turtles"
 obs_csv <- file.path(dir_data, paste0(filname, ".csv"))
@@ -74,7 +74,7 @@ obs_gpkg <- file.path(dir_data, paste0(filname, ".gpkg"))
 ```
 
 Change the data frame to a sf dataframe.
-```{r}
+```{r eval = FALSE}
 obs_sf <- obs %>% 
     sf::st_as_sf(
       coords = c("decimalLongitude", "decimalLatitude"),
@@ -82,7 +82,7 @@ obs_sf <- obs %>%
 ```
 
 Save files in different formats.
-```{r}
+```{r eval = FALSE}
 redo   <- TRUE
 
 if (!file.exists(obs_csv) | redo)  readr::write_csv(obs, obs_csv)
@@ -91,7 +91,7 @@ if (!file.exists(obs_gpkg) | redo)  sf::write_sf(obs_sf, obs_gpkg, delete_dsn=TR
 ```
 
 We can reload our data as
-```{r}
+```{r eval = FALSE}
 tmp <- sf::read_sf(obs_gpkg)
 class(tmp)
 ```

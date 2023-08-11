@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 *.Rproj
-
+_freeze
 /.quarto/

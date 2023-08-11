@@ -88,6 +88,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../individual-folders/Mackenzie/actual_SDM_attempt_MF.html" rel="next">
 <link href="../tutorial/occ_env.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -210,6 +211,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">Turtle SDM!!</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../individual-folders/Mackenzie/actual_SDM_attempt_MF.html" class="sidebar-item-text sidebar-link">SDM</a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -329,8 +345,9 @@ wkt_geometry &lt;- extent_polygon$geometry %&gt;% st_as_text()
 df &lt;- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="st">"Chelonia mydas"</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>occ <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>occ <span class="ot">&lt;-</span> occ <span class="sc">%&gt;%</span> <span class="fu">subset</span>(scientificName <span class="sc">==</span> spp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fil <span class="ot">&lt;-</span> <span class="fu">file.path</span>(here<span class="sc">::</span><span class="fu">here</span>(), <span class="st">"data"</span>, <span class="st">"raw-bio"</span>, <span class="st">"io-sea-turtles.csv"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>occ <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(fil)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>occ <span class="ot">&lt;-</span> occ <span class="sc">%&gt;%</span> <span class="fu">subset</span>(scientificName <span class="sc">==</span> spp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Look at the column names</p>
 <div class="cell">
@@ -355,7 +372,8 @@ df &lt;- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geome
  [7] "coordinateUncertaintyInMeters" "individualCount"              
  [9] "lifeStage"                     "sex"                          
 [11] "bathymetry"                    "shoredistance"                
-[13] "sst"                           "sss"                          </code></pre>
+[13] "sst"                           "sss"                          
+[15] "date"                         </code></pre>
 </div>
 </div>
 <p>Make sure the turtle was at sea.</p>
@@ -365,7 +383,7 @@ df &lt;- occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geome
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                        coordinateUncertaintyInMeters <span class="sc">&lt;</span> <span class="dv">200</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(occ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 7060   14</code></pre>
+<pre><code>[1] 7060   15</code></pre>
 </div>
 </div>
 <p>Change the occurrence data into an sf object with a coordinate system. Add a date column with YYYY-MM-DD format.</p>
@@ -637,6 +655,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../individual-folders/Mackenzie/actual_SDM_attempt_MF.html" class="pagination-link">
+        <span class="nav-page-text">SDM</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
