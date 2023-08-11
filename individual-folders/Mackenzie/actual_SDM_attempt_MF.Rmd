@@ -11,17 +11,25 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-library(maxnet)
-library(dplyr)
-library(maxnet)
-library(sf)
-library(stars)
-library(geodata)
-library(dismo)
-library(lubridate)
-library(sdmpredictors)
-library(zoon)
+suppressPackageStartupMessages(
+  {library(maxnet)
+  library(dplyr)
+  library(maxnet)
+  library(sf)
+  library(stars)
+  library(geodata)
+  library(dismo)
+  library(lubridate)
+  library(sdmpredictors)
+  library(zoon)
+  library(ggplot2)
+  library(cmocean)
+  library(janitor)
+  library()
+})
 ```
+
+# Pre-SDM
 
 ## Load data in
 
@@ -31,7 +39,7 @@ pts.abs <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/pts_absen
 io.turtles <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv") 
 ```
 
-## Format occurence data
+## Format occurrence data
 
 ```{r}
 spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea") # turtle species we're interested in
@@ -48,6 +56,32 @@ occ <- occ %>% # but we also need to subset the occurences to include just those
 
 table(occ$scientificName) # seeing how often each species occurs now
 # Caretta caretta is Loggerhead and Chelonia mydas is Green sea turtles 
+
+occ.sub <- occ[,c(2,4,5,6,9,11,13,14)] # choosing the cols I want
+
+occ.sub$eventDate <- lubridate::ymd_hms(occ.sub$eventDate) # changing to datetime format
+
+colnames(occ.sub) <- c("sci.name", "obsv.datetime", "lat", "lon", "life.stage", "bathy", "SST", "SSS") # renaming
+```
+
+```{r}
+# format background/absence points
+
+colnames(pts.abs) <- c("lon","lat")
+pts.abs <- na.omit(pts.abs)
+
+abs.points <- sf::st_as_sf(pts.abs, coords = c("lon", "lat"), crs = 4326)
+```
+
+```{r}
+# format prescence/occurrence points
+
+occ.points <- sf::st_as_sf(occ.sub, coords = c("lon", "lat"), crs = 4326)
+occ.points
+
+occ.points <- occ.points %>% 
+  mutate(common.name = case_when(sci.name == "Caretta caretta" ~ "Loggerhead",
+                                 sci.name == "Chelonia mydas" ~ "Green"))
 ```
 
 ## SDM predictors
@@ -55,11 +89,10 @@ table(occ$scientificName) # seeing how often each species occurs now
 ### Loading in
 
 ```{r}
-datasets <- list_datasets(terrestrial = FALSE, marine = TRUE)
-View(datasets)
+datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
 
 layers <- list_layers(datasets)
-View(layers)
+#View(layers)
 ```
 
 ### Choosing and formatting
@@ -69,18 +102,136 @@ View(layers)
 
 layercodes = c("BO_sstmean", "BO_bathymean", "BO22_ph", "BO2_dissoxmean_bdmean", "BO2_salinitymean_ss") # the env variables I chose from SDMpredictors
 
-env <- load_layers(layercodes) # take out the equalarea arg or you will be sad
+env <- load_layers(layercodes, rasterstack = T) # take out the equalarea arg or you will be sad AND add rasterstack = T
+env.stars <- stars::st_as_stars(env) # convert to stars object
+env.stars <- split(env.stars)
 
 lats <- c(-0.125, 32.125); lons <- c(41.875, 70.125) # IO lat/lon range
 # raster extent is defined by west lon, east lon, south lat, north lat
+
 ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
-extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
+extent_polygon <- as(ext, "SpatialPolygons") %>% 
+  st_as_sf()
 # we need to assign a coordinate system; 4326 is the default for maps in sf
-sf::st_crs(extent_polygon)<-4326 # applying a coordinate system
+sf::st_crs(extent_polygon) <- 4326 # applying a coordinate system
 
 plot(extent_polygon) # look a rectangle
 
+bb <- sf::st_bbox(extent_polygon) # make a bounding box (that maybe isn't what we need?)
+plot(env.stars["BO_bathymean"] %>% sf::st_crop(bb)) # looking at bathymetry
+
+env.obs <- stars::st_extract(env.stars,
+                             sf::st_coordinates(occ.points)) %>%
+  dplyr::as_tibble()
+
 io.rast <- raster::crop(env, extent(extent_polygon))
 plot(io.rast) # look NOT a rectangle- your env variables cropped to the Indian Ocean!
+```
+
+## Pull in background data
+
+```{r}
+env.back <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>% 
+  dplyr::as_tibble() %>% 
+  na.omit()
+env.back
+```
+
+## Combining env and occ data ?????
+
+```{r}
+poly <- occ.points %>%                                 # start with obs
+  sf::st_combine() %>%                          # combine into a single multipoint
+  sf::st_convex_hull() %>%                      # find convex hull
+  sf::st_transform(crs = sf::st_crs(5880)) %>%  # make planar
+  #sf::st_buffer(dist = 200000) |>             # buffer by 200000m
+  sf::st_transform(crs = sf::st_crs(4326))    # make spherical
+```
+
+# SDM Model
+
+## Running model
+
+```{r}
+env.obs <- na.omit(env.obs); env.back <- na.omit(env.back) # remove NA values
+
+pres <- c(rep(1, nrow(env.obs)), rep(0, nrow(env.back))) # create values of 1 for presence data and 0 for absence data
+
+sdm.model <- maxnet::maxnet(pres, rbind(env.obs, env.back))
+```
+
+## Model metrics
+
+```{r}
+responses <- plot(sdm.model, type = "cloglog")
+```
+
+## Predicting
+
+```{r}
+clamp <- TRUE       # see ?predict.maxnet for details
+type <- "cloglog"
+predicted <- predict(sdm.model, env.stars %>% sf::st_crop(bb), clamp = clamp, type = type)
+predicted
+```
+
+## Visualization
+
+```{r}
+# ggplot - with occurrence data points
+
+ggplot() +
+  geom_stars(data = predicted) +
+  scale_fill_cmocean(name = "ice", direction = -1, guide = guide_colorbar(barwidth = 1, barheight = 10, ticks = FALSE, nbin = 1000, frame.colour = "black"), limits = c(0, 1)) +
+  theme_linedraw() +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(title = "Loggerhead and green sea turtle species distribution model",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Probability",
+       shape = "Species (presence)",
+       subtitle = "Environmental predictors: mean SS temp, mean SS salinity, mean bathymetry, mean pH, mean DO") +
+  geom_point(occ.points, mapping = aes(shape = common.name, geometry = geometry), stat = "sf_coordinates", alpha = 0.3, color = "purple") +
+  #scale_x_continuous(breaks = seq(40, 70, 10), limits = c(42, 70))+
+  scale_y_continuous(breaks = seq(0, 30, 10))
+
+ggsave("SDM_loggerhead_green_w points.pdf", height = 6, width = 8.5)
+
+  #+
+#  geom_point(abs.points, mapping = aes(geometry = geometry), stat = "sf_coordinates", alpha = 0.7, color = "gray")
+```
+
+```{r}
+# ggplot - without occurrence data points
+
+ggplot() +
+  geom_stars(data = predicted) +
+  scale_fill_cmocean(name = "ice", direction = -1, guide = guide_colorbar(barwidth = 1, barheight = 10, ticks = FALSE, nbin = 1000, frame.colour = "black"), limits = c(0, 1)) +
+  theme_linedraw() +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(title = "Loggerhead and green sea turtle species distribution model",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Probability",
+       shape = "Species (presence)",
+       subtitle = "Environmental predictors: mean SS temp, mean SS salinity, mean bathymetry, mean pH, mean DO") +
+  #geom_point(occ.points, mapping = aes(shape = common.name, geometry = geometry), stat = "sf_coordinates", alpha = 0.3, color = "purple") +
+  #scale_x_continuous(breaks = seq(40, 70, 10), limits = c(42, 70))+
+  scale_y_continuous(breaks = seq(0, 30, 10))
+
+ggsave("SDM_loggerhead_green.pdf", height = 6, width = 8.5)
+```
+
+```{r}
+# base R
+
+plot(predicted, reset = F, main = "Loggerhead and green sea turtle SDM") # predicted model
+plot(occ.points, col = "cyan", add = TRUE, cex = 0.6, pch = 20) # occurrence points
+plot(st_geometry(abs.points), add = T, cex = 0.6, col = "green", pch = 20, alpha = 0.2) # absence points
+# legend(x = "topleft", legend = c("presence", "absence"), col = c("cyan","green"))
 ```
 

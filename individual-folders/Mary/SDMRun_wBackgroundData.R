@@ -92,13 +92,15 @@ plot(AreaOfInterest) #plots of SST & salinity on area of interest
 #Preparing env data for maxnet/stars
 env<-stars::st_as_stars(env)
 env<-split(env)
-env<-mutate(env, BO_bathymean=log10(abs(BO_bathymean)+.00000001))
+#env<-mutate(env, BO_bathymean=log10(abs(BO_bathymean)+.00000001)) #can also mutate the variables,
+#but this one doesn't much of a difference
 env_obs <- stars::st_extract(env, sf::st_coordinates(occ.sf)) |>
   dplyr::as_tibble()
 
-#Preparing background data
+#Preparing background data using the pts_absence data
 background_data<-read_csv("data/raw-bio/pts_absence.csv")
 colnames(background_data)<-c("decimalLongitude", "decimalLatitude")
+background_data<-na.omit(background_data)
 background_data.sf <- sf::st_as_sf(background_data, 
                                    coords = c("decimalLongitude", "decimalLatitude"),
                                    crs = 4326)
@@ -107,24 +109,64 @@ env_back <- stars::st_extract(env, sf::st_coordinates(background_data.sf)) |>
   na.omit()
 colnames(env_back)<-c("BO_sstmean", "BO_salinity", "BO_bathymean")
 
-#Trying different background data
-poly <- occ.sf |>                                # start with obs
-  sf::st_combine() |>                         # combine into a single multipoint
-  sf::st_convex_hull() |>                     # find convex hull
-  sf::st_transform(crs = sf::st_crs(5880)) |> # make planar
-  sf::st_buffer(dist = 200000) |>             # buffer by 200000m
-  sf::st_transform(crs = sf::st_crs(4326))    # make spherical
+#Trying different background data that is smaller polygon, but still figuring out how
+#to only get ocean pts-DOESN'T WORK
 
-sf_use_s2(T)
-N <- 1200
-back <- sf::st_sample(poly, N)
+# #Getting land
+# library("rnaturalearth")
+# library("rnaturalearthdata")
+# sf_use_s2(F)
+# coastline <- ne_countries(scale = "medium", returnclass = "sf")%>%
+#   sf::st_simplify()%>%
+#   sf::st_crop(extent_polygon)%>%
+#   select(scalerank)
+# plot(extent_polygon)
+# plot(coastline)
+# plot(st_difference(st_union(coastline),st_union(extent_polygon)))
+# 
+# poly <- occ.sf |>                                # start with obs
+#   sf::st_combine() #|>                         # combine into a single multipoint
+#   #sf::st_convex_hull() |>                     # find convex hull
+#   # sf::st_transform(crs = sf::st_crs(9292)) |> # make planar
+#    #sf::st_buffer(dist = 5) #|>             # buffer by 200000m- starting making my R crash
+#   # sf::st_transform(crs = sf::st_crs(4326))    # make spherical
+# plot(poly)
+# z<-poly[coastline]
+# 
+# 
+# sf_use_s2(T)
+# N <- 1000
+# back <- sf::st_sample(poly, N)
+# 
+# env_back <- stars::st_extract(env, sf::st_coordinates(back)) |>
+#   dplyr::as_tibble() |>
+#   na.omit()
+# env_back
 
-env_back <- stars::st_extract(recent, sf::st_coordinates(back)) |>
+#Couldn't figure out the polygon, so instead limiting background 
+#data to lat/long range of presence data. This still has a lot of points
+#far away from presence data though
+background_data<-read_csv("data/raw-bio/pts_absence.csv")
+colnames(background_data)<-c("decimalLongitude", "decimalLatitude")
+background_data<-na.omit(background_data)
+
+latRange<-c(min(occ$decimalLatitude), max(occ$decimalLatitude))
+longRange<-c(min(occ$decimalLongitude), max(occ$decimalLongitude))
+
+background_dataReduced <- background_data %>%
+  subset(decimalLatitude>=latRange[1] & decimalLatitude<=latRange[2] &
+           decimalLongitude>=longRange[1] & decimalLongitude<=longRange[2])
+
+background_data.sf.Reduced <- sf::st_as_sf(background_dataReduced, 
+                                   coords = c("decimalLongitude", "decimalLatitude"),
+                                   crs = 4326)
+env_back <- stars::st_extract(env, sf::st_coordinates(background_data.sf.Reduced)) |>
   dplyr::as_tibble() |>
   na.omit()
-env_back
+colnames(env_back)<-c("BO_sstmean", "BO_salinity", "BO_bathymean")
 
 
+##Back to the code:
 col <- sf.colors(categorical = TRUE)
 bb <- sf::st_bbox(extent_polygon)
 plot(env[1] |> sf::st_crop(bb), 
@@ -152,8 +194,7 @@ type <- "cloglog"
 preds <- predict(model, env |> sf::st_crop(bb), 
                    clamp = clamp, type = type)
 plot(preds, reset=F)
-plot(st_geometry(occ.sf), add=T)
+plot(st_geometry(occ.sf), pch=".", add=T) #adds presence pts
+plot(st_geometry(background_data.sf), add=T, col="orange", pch=".") #adds background pts
 
-plot(preds,
-     hook = function(){plot(obs, col = "orange", add = TRUE)})
 

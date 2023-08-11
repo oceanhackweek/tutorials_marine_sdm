@@ -1,15 +1,14 @@
 ---
-title: "Getting sea turtle observations"
+title: "Exploring OBIS sea turtle observations"
 output:
   md_document:
     variant: markdown_github
-date: "2023-08-08"
+date: "2023-08-10"
 ---
 
-# Goal of the notebook
-In this notebook, we will show how you can get some [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  
+In this section, we will explore [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).
   
-# Loading relevant libraries
+# Loading libraries
 ```{r libraries, warning = F, message = F}
 #Dealing with spatial data
 library(sf)
@@ -22,7 +21,7 @@ library(tidyverse)
 library(janitor)
 ```
 
-# Creating a bounding box
+# Create a bounding box
 We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract *C. caretta* data relevant to our study area.  
   
 ```{r bounding_box}
@@ -38,7 +37,11 @@ extent_polygon <- st_bbox(c(xmin = 41.875, xmax = 65.125,
 pol_geometry <- st_as_text(extent_polygon[[1]])
 ```
   
-# Searching for sea turtle occurrence from OBIS
+<<<<<<< HEAD
+# Get observations
+=======
+# Get Observations
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
 
 ```{r obis_search}
@@ -54,7 +57,7 @@ caretta_obs <- occurrence("Caretta caretta",
 glimpse(caretta_obs)
 ```
   
-## Exploring OBIS results
+## Explore OBIS results
 Our search produced `r nrow(caretta_obs)` results for the area of our interest. However, before we continue to use this data as input for our species distribution models, we must clean it first to ensure we have a good quality dataset.  
   
 In this section, we will explore the results of our OBIS search so we can design a data cleaning workflow. We will check the content of some of the columns in our data frame.  
@@ -94,7 +97,11 @@ It is worth noting that not all providers share a measurement of uncertainty, bu
   
 Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.  
   
-## Checking quality control flags
+<<<<<<< HEAD
+## Quality control flags
+=======
+## Check quality control flags
+>>>>>>> e1113d9383b2e57473ce9195a510bd71774ecfda
 OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check [this repository](https://github.com/iobis/obis-qc).  
   
 First, we will check the quality flags included in our results.  
@@ -149,7 +156,7 @@ No observations were returned, which is good news.
   
 Another feature worth pointing out in our data is that some of the observations appear to be gridded as they are evenly spaced. This is confirmed by the `occurrenceRemarks` column, which states that some observations are: `Telemetry locations aggregated per species per 1-degree cell`. This is not ideal and you may need to consider if the inclusion of these data points are suitable for your project. In this example, we will remove them from our analysis.
   
-## Removing problematic observations
+## Problematic observations
 In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the `NO_DEPTH,ON_LAND` flag, and any records that have been aggregated to a 1-degree cell.  
   
 ```{r}
@@ -161,48 +168,5 @@ In this step, we will remove observations with coordinate uncertainty over 100 k
 ```
 
 
-
-## Keeping relevant columns
-```{r, eval=F}
-cols.to.use <- c("occurrenceID", "scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
-                 "individualCount","lifeStage", "sex",
-                 "bathymetry",  "shoredistance", "sst", "sss")
-df <- df[,cols.to.use]
-write.csv(df, file="/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv", quote=FALSE)
-```
-
-
-```{r,eval=F}
-
-
-
-ggplot(data = world) + geom_sf() +
-  geom_sf(data = extent_polygon, color = "red", fill=NA)
-
-```
-
-Columns to get. Others? Gender?
-
-```{r,eval=F}
-# select columns
-    colsWeNeed <- c("species", "lat", "lon", "locality", "year", 
-        "coordinateUncertaintyInMeters", "occurrenceID", "occurrenceRemarks", 
-        "geodeticDatum")
-```
-
-Get a data frame of loggerhead sea turtle data
-
-```{r,eval=F}
-spp <- "Caretta caretta"
-loggerh <- dismo::gbif("Caretta", species = "caretta", 
-        nrecs = 300, geo = TRUE, removeZeros = TRUE, ext = ext)
-
-```
-
-
-## To do
-
-* Get more sea turtle data
-* plot the data
-* find the turtles that are at sea and not on land
-* add a column for "on land" so we can analyze those separately
+## Next steps
+Now that we've got explored the OBIS data we can finalize our dataset and import environmental data before running the SDM. For next steps, see `SDM Workflow` section.
