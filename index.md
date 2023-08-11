@@ -1,5 +1,3 @@
-# **ohw23_proj_marinesdms**
-
 ## Marine Species Distribution Model (SDM) Tutorial
 
 Click to hear our song! Inspired by Myranda and AI!
@@ -8,7 +6,10 @@ Click to hear our song! Inspired by Myranda and AI!
          <source src = "SDM-team.mp3" type = "audio/mpeg">
 </audio>
 
-![](https://www.fisheries.noaa.gov/s3/dam-migration/green_sea_turtle.jpg)
+<p float="left">
+  <img src="https://www.fisheries.noaa.gov/s3/dam-migration/green_sea_turtle.jpg" width="45%" /> 
+  <img src="images/sdm.png" width="45%" />
+</p>
 
 ## Overview
 This tutorial was developed during [OceanHackWeek2023](https://oceanhackweek.org/) to provide a simple workflow to developing a marine Species Distribution Model (SDM) using `R` programming. 
