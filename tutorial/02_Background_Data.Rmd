@@ -4,11 +4,13 @@ output: html_document
 date: "2023-08-08"
 ---
 
-Here we explore 2 approaches.
-
-* Get all occurrences from robis in our polygon of interest and use that for lat/lon
-* Get random locations from our polygon of interest
-
+In this notebook, we will explore two approaches to create background samples, which are needed for our choice of species distribution model algorithm.  
+  
+These two approaches are as follows:  
+- Get occurrences for marine species from OBIS using the `robis` package, and use this as background samples.  
+- Select random locations using gridded environmental data as a base for our sampling.  
+In both cases, points will be constrain to fit within our area of interest.  
+  
 # Loading libraries
 
 ```{r libraries, message = F}
