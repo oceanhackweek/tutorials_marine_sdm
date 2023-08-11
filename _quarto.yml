@@ -11,8 +11,7 @@ project:
     - "!individual-folders/Eli/*"
     - "!individual-folders/Jade1/*"
     - "!individual-folders/Laura/*"
-    - "!individual-folders/Mackenzie/OHW*"
-    - "!individual-folders/Mackenzie/*.rmarkdown"
+    - "!individual-folders/Mackenzie/*"
     - "!individual-folders/Mary/*"
     - "!individual-folders/Paulo/*"
     - "!tutorial/Subset*"
@@ -53,7 +52,7 @@ website:
       - section: Background
         contents:
           - text: "Roadmap"
-            href: tutorial/00_Roadmap.Rmd
+            href: tutorial/Roadmap.Rmd
           - text: "Marine Presence Data"
             href: tutorial/01_Presence_Data.Rmd
           - text: "Generating Absence Data"
