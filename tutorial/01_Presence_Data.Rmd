@@ -35,6 +35,9 @@ extent_polygon <- st_bbox(c(xmin = 41.875, xmax = 65.125,
 
 #Extract polygon geometry 
 pol_geometry <- st_as_text(extent_polygon[[1]])
+
+#Saving bounding box for future use
+write_sf(extent_polygon, "../data/BoundingBox.shp")
 ```
   
 # Get Observations
