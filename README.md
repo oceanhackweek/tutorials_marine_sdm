@@ -23,13 +23,13 @@ Many tutorials exist to run SDM models, however, most readily available tutorial
 ## Datasets
 
 ### **Biological Data**
-Our dataset includes biological presence-only data of four species of sea turtles found in the Indian Ocean. The four species of sea turtles included in our tutorial are:  
+Our area of interest is the Indian Ocean, where four species of sea turtles have been reported to occupy this area:  
 - Loggerhead, *Caretta caretta*
 - Green, *Chelonia mydas*
 - Olive Ridley, *Lepidochelys olivacea*
 - Hawksbill, *Eretmochelys imbricata*
   
-However, for this tutorial example model, we will focus on Loggerhead sea turtles data from 2000 until 2023 sourced from the Ocean Biodiversity Information System (OBIS) via the `robis` package.  
+For this tutorial, we will focus on predicting the areas occupied by Loggerhead sea turtles. To do this, we will use presence-only data from 2000 until present, which have been sourced from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/) via the `robis` package.  
   
 ### **Environmental Data**
 This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the `SMDpredictor` R package and includes:  
@@ -39,12 +39,12 @@ This tutorial focuses on regions in the northern Indian Sea, specifically the we
 - paulo working on background--link to
 
 ## Workflow/Roadmap
-This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://github.com/BigelowLab/maxnet/wiki/stars), and highlights modeling presence-only data via `maxnet` R package.
+This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https://github.com/BigelowLab/maxnet/wiki/stars), and highlights modeling presence-only data via `maxnet` R package.
 
 **Tutorial roadmap**
 1. Presence Data
-   -- obtain sea turtle data via `robis` 
-2. Absence Data
+   -- obtain Loggerhead sea turtle (*C. caretta*) presence data from OBIS via `robis` 
+2. Background Points
    -- obtain random occurrences within our area of interest using `robis`
 3. Environmental Data
    -- obtain environmental predictors of interest using `SDMpredictors`
@@ -77,9 +77,7 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
 ---
 
 
-
-
-## Who this tutorial is intended:
+## Who this tutorial is intended
 Some experience programming in `R` is needed to make the most of this tutorial. To run this tutorial make sure you clone this repository into your local machine by creating a new project that uses version control (`git`).  
   
 The tutorial content was developed in a `R` version 4.2.2 for Linux. Full session information is included below:  
