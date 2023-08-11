@@ -13,7 +13,7 @@ Here we discuss an approach for finding a set of environmental variables to use 
 
 ## Querying AI
 
-Defining the best marine environmental data variables for Sea Turtles using AI (Google Bard)
+The sdmpredictors package was created in 2022 and ChatGPT does not have data this recent so we used Google Bard to help us find marine environmental data variables for sea turtles.
 
 To obtain the marine environmental data for our SDMs for predicting the occurrence of green sea turtle in the Arabian Sea, we used the sdmpredictors R package. There are over 100 environmental data layers that can be found in the sdmpredictors package. These data layers cover a wide range of environmental variables, including climate, land cover, marine, freshwater, and soil properties.
 
@@ -63,10 +63,11 @@ With this information in hands, we are now able to find these variables in the s
 
 sdmpredictors has many variables.
 
-```{r}
+```{r, message = FALSE}
 library(tidyverse)
 library(DT)
 library(sdmpredictors)
+library(sf)
 ```
 
 There are two marine data sources.
@@ -102,6 +103,16 @@ For this tutorial, we chose the "mean" variable from the sdmpredictors package f
 
 
 ## Extract these variables
+
+First we will load a bounding box for our area of interest. This was saved in []
+```{r}
+#Loading bounding box for the area of interest
+fil <- here::here("data", "region", "BoundingBox.shp")
+extent_polygon <- read_sf(fil)
+
+#Extract polygon geometry 
+pol_geometry <- st_as_text(extent_polygon$geometry)
+```
 
 The objective is to extract all these variables for our presence and absence locations.
 

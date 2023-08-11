@@ -18,7 +18,7 @@ project:
     - "maxnet/*"
 
 execute:
-  freeze: true
+  freeze: auto
   
 website:
   page-navigation: true  
@@ -53,9 +53,11 @@ website:
         contents:
           - text: "Roadmap"
             href: tutorial/Roadmap.Rmd
+          - text: "Region"
+            href: tutorial/00_Region.Rmd
           - text: "Marine Presence Data"
             href: tutorial/01_Presence_Data.Rmd
-          - text: "Generating Absence Data"
+          - text: "Absence Data"
             href: tutorial/02_Background_Data.Rmd
           - text: "Environmental Variables"
             href: tutorial/03_sdmpredictors-variables.Rmd

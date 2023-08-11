@@ -18,7 +18,6 @@ You will need to install a new version of maxnet for this tutorial.
 devtools::install_github("BigelowLab/maxnet")
 ```
 
-
 ```{r, warning=FALSE}
 suppressPackageStartupMessages({
 library(maxnet)
