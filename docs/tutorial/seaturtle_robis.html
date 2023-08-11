@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2023-08-08">
 
-<title>2023 Ocean Hackweek - get turtle data</title>
+<title>2023 Ocean Hackweek - Get turtle data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -89,7 +89,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../tutorial/background.html" rel="next">
-<link href="../tutorial/Get_seaturtle_data.html" rel="prev">
+<link href="../tutorial/03_sdmpredictors-variables.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -173,14 +173,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/Get_seaturtle_data.html" class="sidebar-item-text sidebar-link">Exploring OBIS data</a>
+  <a href="../tutorial/00_Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link">Marine Presence Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link">Generating Absence Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Environmental Variables</a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">SDM Workflow</a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Our workflow</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -211,6 +226,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">Turtle SDMs!!</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/Mackenzie_SDM_with_maxent.html" class="sidebar-item-text sidebar-link">SDM</a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -222,7 +252,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#step-1-define-the-region-of-interest" id="toc-step-1-define-the-region-of-interest" class="nav-link active" data-scroll-target="#step-1-define-the-region-of-interest">Step 1 define the region of interest</a></li>
   <li><a href="#get-occurrence-data-from-robis" id="toc-get-occurrence-data-from-robis" class="nav-link" data-scroll-target="#get-occurrence-data-from-robis">Get occurrence data from robis</a></li>
-  <li><a href="#download-data" id="toc-download-data" class="nav-link" data-scroll-target="#download-data">Download data</a></li>
+  <li><a href="#save-our-data" id="toc-save-our-data" class="nav-link" data-scroll-target="#save-our-data">Save our data</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/seaturtle_robis.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -299,43 +329,57 @@ Attaching package: 'rnaturalearthdata'</code></pre>
 </section>
 <section id="get-occurrence-data-from-robis" class="level2">
 <h2 class="anchored" data-anchor-id="get-occurrence-data-from-robis">Get occurrence data from robis</h2>
+<p>Download data for four species</p>
+<p>We will download data for four sea turtles found in the Arabian sea and save to one file. We will use the <code>occurrence()</code> function in the robis package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(robis)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="st">"Caretta caretta"</span> <span class="co"># loggerhead</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(spp, <span class="at">startdate =</span> <span class="fu">as.Date</span>(<span class="st">"2000-01-01"</span>), <span class="at">geometry =</span> wkt_geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Retrieved 5000 records of approximately 5269 (94%)
-Retrieved 5269 records of
-approximately 5269 (100%)</code></pre>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Chelonia mydas"</span>, <span class="st">"Caretta caretta"</span>, <span class="st">"Eretmochelys imbricata"</span>, <span class="st">"Lepidochelys olivacea"</span>, <span class="st">"Natator depressus"</span>, <span class="st">"Dermochelys coriacea"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> robis<span class="sc">::</span><span class="fu">occurrence</span>(spp, <span class="at">startdate =</span> <span class="fu">as.Date</span>(<span class="st">"2000-01-01"</span>), <span class="at">geometry =</span> wkt_geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>Subset columns and save.</p>
+<p>This has many columns that we don’t need. We will reduce to fewer columns.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"occurrenceID"</span>, <span class="st">"scientificName"</span>, <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, <span class="st">"decimalLatitude"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"coordinateUncertaintyInMeters"</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"individualCount"</span>,<span class="st">"lifeStage"</span>, <span class="st">"sex"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[,cols.to.use]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"occurrenceID"</span>, <span class="st">"scientificName"</span>, </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"decimalLatitude"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"coordinateUncertaintyInMeters"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"individualCount"</span>,<span class="st">"lifeStage"</span>, <span class="st">"sex"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> obs[,cols.to.use]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Save the data to a file for later use.</p>
+<p>We will also add a cleaner date with YYYY-MM-DD format.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(df, <span class="at">file=</span><span class="st">"/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/loggerhead-robis.csv"</span>, <span class="at">quote=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(obs<span class="sc">$</span>eventDate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="download-data" class="level2">
-<h2 class="anchored" data-anchor-id="download-data">Download data</h2>
-<p>We will download data for four sea turtles found in the Arabian sea and save to one file.</p>
+<section id="save-our-data" class="level2">
+<h2 class="anchored" data-anchor-id="save-our-data">Save our data</h2>
+<p>Set up the file names</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>spp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Chelonia mydas"</span>, <span class="st">"Caretta caretta"</span>, <span class="st">"Eretmochelys imbricata"</span>, <span class="st">"Lepidochelys olivacea"</span>, <span class="st">"Natator depressus"</span>, <span class="st">"Dermochelys coriacea"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(spp, <span class="at">startdate =</span> <span class="fu">as.Date</span>(<span class="st">"2000-01-01"</span>), <span class="at">geometry =</span> wkt_geometry)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"occurrenceID"</span>, <span class="st">"scientificName"</span>, <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, <span class="st">"decimalLatitude"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"coordinateUncertaintyInMeters"</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"individualCount"</span>,<span class="st">"lifeStage"</span>, <span class="st">"sex"</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span>(<span class="fu">all</span>(cols.to.use <span class="sc">%in%</span> <span class="fu">colnames</span>(df)))) <span class="cf">next</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[,cols.to.use]</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>fil<span class="ot">=</span><span class="fu">file.path</span>(</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/home"</span>, <span class="st">"jovyan"</span>, <span class="st">"R"</span>, <span class="st">"ohw23_proj_marinesdms"</span>, <span class="st">"data"</span>, <span class="st">"raw-bio"</span>, <span class="st">"io-sea-turtles.csv"</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(df, <span class="at">file=</span>fil, <span class="at">quote=</span><span class="cn">FALSE</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dir_data <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw-bio"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>filname <span class="ot">&lt;-</span> <span class="st">"io-sea-turtles"</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>obs_csv <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="fu">paste0</span>(filname, <span class="st">".csv"</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>obs_geo <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="fu">paste0</span>(filname, <span class="st">".geojson"</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>obs_gpkg <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="fu">paste0</span>(filname, <span class="st">".gpkg"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Change the data frame to a sf dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>obs_sf <span class="ot">&lt;-</span> obs <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    sf<span class="sc">::</span><span class="fu">st_as_sf</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"decimalLongitude"</span>, <span class="st">"decimalLatitude"</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">4326</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Save files in different formats.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>redo   <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(obs_csv) <span class="sc">|</span> redo)  readr<span class="sc">::</span><span class="fu">write_csv</span>(obs, obs_csv)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(obs_geo) <span class="sc">|</span> redo)  sf<span class="sc">::</span><span class="fu">write_sf</span>(obs_sf, obs_geo, <span class="at">delete_dsn=</span><span class="cn">TRUE</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(obs_gpkg) <span class="sc">|</span> redo)  sf<span class="sc">::</span><span class="fu">write_sf</span>(obs_sf, obs_gpkg, <span class="at">delete_dsn=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can reload our data as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(obs_gpkg)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tmp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -544,8 +588,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../tutorial/Get_seaturtle_data.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exploring OBIS data</span>
+      <a href="../tutorial/03_sdmpredictors-variables.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Environmental Variables</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

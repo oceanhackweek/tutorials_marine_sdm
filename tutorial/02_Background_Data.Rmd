@@ -1,0 +1,260 @@
+---
+title: "Getting background data from OBIS"
+---
+
+In this notebook, we will explore three approaches to create background samples, aka pseudo absences. These are points where turtles were not recorded. These absences are needed for our choice of species distribution model algorithm. "Absences" does not mean that turtle could not be sighted here but that we have no records at these locations, either because we didn't look or looked and didn't see them.
+  
+These three approaches are as follows:  
+- Get occurrences for marine species from OBIS using the `robis` package, and use their locations as the locations for absences. 
+- Select random locations using gridded environmental data as a base for our sampling.  
+- Select random locations using a polygon drawn around our presence locations.  
+In both cases, points will be constrained to fit within our area of interest.  
+  
+## Loading libraries
+
+```{r libraries, message = F}
+#Deal with spatial data
+library(sf)
+#Base maps and plotting spatial data
+library(rnaturalearth)
+library(mapview)
+library(raster)
+#Data visualisation and manipulation
+library(tidyverse)
+#Find files easily
+library(here)
+#Access to OBIS
+library(robis)
+#SDM
+library(sdmpredictors)
+library(dismo)
+library(ggspatial)
+```
+
+## Set-up
+### Setting base directories
+These directories contain the biological data (i.e., presence locations of loggerhead sea turtles) and environmental data.  
+  
+```{r base_dir}
+#Setting directories containing input data
+dir_data <- file.path(here(), "data/raw-bio")
+dir_env <- file.path(here(), "data/env")
+```
+
+### Loading bounding box for region of interest
+In the `01_Presence_Data` notebook, we created a bounding box for our region of interest. We will load this bounding box here to spatially constrain our data.
+
+```{r}
+#Loading bounding box for the area of interest
+extent_polygon <- read_sf("../data/BoundingBox.shp")
+
+#Extract polygon geometry 
+pol_geometry <- st_as_text(extent_polygon$geometry)
+```
+  
+### Plotting region of interest 
+This allows us to check our polygon of interest is located in the correct region.  
+  
+```{r map_aoi}
+#Getting base map
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+#Plotting map
+ggplot() + 
+  #Adding base map
+  geom_sf(data = world) +
+  #Adding bounding box
+  geom_sf(data = extent_polygon, color = "red", fill = NA)+
+  #Setting theme of plots to not include a grey background
+  theme_bw()
+```
+  
+Our bounding box is definitely in the region we are interested in. We will use this bounding box to filter out presence data from OBIS.  
+    
+## Approach 1: Use other species
+
+In this approach we use other marine species presence locations as our locations for our background samples.
+
+### Getting occurrence data from OBIS
+We will use `robis` to get observations for marine species from OBIS within our bounding box. OBIS data includes about 100 different columns, but not all of these columns are relevant to us. We will define the columns that we need and then we will perform a search of the OBIS database.  
+  
+### Defining relevant columns
+```{r rel_cols}
+cols.to.use <- c("scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters", "bathymetry",  "shoredistance", "sst", "sss")
+```
+  
+### Querying OBIS
+By setting the `wrims` parameter to `TRUE` we include observations of species registerd in the [World Register of Introduced Marine Species (WRiMS)](https://www.marinespecies.org/introduced/index.php).  
+  
+```{r obis_query}
+#Applying bounding box and including WRiMS species
+background <- occurrence(geometry = pol_geometry, wrims = TRUE, 
+                         #DNA data is not needed, subsetting columns of interest
+                         dna = FALSE, fields = cols.to.use,
+                         #Excluding records labelled as being on land
+                         exclude = "ON_LAND")
+```
+
+### Saving background data
+```{r save_bg, eval=FALSE}
+#Setting full file path to save background information
+file_path_out <- file.path(dir_data, "io-background.csv")
+
+#Saving background data as csv
+write_csv(background, file_path_out)
+```
+  
+### (Optional) Load background data
+If you have previously downloaded the background data, you can simply load the data to the environment instead of downloading it again. To do this, you can use the code below.  
+  
+```{r load_bg, eval=FALSE}
+#Find background file in our biological data folder
+file_path_bg <- list.files(dir_data, pattern = "background", full.names = TRUE)
+
+#Load file
+background_1 <- read_csv(file_path_bg)
+```
+  
+### Plotting background data
+We will create a map with all the observations we obtained from OBIS within our region of interest.  
+  
+```{r plot_bg1}
+#Extracting labels for countries in base map
+world_points <- world %>% 
+  st_make_valid(world) %>%
+  #Getting centroids for all polygons in the world base map
+  st_centroid(geometry) %>% 
+  #Getting coordinates for each centroid
+  st_coordinates() %>% 
+  #Adding centroids to original base map
+  bind_cols(world)
+
+#Saving map into variable
+plt <- ggplot()+
+  #Add world base map and change land colour
+  geom_sf(data = world, fill = "antiquewhite")+
+  #Add background points
+  geom_point(data = background, 
+             #Point to coordinates for background points
+             aes(x = decimalLongitude, y = decimalLatitude), 
+             #Changing color and size of points for background data
+             color = "red", size = 0.1)+
+  #Decrease map limits to focus on area of interest
+  lims(x = c(st_bbox(extent_polygon)$xmin, st_bbox(extent_polygon)$xmax),
+       y = c(st_bbox(extent_polygon)$ymin, st_bbox(extent_polygon)$ymax))+
+  #Add scale bar on the top right of the plot
+  annotation_scale(location = "tr", width_hint = 0.5)+
+  #Add north arrow on the top left of plot
+  annotation_north_arrow(location = "tl", which_north = "true",
+                         #Include small buffer from plot edge
+                         pad_x = unit(0.01, "in"), pad_y = unit(0.05, "in"),
+                         #Set style of north arrow
+                         style = north_arrow_fancy_orienteering) +
+  #Changing color, type and size of grid lines
+  theme(panel.grid.major = element_line(color = gray(.5), linetype = "dashed", size = 0.5), 
+        #Change background of map
+        panel.background = element_rect(fill = "aliceblue"))
+
+#Do not use spherical geometry
+sf_use_s2(FALSE)
+
+#Adding labels to map
+plt <- plt+
+  geom_text(data = world_points, 
+            #Point to coordinates and column with country names
+            aes(x = X, y = Y, label = name),
+            #Changing color and size of labels
+            color = "darkblue", size = 3, 
+            #Avoid label overlap
+            check_overlap = TRUE) +
+  #Change axes labels
+  labs(x = "longitude", y = "latitude")
+
+#Checking final map
+plt
+```
+  
+As you can see from the map above, this approach is not truly random. This is why we are including a second method to create background samples.
+
+## Approach 2. Random points in our region
+This section has been adapted from  [this online tutorial](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html).  
+  
+### Loading raster layer for area of interest
+We need to load a raster layer so we can have a sample grid from where we can generate random points for our background samples.  
+  
+Environmental data is downloaded using the `sdmpredictors` library.
+
+```{r load_env}
+#Set default directory for environmental data
+options(sdmpredictors_datadir = dir_env)
+
+#Getting datasets available through sdmpredictors
+list_datasets(terrestrial = FALSE, marine = TRUE)
+```
+  
+We will use the `MARSPEC` dataset to get some environmental data. We will now check what layers are available there.  
+  
+```{r marine_lyr}
+list_layers("MARSPEC")
+```
+  
+We will use bathymetry data, so the `MS_bathy_5m` layer suits our needs. We can use any layer that will not have NAs. We will load this data and crop it using our bounding box.  
+  
+```{r load_bathy}
+#Loading bathymetry
+env_stack <- load_layers("MS_bathy_5m") %>% 
+  #Cropping to our area of interest
+  crop(extent_polygon)
+```
+  
+Now we can plot the cropped bathymetry to ensure it matches our study region.
+  
+```{r plot_bathy}
+plot(env_stack)
+```
+  
+We can see the outline of African and Asian continents, which matches our area of interest. Now we can continue with creating our background points.
+  
+### Sample points from bathymetry layer
+Using the `dismo` package, we will create random points over the bathymetry layer that we will use as background points. In this example, we have chosen to produce 1000 background points.  
+  
+It is worth noting that the distribution and number of background points has a strong influence on SDM results. See the `README` file for resources discussing this issue.   
+  
+```{r bg_samp}
+#Setting seed for reproducibility
+set.seed(42)
+
+#Setting number of background points required
+nsamp <- 1000
+
+#Create background points
+background <- randomPoints(env_stack, nsamp) %>% 
+  #Transform to tibble
+  as_tibble() %>% 
+  #Transform to shapefile
+  st_as_sf(coords = c("x", "y"), crs = 4326)
+```
+
+### Plotting results
+We will plot results to make sure our background points are in the ocean only.  
+  
+```{r plot_bg_2}
+mapview(background, col.regions = "gray")
+```
+    
+### Saving background samples
+There are no background points on land. We can now save the background locations to our local machine.  
+    
+```{r save_absence}
+absence_geo <- file.path(dir_data, "absence.geojson")
+pts_absence_csv <- file.path(dir_data, "pts_absence.csv")
+st_write(background, pts_absence_csv, layer_options = "GEOMETRY=AS_XY", append = FALSE)
+```
+  
+## Approach 3. Random points a convex hull
+This section has been adapted from  [this online tutorial](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html) and [this online tutorial](https://github.com/BigelowLab/maxnet/wiki/stars).
+
+NEED TO ADD
+
+The next notebook will discuss how to get environmental data that we will use as inputs in our SDM from the `sdmpredictors` package.  
+  

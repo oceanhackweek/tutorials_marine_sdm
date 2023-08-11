@@ -1,13 +1,8 @@
 ---
-title: "get background data"
-output: html_document
-date: "2023-08-08"
+title: "Get background data"
 ---
 
-Here we explore 2 approaches.
-
-* Get all occurrences from robis in our polygon of interest and use that for lat/lon
-* Get random locations from our polygon of interest
+We used the random samples within our region of interest to generate a file with the locations for our absences.
 
 ## Set up
 
@@ -50,66 +45,7 @@ ggplot(data = world) + geom_sf() +
   geom_sf(data = extent_polygon, color = "red", fill=NA)
 ```
 
-## Get occurrence data from robis
-
-```{r}
-cols.to.use <- c("scientificName", "dateIdentified", "eventDate", "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters", "bathymetry",  "shoredistance", "sst", "sss")
-```
-
-```{r}
-library(robis)
-# Alas no bathymetry is downloaded
-df <- occurrence(geometry = wkt_geometry, wrims=TRUE, dna = FALSE, fields = cols.to.use)
-```
-
-
-Save the data to a file for later use.
-```{r eval = FALSE}
-fil <- file.path(here::here(), "data", "raw-bio", "io-background.csv")
-write.csv(df, file=fil, quote=FALSE)
-```
-
-
-### Read in the background
-
-```{r}
-fil <- file.path(here::here(), "data", "raw-bio", "io-background.csv")
-back1 <- read.csv(fil)
-```
-
-
-### Make a plot of the background
-
-This approach is not terribly random.
-
-```{r}
-library(ggplot2)
-library("ggspatial")
-library("sf")
-theme_set(theme_bw())
-world <- st_make_valid(world)
-world_points <- st_centroid(world)
-world_points <- cbind(world, st_coordinates(st_centroid(world$geometry)))
-
-
-plt <- ggplot(data = world) +
-    geom_sf(fill= "antiquewhite") +
-    geom_point(data = back1, aes(x=decimalLongitude, y=decimalLatitude), color = "red", size=0.1) +
-    annotation_scale(location = "bl", width_hint = 0.5) +
-    annotation_north_arrow(location = "bl", which_north = "true", 
-        pad_x = unit(0.15, "in"), pad_y = unit(0.25, "in"),
-        style = north_arrow_fancy_orienteering) +
-    coord_sf(xlim = lons, ylim = lats) +
-    theme(panel.grid.major = element_line(color = gray(.5), linetype = "dashed", size = 0.5), panel.background = element_rect(fill = "aliceblue"))
-
-sf_use_s2(FALSE)
-plt + geom_text(data = world_points, aes(x=X, y=Y, label=name),
-          color = "darkblue", size=2, check_overlap = TRUE) +
-  xlab("longitude") + ylab("latitude")
-
-```
-
-## Approach 2. Random samples
+## Random samples
 
 This is adapted from [here](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html).
 
@@ -128,7 +64,7 @@ env_stack <- sdmpredictors::load_layers("MS_bathy_5m")
 env_stack <- env_stack %>% raster::crop(ext)
 ```
 
-Now we can plot the bathymetry in our study region.
+Plot to check that the layer looks ok. This is bathymetry.
 
 ```{r}
 plot(env_stack)

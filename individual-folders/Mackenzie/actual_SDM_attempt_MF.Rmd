@@ -1,5 +1,5 @@
 ---
-title: "actual SDM attempt"
+title: "Maxent SDM attempt"
 output: html_document
 date: "2023-08-10"
 editor_options: 
@@ -8,6 +8,14 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pre-SDM
+### Set-up
+
+You will need to install a new version of maxnet.
+```{r eval=FALSE}
+devtools::install_github("BigelowLab/maxnet", force = TRUE)
 ```
 
 ```{r}
@@ -29,17 +37,15 @@ suppressPackageStartupMessages(
 })
 ```
 
-# Pre-SDM
-
-## Load data in
+### Load data in
 
 ```{r}
-pts.abs <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/pts_absence.csv") # X is lon and Y is lat
+pts.abs <- read.csv("data/raw-bio/pts_absence.csv") # X is lon and Y is lat
 
-io.turtles <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv") 
+io.turtles <- read.csv("data/raw-bio/io-sea-turtles.csv") 
 ```
 
-## Format occurrence data
+### Format occurrence data
 
 ```{r}
 spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea") # turtle species we're interested in
@@ -84,9 +90,9 @@ occ.points <- occ.points %>%
                                  sci.name == "Chelonia mydas" ~ "Green"))
 ```
 
-## SDM predictors
+### SDM predictors
 
-### Loading in
+Loading in
 
 ```{r}
 datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
@@ -95,7 +101,7 @@ layers <- list_layers(datasets)
 #View(layers)
 ```
 
-### Choosing and formatting
+Choosing and formatting
 
 ```{r}
 #layercodes <- c("BO_sstmean", "BO_bathymin", "BO_bathymax", "BO_bathymean", "BO2_chlomax_bdmean", "BO2_dissoxmin_bdmean", "BO2_dissoxmean_bdmean", "BO2_dissoxrange_bdmean", "BO2_nitratemean_bdmean", "BO2_phosphatemean_bdmean", "BO2_tempmean_bdmean", "BO2_temprange_bdmean", "BO2_salinitymean_bdmean", "BO2_salinityrange_bdmean", "BO2_tempmean_ss", "BO2_temprange_ss", "BO2_chlomean_ss") # my first go around with lots of env variables (hint this takes FORever)
@@ -128,7 +134,7 @@ io.rast <- raster::crop(env, extent(extent_polygon))
 plot(io.rast) # look NOT a rectangle- your env variables cropped to the Indian Ocean!
 ```
 
-## Pull in background data
+### Pull in background data
 
 ```{r}
 env.back <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>% 
@@ -137,7 +143,7 @@ env.back <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>%
 env.back
 ```
 
-## Combining env and occ data ?????
+### Combining env and occ data
 
 ```{r}
 poly <- occ.points %>%                                 # start with obs
@@ -148,9 +154,9 @@ poly <- occ.points %>%                                 # start with obs
   sf::st_transform(crs = sf::st_crs(4326))    # make spherical
 ```
 
-# SDM Model
+## SDM Model
 
-## Running model
+### Running model
 
 ```{r}
 env.obs <- na.omit(env.obs); env.back <- na.omit(env.back) # remove NA values
@@ -160,7 +166,7 @@ pres <- c(rep(1, nrow(env.obs)), rep(0, nrow(env.back))) # create values of 1 fo
 sdm.model <- maxnet::maxnet(pres, rbind(env.obs, env.back))
 ```
 
-## Model metrics
+### Model metrics
 
 ```{r}
 responses <- plot(sdm.model, type = "cloglog")
@@ -171,7 +177,8 @@ responses <- plot(sdm.model, type = "cloglog")
 ```{r}
 clamp <- TRUE       # see ?predict.maxnet for details
 type <- "cloglog"
-predicted <- predict(sdm.model, env.stars %>% sf::st_crop(bb), clamp = clamp, type = type)
+predicted <- predict(sdm.model, env.stars %>% 
+                       sf::st_crop(bb), clamp = clamp, type = type)
 predicted
 ```
 

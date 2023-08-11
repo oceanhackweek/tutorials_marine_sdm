@@ -186,7 +186,7 @@ model <- maxnet::maxnet(pres, dplyr::bind_rows(env_obs, env_back))
 summary(model) 
 plot(model, type = "cloglog")
 
-#Predicting something? not working yet
+#Predicting something? works now!
 #devtools::install_github("BigelowLab/maxnet")
 
 clamp <- TRUE       # see ?predict.maxnet for details

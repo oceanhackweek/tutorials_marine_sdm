@@ -303,6 +303,7 @@ plt + geom_text(data = world_points, aes(x=X, y=Y, label=name),
   ggtitle(spp, subtitle = "occurences since 2000")
 
 ```
+
 ```{r}
 path <- tempdir()
 recent <- geodata::worldclim_global(var="bio", res=10, path = path) |>

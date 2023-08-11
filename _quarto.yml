@@ -1,5 +1,7 @@
 project: 
   type: website
+  resources: 
+    - "SDM-team.mp3"
   output-dir: docs
   render:
     - "*.*"
@@ -9,7 +11,8 @@ project:
     - "!individual-folders/Eli/*"
     - "!individual-folders/Jade1/*"
     - "!individual-folders/Laura/*"
-    - "!individual-folders/Mackenzie/*"
+    - "!individual-folders/Mackenzie/OHW*"
+    - "!individual-folders/Mackenzie/*.rmarkdown"
     - "!individual-folders/Mary/*"
     - "!individual-folders/Paulo/*"
     - "!tutorial/Subset*"
@@ -49,9 +52,15 @@ website:
         href: index.md
       - section: Background
         contents:
-          - text: "Exploring OBIS data"
-            href: tutorial/Get_seaturtle_data.Rmd
-      - section: SDM Workflow
+          - text: "Roadmap"
+            href: tutorial/00_Roadmap.Rmd
+          - text: "Marine Presence Data"
+            href: tutorial/01_Presence_Data.Rmd
+          - text: "Generating Absence Data"
+            href: tutorial/02_Background_Data.Rmd
+          - text: "Environmental Variables"
+            href: tutorial/03_sdmpredictors-variables.Rmd
+      - section: Our workflow
         contents:
           - text: "Presence Data"
             href: tutorial/seaturtle_robis.Rmd
@@ -62,6 +71,10 @@ website:
           - text: "Model"
             href: tutorial/maxent-sdm.Rmd
           - text: "Visualization"
+      - section: Turtle SDMs!!
+        contents:
+          - text: "SDM"
+            href: tutorial/Mackenzie_SDM_with_maxent.Rmd
 
 format:
   html:
