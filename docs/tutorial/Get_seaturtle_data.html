@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-08-10">
+
+<title>2023 Ocean Hackweek - Exploring OBIS sea turtle observations</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../tutorial/seaturtle_robis.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Exploring OBIS sea turtle observations</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+      <a href="../" class="sidebar-logo-link">
+      <img src="https://oceanhackweek.org/_static/logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main tools-wide">
+    <a href="https://oceanhackweek.org/" title="OceanHackWeek" class="sidebar-tool px-1"><i class="bi bi-globe"></i></a>
+    <a href="https://github.com/oceanhackweek" title="GitHub" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle sidebar-tool" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Background</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/Get_seaturtle_data.html" class="sidebar-item-text sidebar-link active">Exploring OBIS data</a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">SDM Workflow</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/seaturtle_robis.html" class="sidebar-item-text sidebar-link">Presence Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/background.html" class="sidebar-item-text sidebar-link">Absence Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/occ_env.html" class="sidebar-item-text sidebar-link">Environmental Data</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../tutorial/maxent-sdm.html" class="sidebar-item-text sidebar-link">Model</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  Visualization
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">Turtle SDM!!</a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../individual-folders/Mackenzie/actual_SDM_attempt_MF.html" class="sidebar-item-text sidebar-link">SDM</a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link active" data-scroll-target="#loading-libraries">Loading libraries</a></li>
+  <li><a href="#create-a-bounding-box" id="toc-create-a-bounding-box" class="nav-link" data-scroll-target="#create-a-bounding-box">Create a bounding box</a>
+  <ul class="collapse">
+  <li><a href="#explore-obis-results" id="toc-explore-obis-results" class="nav-link" data-scroll-target="#explore-obis-results">Explore OBIS results</a></li>
+  <li><a href="#problematic-observations" id="toc-problematic-observations" class="nav-link" data-scroll-target="#problematic-observations">Problematic observations</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/Get_seaturtle_data.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Exploring OBIS sea turtle observations</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 10, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<p>In this section, we will explore <a href="https://www.iucnredlist.org/species/3897/119333622">Loggerhead sea turtle (<em>Caretta caretta</em>)</a> data from 2000 until present from the <a href="https://obis.org/">Ocean Biodiversity Information System (OBIS)</a>. We will use the <code>robis</code> package to search the OBIS library and download relevant data. We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).</p>
+<section id="loading-libraries" class="level1">
+<h1>Loading libraries</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Dealing with spatial data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Getting base maps</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Access to OBIS</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(robis)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Data manipulation and visualisation</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-a-bounding-box" class="level1">
+<h1>Create a bounding box</h1>
+<p>We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract <em>C. caretta</em> data relevant to our study area.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#We create a bounding box using minimum and maximum coordinate pairs</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>extent_polygon <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(<span class="fu">c</span>(<span class="at">xmin =</span> <span class="fl">41.875</span>, <span class="at">xmax =</span> <span class="fl">65.125</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymax =</span> <span class="sc">-</span><span class="fl">0.125</span>, <span class="at">ymin =</span> <span class="fl">32.125</span>), </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                          <span class="co">#Assign reference system</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">4326</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Turn into sf object</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sfc</span>()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract polygon geometry </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD # Get observations ======= # Get Observations &gt;&gt;&gt;&gt;&gt;&gt;&gt; e1113d9383b2e57473ce9195a510bd71774ecfda We will use the <code>robis</code> package to find observations of Loggerhead sea turtles (<em>C. caretta</em>) published in OBIS.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Search OBIS for loggerhead observations from 2000</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(<span class="st">"Caretta caretta"</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">startdate =</span> <span class="fu">as.Date</span>(<span class="st">"2000-01-01"</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                          <span class="co">#Apply spatial constraint</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">geometry =</span> pol_geometry,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                          <span class="co">#Include absence records if available</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">absence =</span> <span class="st">"include"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Retrieved 5000 records of approximately 5269 (94%)
+Retrieved 5269 records of
+approximately 5269 (100%)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check structure of results</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(caretta_obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 5,269
+Columns: 103
+$ associatedReferences          &lt;chr&gt; "[{\"crossref\":{\"citeinfo\":{\"origin\…
+$ basisOfRecord                 &lt;chr&gt; "MachineObservation", "MachineObservatio…
+$ bibliographicCitation         &lt;chr&gt; "[{\"crossref\":{\"citeinfo\":{\"origin\…
+$ catalogNumber                 &lt;chr&gt; "1014_8853", "1014_9766", "1014_8861", "…
+$ collectionCode                &lt;chr&gt; "1014", "1014", "1014", "1014", "1014", …
+$ coordinatePrecision           &lt;chr&gt; "9.99999999999999955e-07", "9.9999999999…
+$ coordinateUncertaintyInMeters &lt;chr&gt; "0.11", "0.11", "0.11", "0.11", "0.11", …
+$ datasetID                     &lt;chr&gt; "1014", "1014", "1014", "1014", "1014", …
+$ datasetName                   &lt;chr&gt; "IFREMER/Kélonia satellite tracked late …
+$ dateIdentified                &lt;chr&gt; "2012-03-30T08:55:10", "2011-04-12T19:12…
+$ decimalLatitude               &lt;dbl&gt; 9.14804, 6.40193, 9.21307, 15.39172, 15.…
+$ decimalLongitude              &lt;dbl&gt; 50.69448, 59.87883, 50.82211, 55.71303, …
+$ eventDate                     &lt;chr&gt; "2012-03-30T08:55:10", "2011-04-12T19:12…
+$ eventTime                     &lt;chr&gt; "05:55:10Z", "15:12:41Z", "23:43:31Z", "…
+$ family                        &lt;chr&gt; "Cheloniidae", "Cheloniidae", "Cheloniid…
+$ footprintWKT                  &lt;chr&gt; "POINT(50.69448 9.14804)", "POINT(59.878…
+$ genus                         &lt;chr&gt; "Caretta", "Caretta", "Caretta", "Carett…
+$ geodeticDatum                 &lt;chr&gt; "EPSG:4326 WGS84", "EPSG:4326 WGS84", "E…
+$ georeferencedDate             &lt;chr&gt; "2012-03-30T08:55:10", "2011-04-12T19:12…
+$ identificationRemarks         &lt;chr&gt; "Identification Type:Telemetry", "Identi…
+$ individualCount               &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1", "1", …
+$ institutionCode               &lt;chr&gt; "IFREMER and Kélonia", "IFREMER and Kélo…
+$ kingdom                       &lt;chr&gt; "Animalia", "Animalia", "Animalia", "Ani…
+$ license                       &lt;chr&gt; "http://creativecommons.org/licenses/by-…
+$ lifeStage                     &lt;chr&gt; "Juvenile", "Juvenile", "Juvenile", "Juv…
+$ modified                      &lt;chr&gt; "2013-10-25 13:35:20", "2013-10-25 13:35…
+$ nomenclaturalCode             &lt;chr&gt; "WoRMS LSID", "WoRMS LSID", "WoRMS LSID"…
+$ occurrenceID                  &lt;chr&gt; "1014_8853", "1014_9766", "1014_8861", "…
+$ occurrenceRemarks             &lt;chr&gt; "Telemetry", "Telemetry", "Telemetry", "…
+$ occurrenceStatus              &lt;chr&gt; "present", "present", "present", "presen…
+$ order                         &lt;chr&gt; "Testudines", "Testudines", "Testudines"…
+$ organismID                    &lt;chr&gt; "57684", "66818", "57684", "66839", "668…
+$ organismRemarks               &lt;chr&gt; "Tagged animal. organismID may refer to …
+$ ownerInstitutionCode          &lt;chr&gt; "IFREMER and Kélonia", "IFREMER and Kélo…
+$ phylum                        &lt;chr&gt; "Chordata", "Chordata", "Chordata", "Cho…
+$ recordNumber                  &lt;chr&gt; "1014_8853", "1014_9766", "1014_8861", "…
+$ scientificName                &lt;chr&gt; "Caretta caretta", "Caretta caretta", "C…
+$ scientificNameAuthorship      &lt;chr&gt; "(Linnaeus, 1758)", "(Linnaeus, 1758)", …
+$ scientificNameID              &lt;chr&gt; "urn:lsid:marinespecies.org:taxname:1372…
+$ specificEpithet               &lt;chr&gt; "caretta", "caretta", "caretta", "carett…
+$ taxonRank                     &lt;chr&gt; "Species", "Species", "Species", "Specie…
+$ taxonRemarks                  &lt;chr&gt; "Taxon recorded as \"Caretta caretta\" b…
+$ taxonomicStatus               &lt;chr&gt; "valid", "valid", "valid", "valid", "val…
+$ type                          &lt;chr&gt; "Event", "Event", "Event", "Event", "Eve…
+$ verbatimEventDate             &lt;chr&gt; "2012-03-30 08:55:10", "2011-04-12 19:12…
+$ vernacularName                &lt;chr&gt; "Loggerhead Sea Turtle", "Loggerhead Sea…
+$ waterBody                     &lt;chr&gt; "Reunion Island,Oman,South-Africa", "Reu…
+$ id                            &lt;chr&gt; "000341f8-f206-4120-bc73-432a0c729d7a", …
+$ dataset_id                    &lt;chr&gt; "7687b242-05b7-48d7-a316-ba6dc34e72b5", …
+$ node_id                       &lt;chr&gt; "573654c1-4ce7-4ea2-b2f1-e4d42f8f9c31", …
+$ date_start                    &lt;dbl&gt; 1.333066e+12, 1.302566e+12, 1.333152e+12…
+$ date_mid                      &lt;dbl&gt; 1.333066e+12, 1.302566e+12, 1.333152e+12…
+$ date_end                      &lt;dbl&gt; 1.333066e+12, 1.302566e+12, 1.333152e+12…
+$ date_year                     &lt;int&gt; 2012, 2011, 2012, 2011, 2011, 2011, 2011…
+$ dropped                       &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE…
+$ absence                       &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE…
+$ marine                        &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE…
+$ subphylum                     &lt;chr&gt; "Vertebrata", "Vertebrata", "Vertebrata"…
+$ infraphylum                   &lt;chr&gt; "Gnathostomata", "Gnathostomata", "Gnath…
+$ megaclass                     &lt;chr&gt; "Tetrapoda", "Tetrapoda", "Tetrapoda", "…
+$ superclass                    &lt;chr&gt; "Reptilia", "Reptilia", "Reptilia", "Rep…
+$ suborder                      &lt;chr&gt; "Cryptodira", "Cryptodira", "Cryptodira"…
+$ superfamily                   &lt;chr&gt; "Chelonioidea", "Chelonioidea", "Cheloni…
+$ species                       &lt;chr&gt; "Caretta caretta", "Caretta caretta", "C…
+$ kingdomid                     &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+$ phylumid                      &lt;int&gt; 1821, 1821, 1821, 1821, 1821, 1821, 1821…
+$ subphylumid                   &lt;int&gt; 146419, 146419, 146419, 146419, 146419, …
+$ infraphylumid                 &lt;int&gt; 1828, 1828, 1828, 1828, 1828, 1828, 1828…
+$ megaclassid                   &lt;int&gt; 1831, 1831, 1831, 1831, 1831, 1831, 1831…
+$ superclassid                  &lt;int&gt; 1838, 1838, 1838, 1838, 1838, 1838, 1838…
+$ orderid                       &lt;int&gt; 2689, 2689, 2689, 2689, 2689, 2689, 2689…
+$ suborderid                    &lt;int&gt; 148741, 148741, 148741, 148741, 148741, …
+$ superfamilyid                 &lt;int&gt; 987094, 987094, 987094, 987094, 987094, …
+$ familyid                      &lt;int&gt; 136999, 136999, 136999, 136999, 136999, …
+$ genusid                       &lt;int&gt; 137066, 137066, 137066, 137066, 137066, …
+$ speciesid                     &lt;int&gt; 137205, 137205, 137205, 137205, 137205, …
+$ aphiaID                       &lt;int&gt; 137205, 137205, 137205, 137205, 137205, …
+$ originalScientificName        &lt;chr&gt; "Caretta caretta", "Caretta caretta", "C…
+$ category                      &lt;chr&gt; "VU", "VU", "VU", "VU", "VU", "VU", "VU"…
+$ flags                         &lt;chr&gt; "NO_DEPTH", "NO_DEPTH", "NO_DEPTH", "NO_…
+$ bathymetry                    &lt;int&gt; 35, 3051, 136, 2784, 2453, 2736, 2880, 2…
+$ shoredistance                 &lt;int&gt; 4680, 899682, 12208, 193567, 143853, 100…
+$ sst                           &lt;dbl&gt; 26.21, 28.67, 26.21, 27.00, 26.92, 26.92…
+$ sss                           &lt;dbl&gt; 35.63, 35.74, 35.65, 36.09, 36.09, 36.10…
+$ dynamicProperties             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ sex                           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ continent                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ country                       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ day                           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ georeferenceRemarks           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ locality                      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ maximumDepthInMeters          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ maximumElevationInMeters      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ minimumDepthInMeters          &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ minimumElevationInMeters      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ month                         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ recordedBy                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ references                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ samplingProtocol              &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ year                          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ depth                         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ superdomain                   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ superdomainid                 &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</code></pre>
+</div>
+</div>
+<section id="explore-obis-results" class="level2">
+<h2 class="anchored" data-anchor-id="explore-obis-results">Explore OBIS results</h2>
+<p>Our search produced 5269 results for the area of our interest. However, before we continue to use this data as input for our species distribution models, we must clean it first to ensure we have a good quality dataset.</p>
+<p>In this section, we will explore the results of our OBIS search so we can design a data cleaning workflow. We will check the content of some of the columns in our data frame.</p>
+<p>You may want to refer to the <a href="https://manual.obis.org/darwin_core.html">OBIS manual</a> and the OBIS webpage about <a href="https://obis.org/data/access/">Data Access</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Checking values in basis of record column</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(basisOfRecord)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 1
+  basisOfRecord     
+  &lt;chr&gt;             
+1 MachineObservation
+2 Occurrence        </code></pre>
+</div>
+</div>
+<p>In this context, <code>MachineObservation</code> refers to records obtained with satellite tags. While <code>Occurrence</code> refers to records obtained by human observers on the field. These two datasets cannot be treated in the same way as <code>MachineObservation</code> records are not independent as they record the movements of a single individual.</p>
+<p>We can also check whether or not absence data is available for the loggerhead se a turtles in our area of interest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(absence)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  absence
+  &lt;lgl&gt;  
+1 FALSE  </code></pre>
+</div>
+</div>
+<p>We only have presence data available, which is an important factor to consider when designing our species distribution model workflow.</p>
+<p>We can also check the <code>coordinateUncertaintyInMeters</code>, which gives us an indication of the error associated with a particular record. If we look at the names of the columns printed at the beginning of the script, you may notice that this column has been read as characters. We will change it to numbers before looking at the values in the column.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Changing column from characters to numeric</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="ot">&lt;-</span> caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">coordinateUncertaintyInMeters =</span> <span class="fu">as.numeric</span>(coordinateUncertaintyInMeters))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Checking uncertainty values for coordinates</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(coordinateUncertaintyInMeters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 1
+  coordinateUncertaintyInMeters
+                          &lt;dbl&gt;
+1                          0.11
+2                     111319.  
+3                         NA   </code></pre>
+</div>
+</div>
+<p>It is worth noting that not all providers share a measurement of uncertainty, but we can use this whenever is available to apply some sort of quality control to our data.</p>
+<p>Here, we see that some observations have uncertainty of centimeters (0.11 m), but there are other observations with uncertainty over 100 km. For this example, we will remove these observations with large uncertainties.</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD ## Quality control flags ======= ## Check quality control flags &gt;&gt;&gt;&gt;&gt;&gt;&gt; e1113d9383b2e57473ce9195a510bd71774ecfda OBIS provides some quality control (QC) flags for each record that may help us identify observations of lower quality. For an explanation of OBIS flags, check <a href="https://github.com/iobis/obis-qc">this repository</a>.</p>
+<p>First, we will check the quality flags included in our results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(flags)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 1
+  flags             
+  &lt;chr&gt;             
+1 NO_DEPTH          
+2 NO_DEPTH,ON_LAND  
+3 DEPTH_EXCEEDS_BATH
+4 &lt;NA&gt;              </code></pre>
+</div>
+</div>
+<p>We will now plot our dataset on a map and use the information in the <code>flags</code> column to color code the observations. This can help us decide whether we should include or exclude them from further analyses.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Getting a world base map</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="st">"medium"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Starting a plot</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Adding base layer (world map)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world)<span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Adding sea turtle observations</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> caretta_obs, </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>             <span class="co">#Using coordinates to plot and color based on value in flags column</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(decimalLongitude, decimalLatitude, <span class="at">color =</span> flags))<span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Constraining map to original bounding box</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lims</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>xmin, <span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>xmax),</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">c</span>(<span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>ymin, <span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>ymax))<span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Applying theme without background</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Get_seaturtle_data_files/figure-html/plot_qc-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>From the plot above, we should consider removing at least some of the observations classified as <code>NO_DEPTH,ON_LAND</code>. This is because loggerhead sea turtles are not present inland. Instead, they are found in temperate and subtropical ocean waters and in sandy beaches.</p>
+<p>Some of these observations appear to be quite close to the shore, so they may have occurred in a sandy beach. We can check the proximity of the observation to the shore using the <code>shoredistance</code> column, which provides the distance to shore in meters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flags <span class="sc">==</span> <span class="st">"NO_DEPTH,ON_LAND"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(shoredistance) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(shoredistance))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 25 × 1
+   shoredistance
+           &lt;int&gt;
+ 1          -231
+ 2          -394
+ 3          -971
+ 4         -1403
+ 5         -3895
+ 6         -5896
+ 7         -8319
+ 8         -8562
+ 9        -17661
+10        -19763
+# … with 15 more rows</code></pre>
+</div>
+</div>
+<p>The inland observations are at least 231 meters away from the coast and up to 515 kilometers. For simplicity, we will remove all points flagged as <code>NO_DEPTH,ON_LAND</code>, but it is recommended that locations are looked more in depth and determine how likely it was that an individual was present at that location.</p>
+<p>We can also check if any other observations have been reported in land. We will filter out the <code>NO_DEPTH,ON_LAND</code> flags and check for any negative values in the <code>shoredistance</code> column.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>caretta_obs <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flags <span class="sc">!=</span> <span class="st">"NO_DEPTH,ON_LAND"</span> <span class="sc">&amp;</span> shoredistance <span class="sc">&lt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 103
+# … with 103 variables: associatedReferences &lt;chr&gt;, basisOfRecord &lt;chr&gt;,
+#   bibliographicCitation &lt;chr&gt;, catalogNumber &lt;chr&gt;, collectionCode &lt;chr&gt;,
+#   coordinatePrecision &lt;chr&gt;, coordinateUncertaintyInMeters &lt;dbl&gt;,
+#   datasetID &lt;chr&gt;, datasetName &lt;chr&gt;, dateIdentified &lt;chr&gt;,
+#   decimalLatitude &lt;dbl&gt;, decimalLongitude &lt;dbl&gt;, eventDate &lt;chr&gt;,
+#   eventTime &lt;chr&gt;, family &lt;chr&gt;, footprintWKT &lt;chr&gt;, genus &lt;chr&gt;,
+#   geodeticDatum &lt;chr&gt;, georeferencedDate &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>No observations were returned, which is good news.</p>
+<p>Another feature worth pointing out in our data is that some of the observations appear to be gridded as they are evenly spaced. This is confirmed by the <code>occurrenceRemarks</code> column, which states that some observations are: <code>Telemetry locations aggregated per species per 1-degree cell</code>. This is not ideal and you may need to consider if the inclusion of these data points are suitable for your project. In this example, we will remove them from our analysis.</p>
+</section>
+<section id="problematic-observations" class="level2">
+<h2 class="anchored" data-anchor-id="problematic-observations">Problematic observations</h2>
+<p>In this step, we will remove observations with coordinate uncertainty over 100 km, any observations with the <code>NO_DEPTH,ON_LAND</code> flag, and any records that have been aggregated to a 1-degree cell.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># caretta_obs %&gt;% </span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   #Removing on land observations</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(flags != "NO_DEPTH,ON_LAND" | is.na(flags)) %&gt;% </span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   #        | coordinateUncertaintyInMeters &gt; 100000) %&gt;% </span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   # filter(!str_detect(occurrenceRemarks, "degree"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next steps</h2>
+<p>Now that we’ve got explored the OBIS data we can finalize our dataset and import environmental data before running the SDM. For next steps, see <code>SDM Workflow</code> section.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../tutorial/seaturtle_robis.html" class="pagination-link">
+        <span class="nav-page-text">Presence Data</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">2023 OceanHackWeek</div>
+  </div>
+</footer>
+
+
+
+</body></html>

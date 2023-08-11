@@ -21,6 +21,7 @@ suppressPackageStartupMessages({
   library(dismo)
   library(lubridate)
   library(sdmpredictors)
+  library(zoon)
 })
 ```
 

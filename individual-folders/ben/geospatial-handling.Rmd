@@ -1,0 +1,84 @@
+---
+title: "Working with georeferenced observations"
+output:
+  md_document:
+    variant: markdown_github
+date: "2023-08-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Goal of the notebook
+In this notebook, we replicate the beginning of the [tutorial](../tutorial/Get_seaturtle_data.Rmd) on accessing data from OBIS.
+  
+What is changed is how we store the data both in memory and in file storage. When using spatial data (like point data for turtle observations), it good coding practice to leverage all of the spatial-data handling that R, Python and most modern languages provide.  The idea is that the coder can focus on the attributes (aka "variables!" "columns!") associated with each observation (aka "features!" "records!" or "rows!).  The spatial data (aka "geometry!") is handled silently for you - woot! woot!
+
+
+# Establish the directory heirarchy
+
+# Loading relevant libraries
+```{r libraries}
+suppressPackageStartupMessages({
+  #Dealing with spatial data
+  library(sf)
+  #Getting base maps
+  library(rnaturalearth)
+  #Access to OBIS
+  library(robis)
+  #Data manipulation and visualisation
+  library(tidyverse)
+  library(janitor)
+})
+```
+
+# Creating a bounding box
+We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract *C. caretta* data relevant to our study area.  
+  
+```{r bounding_box}
+#We create a bounding box using minimum and maximum coordinate pairs
+extent_polygon <- sf::st_bbox(c(xmin = 41.875, xmax = 65.125, 
+                            ymax = -0.125, ymin = 32.125), 
+                          #Assign reference system
+                          crs = sf::st_crs(4326)) |>    # the new pipe only needs 2 keystrokes! 
+  #Turn into sf object
+  sf::st_as_sfc()
+
+#Extract polygon geometry as text - needed for the OBIS query
+pol_geometry <- sf::st_as_text(extent_polygon[[1]])
+```
+  
+# Searching for sea turtle occurrence from OBIS
+We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
+
+```{r obis_search}
+#Search OBIS for loggerhead observations from 2000
+caretta_obs <- robis::occurrence("Caretta caretta", 
+                          startdate = as.Date("2000-01-01"),
+                          #Apply spatial constraint
+                          geometry = pol_geometry,
+                          #Include absence records if available
+                          absence = "include")
+dplyr::glimpse(caretta_obs)
+```
+
+```{r go_spatial}
+caretta_obs = caretta_obs |>
+  sf::st_as_sf(coords = c("decimalLongitude", "decimalLatitude"),
+               crs = 4326)
+caretta_obs
+```
+
+
+# Save the data in [Geopackage format](https://www.geopackage.org/)
+```{r save_spatial}
+caretta_obs = sf::write_sf(caretta_obs, here::here("data", "raw-bio", "io-sea-turtles.gpkg"))
+```
+
+
+# Read it back
+```{r read_spatial}
+x = sf::read_sf(here::here("data", "raw-bio", "io-sea-turtles.gpkg"))
+x
+```
