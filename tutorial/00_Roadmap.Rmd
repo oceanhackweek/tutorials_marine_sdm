@@ -7,11 +7,19 @@ title: "SDM Workflow"
 Creating a Species Distribution Model (SDM) has five steps. In the "Background" section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the "Our workflow" section, we show the specific approaches that we used in OHW23. Then in the "Turtle SDMs" section, we show the SDMs created by the team.
 
 1. Presence Data
+
    -- obtain Loggerhead sea turtle (*C. caretta*) presence data from OBIS via `robis` 
+   
 2. Background Points
+
    -- discusses three methods to create random background points within our area of interest 
+   
 3. Environmental Data
+
    -- shows how to obtain environmental predictors of interest using `sdmpredictors`
+   
 4. Model
+
    -- run species distribution model and predict using `maxnet`
+   
 5. Data Visualizations
