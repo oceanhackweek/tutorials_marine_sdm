@@ -1,5 +1,5 @@
 ---
-title: "Exploring OBIS sea turtle observations"
+title: "Obtaining presence data for loggerhead turtles from OBIS"
 output:
   md_document:
     variant: markdown_github
@@ -169,4 +169,4 @@ write_csv(caretta_obs, "../data/raw-bio/loggerhead-robis.csv")
 ```
   
 # Next steps
-Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see `SDM Workflow` section.
+Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see `Workflow/Roadmap` section in the [`README`](../README.md) file.
