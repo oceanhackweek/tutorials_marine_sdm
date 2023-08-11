@@ -1,5 +1,5 @@
 ---
-title: "marinesdms_Variables"
+title: "Marine SDM Variables"
 ---
 
 ```{r setup, include=FALSE}
@@ -104,3 +104,6 @@ For this tutorial, we chose the "mean" variable from the sdmpredictors package f
 ## Extract these variables
 
 The objective is to extract all these variables for our presence and absence locations.
+
+We will show this in the SDM examples. This is where the team ran into a numbers of hiccups.
+

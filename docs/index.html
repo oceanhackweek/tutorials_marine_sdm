@@ -24,7 +24,7 @@ ul.task-list{list-style: none;}
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./tutorial/00_Roadmap.html" rel="next">
+<link href="./tutorial/Roadmap.html" rel="next">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,7 @@ ul.task-list{list-style: none;}
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tutorial/00_Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
+  <a href="./tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -124,6 +124,11 @@ ul.task-list{list-style: none;}
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Environmental Variables</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorial/04_models.html" class="sidebar-item-text sidebar-link">Models</a>
   </div>
 </li>
       </ul>
@@ -151,14 +156,6 @@ ul.task-list{list-style: none;}
   <a href="./tutorial/occ_env.html" class="sidebar-item-text sidebar-link">Environmental Data</a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./tutorial/maxent-sdm.html" class="sidebar-item-text sidebar-link">Model</a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  Visualization
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -185,9 +182,7 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#ohw23_proj_marinesdms" id="toc-ohw23_proj_marinesdms" class="nav-link active" data-scroll-target="#ohw23_proj_marinesdms"><strong>ohw23_proj_marinesdms</strong></a>
-  <ul class="collapse">
-  <li><a href="#marine-species-distribution-model-sdm-tutorial" id="toc-marine-species-distribution-model-sdm-tutorial" class="nav-link" data-scroll-target="#marine-species-distribution-model-sdm-tutorial">Marine Species Distribution Model (SDM) Tutorial</a></li>
+  <li><a href="#marine-species-distribution-model-sdm-tutorial" id="toc-marine-species-distribution-model-sdm-tutorial" class="nav-link active" data-scroll-target="#marine-species-distribution-model-sdm-tutorial">Marine Species Distribution Model (SDM) Tutorial</a></li>
   <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
   <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background</a></li>
   <li><a href="#goals" id="toc-goals" class="nav-link" data-scroll-target="#goals">Goals</a></li>
@@ -201,7 +196,6 @@ ul.task-list{list-style: none;}
   <li><a href="#tutorial-developers" id="toc-tutorial-developers" class="nav-link" data-scroll-target="#tutorial-developers">Tutorial developers</a></li>
   <li><a href="#who-this-tutorial-is-intended" id="toc-who-this-tutorial-is-intended" class="nav-link" data-scroll-target="#who-this-tutorial-is-intended">Who this tutorial is intended:</a></li>
   <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources">Additional resources</a></li>
-  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/index.md" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -210,15 +204,15 @@ ul.task-list{list-style: none;}
 
 
 
-<section id="ohw23_proj_marinesdms" class="level1">
-<h1><strong>ohw23_proj_marinesdms</strong></h1>
 <section id="marine-species-distribution-model-sdm-tutorial" class="level2">
 <h2 class="anchored" data-anchor-id="marine-species-distribution-model-sdm-tutorial">Marine Species Distribution Model (SDM) Tutorial</h2>
 <p>Click to hear our song! Inspired by Myranda and AI!</p>
 <audio controls="">
 <source src="SDM-team.mp3" type="audio/mpeg">
 </audio>
-<p><img src="https://www.fisheries.noaa.gov/s3/dam-migration/green_sea_turtle.jpg" class="img-fluid"></p>
+<p float="left">
+<img src="https://www.fisheries.noaa.gov/s3/dam-migration/green_sea_turtle.jpg" width="45%"> <img src="images/sdm.png" width="45%">
+</p>
 </section>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
@@ -249,9 +243,8 @@ ul.task-list{list-style: none;}
 <section id="environmental-data" class="level3">
 <h3 class="anchored" data-anchor-id="environmental-data"><strong>Environmental Data</strong></h3>
 <p>This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the <code>SMDpredictor</code> R package and includes:</p>
-<p>-ENTER ALL FINAL PREDICTORS INCLUDED HERE</p>
 <ul>
-<li>paulo working on background–link to</li>
+<li>(https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/03_sdmpredictors-variables.html)</li>
 </ul>
 </section>
 </section>
@@ -327,7 +320,6 @@ loaded via a namespace (and not attached):
 <p>For information on how to use <code>git</code> and <code>GitHub</code> with <code>R</code>, <a href="https://happygitwithr.com/">Happy Git and GitHub for the useR</a> by Jenny Bryan is a great resource.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -535,7 +527,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./tutorial/00_Roadmap.html" class="pagination-link">
+      <a href="./tutorial/Roadmap.html" class="pagination-link">
         <span class="nav-page-text">Roadmap</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>

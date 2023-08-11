@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="ChatGPT">
 
-<title>2023 Ocean Hackweek - SDM Workflow</title>
+<title>2023 Ocean Hackweek - Marine Species Distribution Models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,6 +25,8 @@ ul.task-list{list-style: none;}
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../tutorial/seaturtle_robis.html" rel="next">
+<link href="../tutorial/03_sdmpredictors-variables.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -64,7 +67,7 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">SDM Workflow</h1>
+      <h1 class="quarto-secondary-nav-title">Marine Species Distribution Models</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -99,12 +102,12 @@ ul.task-list{list-style: none;}
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Background</a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Background</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
@@ -127,7 +130,7 @@ ul.task-list{list-style: none;}
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/04_models.html" class="sidebar-item-text sidebar-link">Models</a>
+  <a href="../tutorial/04_models.html" class="sidebar-item-text sidebar-link active">Models</a>
   </div>
 </li>
       </ul>
@@ -181,22 +184,29 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sdm-workflowroadmap" id="toc-sdm-workflowroadmap" class="nav-link active" data-scroll-target="#sdm-workflowroadmap">SDM Workflow/Roadmap</a></li>
+  <li><a href="#models" id="toc-models" class="nav-link active" data-scroll-target="#models">Models</a></li>
+  <li><a href="#maxent" id="toc-maxent" class="nav-link" data-scroll-target="#maxent">Maxent</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/00_Roadmap.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/04_models.md" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">SDM Workflow</h1>
+<h1 class="title d-none d-lg-block">Marine Species Distribution Models</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ChatGPT </p>
+          </div>
+  </div>
     
     
   </div>
@@ -204,9 +214,36 @@ ul.task-list{list-style: none;}
 
 </header>
 
-<section id="sdm-workflowroadmap" class="level2">
-<h2 class="anchored" data-anchor-id="sdm-workflowroadmap">SDM Workflow/Roadmap</h2>
-<p>Creating a Species Distribution Model (SDM) has five steps. In the “Background” section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the “Our workflow” section, we show the specific approaches that we used in OHW23. Then in the “Turtle SDMs” section, we show the SDMs created by the team. 1. Presence Data – obtain Loggerhead sea turtle (<em>C. caretta</em>) presence data from OBIS via <code>robis</code> 2. Background Points – discusses three methods to create random background points within our area of interest 3. Environmental Data – shows how to obtain environmental predictors of interest using <code>sdmpredictors</code> 4. Model – run species distribution model and predict using <code>maxnet</code> 5. Data Visualizations</p>
+<section id="models" class="level2">
+<h2 class="anchored" data-anchor-id="models">Models</h2>
+<p>Species distribution modeling (SDM) involves various statistical and machine learning techniques to predict the spatial distribution of species based on environmental variables. Some of the main models used for SDMs include:</p>
+<ol type="1">
+<li><p><strong>Maxent (Maximum Entropy Model):</strong> Maxent is a widely used model for SDMs. It aims to find the distribution that is the most spread out (has the highest entropy) while satisfying the constraints of observed species presences and environmental variables. It’s particularly useful when dealing with presence-only data. <a href="https://support.bccvl.org.au/support/solutions/articles/6000083216-maxent">More on Maxent</a></p></li>
+<li><p><strong>GLM (Generalized Linear Model):</strong> GLMs are a broad class of models that include linear regression as a special case. In the context of SDMs, GLMs can be extended to model species presence or absence based on environmental predictors.</p></li>
+<li><p><strong>Random Forest:</strong> Random Forest is an ensemble learning technique that builds multiple decision trees and combines their predictions. It’s robust and can handle complex interactions between variables, making it suitable for SDMs.</p></li>
+<li><p><strong>Boosted Regression Trees (BRT):</strong> BRT is another ensemble method that combines multiple decision trees, but unlike Random Forest, it builds trees sequentially, with each tree trying to correct the errors of the previous one.</p></li>
+<li><p><strong>SVM (Support Vector Machine):</strong> SVMs are used for classification tasks and can be adapted to predict species presence or absence based on environmental variables.</p></li>
+<li><p><strong>ANN (Artificial Neural Networks):</strong> Neural networks can capture complex relationships in the data and have been used for SDMs, particularly for large datasets.</p></li>
+<li><p><strong>GAM (Generalized Additive Model):</strong> GAMs extend GLMs by allowing non-linear relationships between predictors and the response variable. They’re useful for capturing complex species-environment relationships.</p></li>
+<li><p><strong>Maxlike (Maximum Likelihood Model):</strong> Maxlike models use maximum likelihood estimation to predict species distribution based on observed data and environmental predictors.</p></li>
+<li><p><strong>MARS (Multivariate Adaptive Regression Splines):</strong> MARS models can capture non-linear relationships and interactions between predictors. They’re particularly useful when the relationships are complex and not well represented by linear models.</p></li>
+<li><p><strong>SDMs with Hierarchical Models:</strong> Some researchers use hierarchical models, such as Bayesian models, to incorporate prior knowledge and uncertainty in SDMs.</p></li>
+</ol>
+<p>The choice of model depends on the nature of your data, the assumptions you’re willing to make, the complexity of relationships, and the specific goals of your analysis. It’s often recommended to compare multiple models and evaluate their performance using appropriate metrics before deciding on the best model for your SDM.</p>
+</section>
+<section id="maxent" class="level2">
+<h2 class="anchored" data-anchor-id="maxent">Maxent</h2>
+<p>The Maxent algorithm, short for “Maximum Entropy,” is a machine learning technique used primarily for species distribution modeling. It’s designed to model the probability distribution of a species across geographic space based on environmental variables. Maxent aims to find the distribution that is the most spread out or has the highest entropy while satisfying a set of constraints provided by the available data.</p>
+<p>Here’s a high-level overview of how the Maxent algorithm works:</p>
+<ol type="1">
+<li><p><strong>Input Data:</strong> Maxent requires two main types of input data: presence data (locations where the species is known to occur) and environmental variables (such as temperature, precipitation, land cover, etc.). The presence data provides information about where the species has been observed.</p></li>
+<li><p><strong>Feature Creation:</strong> Maxent uses the presence data to create a set of features (combinations of environmental variables) that represent the observed conditions at the presence locations.</p></li>
+<li><p><strong>Model Training:</strong> The goal of Maxent is to find a probability distribution of environmental conditions that matches the observed presence locations while maximizing entropy (spreading out the distribution as much as possible). It’s formulated as a constrained optimization problem, where the model seeks to find the distribution that is closest to uniform (highest entropy) while satisfying constraints based on the presence data.</p></li>
+<li><p><strong>Regularization:</strong> Maxent uses regularization to avoid overfitting the model to the presence data. Regularization adds a penalty for overly complex models. This helps prevent the model from fitting the noise in the presence data.</p></li>
+<li><p><strong>Probability Prediction:</strong> Once the Maxent model is trained, it can be used to predict the probability of species presence across the entire study area based on the input environmental variables.</p></li>
+<li><p><strong>Model Evaluation:</strong> The model’s predictive performance can be evaluated using various metrics, such as Area Under the Receiver Operating Characteristic Curve (AUC-ROC) or Area Under the Precision-Recall Curve (AUC-PR), which assess how well the model discriminates between presence and absence locations.</p></li>
+</ol>
+<p>Maxent is popular for species distribution modeling because it’s able to handle presence-only data (locations where the species is known to occur) and work with complex relationships between species and environmental variables. However, it’s important to note that Maxent models can still be subject to bias and limitations based on data quality and the assumptions of the algorithm.</p>
 
 
 </section>
@@ -412,6 +449,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../tutorial/03_sdmpredictors-variables.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Environmental Variables</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../tutorial/seaturtle_robis.html" class="pagination-link">
+        <span class="nav-page-text">Presence Data</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

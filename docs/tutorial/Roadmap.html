@@ -24,6 +24,8 @@ ul.task-list{list-style: none;}
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../tutorial/01_Presence_Data.html" rel="next">
+<link href="../index.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -99,15 +101,15 @@ ul.task-list{list-style: none;}
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Background</a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Background</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
+  <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link active">Roadmap</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -181,9 +183,9 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sdm-workflowroadmap" id="toc-sdm-workflowroadmap" class="nav-link active" data-scroll-target="#sdm-workflowroadmap">SDM Workflow/Roadmap</a></li>
+  <li><a href="#sdm-roadmap" id="toc-sdm-roadmap" class="nav-link active" data-scroll-target="#sdm-roadmap">SDM Roadmap</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/00_Roadmap.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/Roadmap.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -204,9 +206,28 @@ ul.task-list{list-style: none;}
 
 </header>
 
-<section id="sdm-workflowroadmap" class="level2">
-<h2 class="anchored" data-anchor-id="sdm-workflowroadmap">SDM Workflow/Roadmap</h2>
-<p>Creating a Species Distribution Model (SDM) has five steps. In the “Background” section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the “Our workflow” section, we show the specific approaches that we used in OHW23. Then in the “Turtle SDMs” section, we show the SDMs created by the team. 1. Presence Data – obtain Loggerhead sea turtle (<em>C. caretta</em>) presence data from OBIS via <code>robis</code> 2. Background Points – discusses three methods to create random background points within our area of interest 3. Environmental Data – shows how to obtain environmental predictors of interest using <code>sdmpredictors</code> 4. Model – run species distribution model and predict using <code>maxnet</code> 5. Data Visualizations</p>
+<section id="sdm-roadmap" class="level2">
+<h2 class="anchored" data-anchor-id="sdm-roadmap">SDM Roadmap</h2>
+<p>Creating a Species Distribution Model (SDM) has five steps. In the “Background” section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the “Our workflow” section, we show the specific approaches that we used in OHW23. Then in the “Turtle SDMs” section, we show the SDMs created by the team.</p>
+<ol type="1">
+<li>Presence Data
+<ul>
+<li>obtain Loggerhead sea turtle (<em>C. caretta</em>) presence data from OBIS via <code>robis</code></li>
+</ul></li>
+<li>Background Points
+<ul>
+<li>discusses three methods to create random background points within our area of interest</li>
+</ul></li>
+<li>Environmental Data
+<ul>
+<li>shows how to obtain environmental predictors of interest using <code>sdmpredictors</code></li>
+</ul></li>
+<li>Model
+<ul>
+<li>run species distribution model and predict using <code>maxnet</code></li>
+</ul></li>
+<li>Data Visualizations</li>
+</ol>
 
 
 </section>
@@ -412,6 +433,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../tutorial/01_Presence_Data.html" class="pagination-link">
+        <span class="nav-page-text">Marine Presence Data</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

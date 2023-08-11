@@ -11,8 +11,7 @@ project:
     - "!individual-folders/Eli/*"
     - "!individual-folders/Jade1/*"
     - "!individual-folders/Laura/*"
-    - "!individual-folders/Mackenzie/OHW*"
-    - "!individual-folders/Mackenzie/*.rmarkdown"
+    - "!individual-folders/Mackenzie/*"
     - "!individual-folders/Mary/*"
     - "!individual-folders/Paulo/*"
     - "!tutorial/Subset*"
@@ -53,13 +52,15 @@ website:
       - section: Background
         contents:
           - text: "Roadmap"
-            href: tutorial/00_Roadmap.Rmd
+            href: tutorial/Roadmap.Rmd
           - text: "Marine Presence Data"
             href: tutorial/01_Presence_Data.Rmd
           - text: "Generating Absence Data"
             href: tutorial/02_Background_Data.Rmd
           - text: "Environmental Variables"
             href: tutorial/03_sdmpredictors-variables.Rmd
+          - text: "Models"
+            href: tutorial/04_models.md
       - section: Our workflow
         contents:
           - text: "Presence Data"
@@ -68,9 +69,6 @@ website:
             href: tutorial/background.Rmd
           - text: "Environmental Data"
             href: tutorial/occ_env.Rmd
-          - text: "Model"
-            href: tutorial/maxent-sdm.Rmd
-          - text: "Visualization"
       - section: Turtle SDMs!!
         contents:
           - text: "SDM"

@@ -1,5 +1,3 @@
-# **ohw23_proj_marinesdms**
-
 ## Marine Species Distribution Model (SDM) Tutorial
 
 ## Overview
