@@ -75,7 +75,7 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
 - [Collins Ongore] () 
 - [Mary Solokas](https://github.com/marysolokas): John A. Knauss Marine Policy Fellow, National Oceanic and Atmospheric Administration
 - [Laura Tsang](https://github.com/lauratsang):
-- [Ben Tupper](https://github.com/btupper):
+- [Ben Tupper](https://github.com/btupper)(helper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
 
 ---
 
