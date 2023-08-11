@@ -6,6 +6,12 @@ Click to hear our song! Inspired by Myranda and AI!
          <source src = "SDM-team.mp3" type = "audio/mpeg">
 </audio>
 
+(Chorus)</br>
+*Under the sea, where turtles roam so free,*</br>
+*Using models to unlock their mystery,*</br>
+*Species distribution, a vital contribution,*</br>
+*In the Arabian Sea, our quest for clarity!*</br>
+
 <p float="left">
   <img src="https://www.fisheries.noaa.gov/s3/dam-migration/green_sea_turtle.jpg" width="45%" /> 
   <img src="images/sdm.png" width="45%" />

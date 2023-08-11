@@ -194,12 +194,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../tutorial/00_Region.html" class="sidebar-item-text sidebar-link">Region</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link">Marine Presence Data</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link active">Generating Absence Data</a>
+  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link active">Absence Data</a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -268,7 +273,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#setting-base-directories" id="toc-setting-base-directories" class="nav-link" data-scroll-target="#setting-base-directories">Setting base directories</a></li>
   <li><a href="#loading-bounding-box-for-region-of-interest" id="toc-loading-bounding-box-for-region-of-interest" class="nav-link" data-scroll-target="#loading-bounding-box-for-region-of-interest">Loading bounding box for region of interest</a></li>
-  <li><a href="#plotting-region-of-interest" id="toc-plotting-region-of-interest" class="nav-link" data-scroll-target="#plotting-region-of-interest">Plotting region of interest</a></li>
   </ul></li>
   <li><a href="#approach-1-use-other-species" id="toc-approach-1-use-other-species" class="nav-link" data-scroll-target="#approach-1-use-other-species">Approach 1: Use other species</a>
   <ul class="collapse">
@@ -310,10 +314,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <p>In this notebook, we will explore three approaches to create background samples, aka pseudo absences. These are points where turtles were not recorded. These absences are needed for our choice of species distribution model algorithm. “Absences” does not mean that turtle could not be sighted here but that we have no records at these locations, either because we didn’t look or looked and didn’t see them.</p>
-<p>These three approaches are as follows:<br>
-- Get occurrences for marine species from OBIS using the <code>robis</code> package, and use their locations as the locations for absences. - Select random locations using gridded environmental data as a base for our sampling.<br>
-- Select random locations using a polygon drawn around our presence locations.<br>
-In both cases, points will be constrained to fit within our area of interest.</p>
+<p>These three approaches are as follows:</p>
+<ul>
+<li>Get occurrences for marine species from OBIS using the <code>robis</code> package, and use their locations as the locations for absences.</li>
+<li>Select random locations using gridded environmental data as a base for our sampling.<br>
+</li>
+<li>Select random locations using a polygon drawn around our presence locations.</li>
+</ul>
+<p>In both cases, points will be constrained to fit within our area of interest.</p>
 <section id="loading-libraries" class="level2">
 <h2 class="anchored" data-anchor-id="loading-libraries">Loading libraries</h2>
 <div class="cell">
@@ -348,35 +356,15 @@ In both cases, points will be constrained to fit within our area of interest.</p
 </section>
 <section id="loading-bounding-box-for-region-of-interest" class="level3">
 <h3 class="anchored" data-anchor-id="loading-bounding-box-for-region-of-interest">Loading bounding box for region of interest</h3>
-<p>In the <code>01_Presence_Data</code> notebook, we created a bounding box for our region of interest. We will load this bounding box here to spatially constrain our data.</p>
+<p>In the <a href="tutorial/Region.html">Region page</a>, we created a bounding box for our region of interest. We will load this bounding box here to spatially constrain our data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Loading bounding box for the area of interest</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>extent_polygon <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"../data/BoundingBox.shp"</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract polygon geometry </span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fil <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"region"</span>, <span class="st">"BoundingBox.shp"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>extent_polygon <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(fil)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract polygon geometry </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>pol_geometry <span class="ot">&lt;-</span> <span class="fu">st_as_text</span>(extent_polygon<span class="sc">$</span>geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="plotting-region-of-interest" class="level3">
-<h3 class="anchored" data-anchor-id="plotting-region-of-interest">Plotting region of interest</h3>
-<p>This allows us to check our polygon of interest is located in the correct region.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Getting base map</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>world <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">scale =</span> <span class="st">"medium"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Plotting map</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Adding base map</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Adding bounding box</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> extent_polygon, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fill =</span> <span class="cn">NA</span>)<span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Setting theme of plots to not include a grey background</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="02_Background_Data_files/figure-html/map_aoi-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Our bounding box is definitely in the region we are interested in. We will use this bounding box to filter out presence data from OBIS.</p>
 </section>
 </section>
 <section id="approach-1-use-other-species" class="level2">
@@ -389,19 +377,19 @@ In both cases, points will be constrained to fit within our area of interest.</p
 <section id="defining-relevant-columns" class="level3">
 <h3 class="anchored" data-anchor-id="defining-relevant-columns">Defining relevant columns</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"scientificName"</span>, <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, <span class="st">"decimalLatitude"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"coordinateUncertaintyInMeters"</span>, <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cols.to.use <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"scientificName"</span>, <span class="st">"dateIdentified"</span>, <span class="st">"eventDate"</span>, <span class="st">"decimalLatitude"</span>, <span class="st">"decimalLongitude"</span>, <span class="st">"coordinateUncertaintyInMeters"</span>, <span class="st">"bathymetry"</span>,  <span class="st">"shoredistance"</span>, <span class="st">"sst"</span>, <span class="st">"sss"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="querying-obis" class="level3">
 <h3 class="anchored" data-anchor-id="querying-obis">Querying OBIS</h3>
 <p>By setting the <code>wrims</code> parameter to <code>TRUE</code> we include observations of species registerd in the <a href="https://www.marinespecies.org/introduced/index.php">World Register of Introduced Marine Species (WRiMS)</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Applying bounding box and including WRiMS species</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>background <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(<span class="at">geometry =</span> pol_geometry, <span class="at">wrims =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                         <span class="co">#DNA data is not needed, subsetting columns of interest</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dna =</span> <span class="cn">FALSE</span>, <span class="at">fields =</span> cols.to.use,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                         <span class="co">#Excluding records labelled as being on land</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">exclude =</span> <span class="st">"ON_LAND"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Applying bounding box and including WRiMS species</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>background <span class="ot">&lt;-</span> <span class="fu">occurrence</span>(<span class="at">geometry =</span> pol_geometry, <span class="at">wrims =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                         <span class="co">#DNA data is not needed, subsetting columns of interest</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">dna =</span> <span class="cn">FALSE</span>, <span class="at">fields =</span> cols.to.use,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                         <span class="co">#Excluding records labelled as being on land</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">exclude =</span> <span class="st">"ON_LAND"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Retrieved 5000 records of approximately 20428 (24%)
@@ -418,89 +406,41 @@ records of approximately 20428 (100%)</code></pre>
 <section id="saving-background-data" class="level3">
 <h3 class="anchored" data-anchor-id="saving-background-data">Saving background data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting full file path to save background information</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>file_path_out <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="st">"io-background.csv"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Saving background data as csv</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(background, file_path_out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting full file path to save background information</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>file_path_out <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="st">"io-background.csv"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Saving background data as csv</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(background, file_path_out)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="optional-load-background-data" class="level3">
 <h3 class="anchored" data-anchor-id="optional-load-background-data">(Optional) Load background data</h3>
 <p>If you have previously downloaded the background data, you can simply load the data to the environment instead of downloading it again. To do this, you can use the code below.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Find background file in our biological data folder</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>file_path_bg <span class="ot">&lt;-</span> <span class="fu">list.files</span>(dir_data, <span class="at">pattern =</span> <span class="st">"background"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Load file</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>background_1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(file_path_bg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Find background file in our biological data folder</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>file_path_bg <span class="ot">&lt;-</span> <span class="fu">list.files</span>(dir_data, <span class="at">pattern =</span> <span class="st">"background"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Load file</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>background_1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(file_path_bg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="plotting-background-data" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-background-data">Plotting background data</h3>
 <p>We will create a map with all the observations we obtained from OBIS within our region of interest.</p>
+<p>First we will load the region map that was saved in the <a href="tutorial/00_Region.Rmd">Region page</a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Extracting labels for countries in base map</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>world_points <span class="ot">&lt;-</span> world <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_make_valid</span>(world) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Getting centroids for all polygons in the world base map</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_centroid</span>(geometry) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Getting coordinates for each centroid</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_coordinates</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Adding centroids to original base map</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(world)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in st_centroid.sf(., geometry): st_centroid assumes attributes are
-constant over geometries of x</code></pre>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fil <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"region"</span>, <span class="st">"region_map_label.rda"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(fil)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Saving map into variable</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plt <span class="ot">&lt;-</span> <span class="fu">ggplot</span>()<span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Add world base map and change land colour</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> world, <span class="at">fill =</span> <span class="st">"antiquewhite"</span>)<span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Add background points</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> background, </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>             <span class="co">#Point to coordinates for background points</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> decimalLongitude, <span class="at">y =</span> decimalLatitude), </span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>             <span class="co">#Changing color and size of points for background data</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.1</span>)<span class="sc">+</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Decrease map limits to focus on area of interest</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lims</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>xmin, <span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>xmax),</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fu">c</span>(<span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>ymin, <span class="fu">st_bbox</span>(extent_polygon)<span class="sc">$</span>ymax))<span class="sc">+</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Add scale bar on the top right of the plot</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotation_scale</span>(<span class="at">location =</span> <span class="st">"tr"</span>, <span class="at">width_hint =</span> <span class="fl">0.5</span>)<span class="sc">+</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Add north arrow on the top left of plot</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotation_north_arrow</span>(<span class="at">location =</span> <span class="st">"tl"</span>, <span class="at">which_north =</span> <span class="st">"true"</span>,</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                         <span class="co">#Include small buffer from plot edge</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                         <span class="at">pad_x =</span> <span class="fu">unit</span>(<span class="fl">0.01</span>, <span class="st">"in"</span>), <span class="at">pad_y =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"in"</span>),</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                         <span class="co">#Set style of north arrow</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                         <span class="at">style =</span> north_arrow_fancy_orienteering) <span class="sc">+</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Changing color, type and size of grid lines</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="fu">gray</span>(.<span class="dv">5</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">size =</span> <span class="fl">0.5</span>), </span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Change background of map</span></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"aliceblue"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
-ℹ Please use the `linewidth` argument instead.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Do not use spherical geometry</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sf_use_s2</span>(<span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Spherical geometry (s2) switched off</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Adding labels to map</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>plt <span class="ot">&lt;-</span> plt<span class="sc">+</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> world_points, </span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="co">#Point to coordinates and column with country names</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> X, <span class="at">y =</span> Y, <span class="at">label =</span> name),</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>            <span class="co">#Changing color and size of labels</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"darkblue"</span>, <span class="at">size =</span> <span class="dv">3</span>, </span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            <span class="co">#Avoid label overlap</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Change axes labels</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"longitude"</span>, <span class="at">y =</span> <span class="st">"latitude"</span>)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Checking final map</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Saving map into variable</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load our base map and add points</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>region_map_label <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> background, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>             <span class="co">#Point to coordinates for background points</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> decimalLongitude, <span class="at">y =</span> decimalLatitude), </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>             <span class="co">#Changing color and size of points for background data</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Scale on map varies by more than 10%, scale bar may be inaccurate</code></pre>
 </div>
@@ -508,7 +448,7 @@ constant over geometries of x</code></pre>
 <pre><code>Warning: Removed 231 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="02_Background_Data_files/figure-html/plot_bg1-1.png" class="img-fluid" width="672"></p>
+<p><img src="02_Background_Data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>As you can see from the map above, this approach is not truly random. This is why we are including a second method to create background samples.</p>
@@ -519,459 +459,49 @@ constant over geometries of x</code></pre>
 <p>This section has been adapted from <a href="https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html">this online tutorial</a>.</p>
 <section id="loading-raster-layer-for-area-of-interest" class="level3">
 <h3 class="anchored" data-anchor-id="loading-raster-layer-for-area-of-interest">Loading raster layer for area of interest</h3>
-<p>We need to load a raster layer so we can have a sample grid from where we can generate random points for our background samples.</p>
-<p>Environmental data is downloaded using the <code>sdmpredictors</code> library.</p>
+<p>We will be using sdmpredictors for our environmental data layers (variables). We need to load a raster layer from sdmpredictors so we can sample locations from this raster. It doesn’t matter what variable we use, it just needs to not have NAs. Using a marine layer from sdmpredictors ensures that we will not sample from the land. See the <a href="tutorial/03_sdmpredictors-variables.html">sdmpredictors section</a> for discussion of accessing rasters with sdmpredictors and how to find out what layers are available.</p>
+<p>We used a bathymetery layer: “MS_bathy_5m”. We will load this data and crop it using our bounding box.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Set default directory for environmental data</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">sdmpredictors_datadir =</span> dir_env)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Getting datasets available through sdmpredictors</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list_datasets</span>(<span class="at">terrestrial =</span> <span class="cn">FALSE</span>, <span class="at">marine =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  dataset_code terrestrial marine                     url
-2   Bio-ORACLE       FALSE   TRUE https://bio-oracle.org/
-3      MARSPEC       FALSE   TRUE     http://marspec.org/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               description
-2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Bio-ORACLE is a set of GIS rasters providing geophysical, biotic and environmental data for surface and benthic marine realms at a spatial resolution 5 arcmin (9.2 km) in the ESRI ascii and tif format.
-3 MARSPEC is a set of high resolution climatic and geophysical GIS data layers for the world ocean. Seven geophysical variables were derived from the SRTM30_PLUS high resolution bathymetry dataset.  These layers characterize the horizontal orientation (aspect), slope, and curvature of the seafloor and the distance from shore.  Ten "bioclimatic" variables were derived from NOAA's World Ocean Atlas and NASA's MODIS satellite imagery and characterize the inter-annual means, extremes, and variances in sea surface temperature and salinity. These variables will be useful to those interested in the spatial ecology of marine shallow-water and surface-associated pelagic organisms across the globe. Note that, in contrary to the original MARSPEC, all layers have unscaled values.
-                                                                                                                                                                                                                                  citation
-2 Tyberghein L., Verbruggen H., Pauly K., Troupin C., Mineur F. &amp; De Clerck O. Bio-ORACLE: a global environmental dataset for marine species distribution modeling. Global Ecology and Biogeography. doi: 10.1111/j.1466-8238.2011.00656.x
-3                                                                                                      Sbrocco, EJ and Barber, PH (2013) MARSPEC: Ocean climate layers for marine spatial ecology. Ecology 94: 979. doi: 10.1890/12-1358.1</code></pre>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Set default directory for environmental data</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">sdmpredictors_datadir =</span> dir_env)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Loading bathymetry</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>env_stack <span class="ot">&lt;-</span> <span class="fu">load_layers</span>(<span class="st">"MS_bathy_5m"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Cropping to our area of interest</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crop</span>(extent_polygon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>We will use the <code>MARSPEC</code> dataset to get some environmental data. We will now check what layers are available there.</p>
+<p>We can plot the cropped bathymetry to ensure it matches our study region and we did not make any mistakes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list_layers</span>(<span class="st">"MARSPEC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    dataset_code                       layer_code
-69       MARSPEC                      MS_bathy_5m
-70       MARSPEC         MS_biogeo01_aspect_EW_5m
-71       MARSPEC         MS_biogeo02_aspect_NS_5m
-72       MARSPEC    MS_biogeo03_plan_curvature_5m
-73       MARSPEC MS_biogeo04_profile_curvature_5m
-75       MARSPEC        MS_biogeo05_dist_shore_5m
-76       MARSPEC       MS_biogeo06_bathy_slope_5m
-77       MARSPEC         MS_biogeo07_concavity_5m
-78       MARSPEC          MS_biogeo08_sss_mean_5m
-79       MARSPEC           MS_biogeo09_sss_min_5m
-80       MARSPEC           MS_biogeo10_sss_max_5m
-81       MARSPEC         MS_biogeo11_sss_range_5m
-82       MARSPEC      MS_biogeo12_sss_variance_5m
-83       MARSPEC          MS_biogeo13_sst_mean_5m
-84       MARSPEC           MS_biogeo14_sst_min_5m
-85       MARSPEC           MS_biogeo15_sst_max_5m
-86       MARSPEC         MS_biogeo16_sst_range_5m
-87       MARSPEC      MS_biogeo17_sst_variance_5m
-88       MARSPEC                      MS_sss01_5m
-89       MARSPEC                      MS_sss02_5m
-90       MARSPEC                      MS_sss03_5m
-91       MARSPEC                      MS_sss04_5m
-92       MARSPEC                      MS_sss05_5m
-93       MARSPEC                      MS_sss06_5m
-94       MARSPEC                      MS_sss07_5m
-95       MARSPEC                      MS_sss08_5m
-96       MARSPEC                      MS_sss09_5m
-97       MARSPEC                      MS_sss10_5m
-98       MARSPEC                      MS_sss11_5m
-99       MARSPEC                      MS_sss12_5m
-100      MARSPEC                      MS_sst01_5m
-101      MARSPEC                      MS_sst02_5m
-102      MARSPEC                      MS_sst03_5m
-103      MARSPEC                      MS_sst04_5m
-104      MARSPEC                      MS_sst05_5m
-105      MARSPEC                      MS_sst06_5m
-106      MARSPEC                      MS_sst07_5m
-107      MARSPEC                      MS_sst08_5m
-108      MARSPEC                      MS_sst09_5m
-109      MARSPEC                      MS_sst10_5m
-110      MARSPEC                      MS_sst11_5m
-111      MARSPEC                      MS_sst12_5m
-                                                name
-69                                        Bathymetry
-70                                  East/West aspect
-71                                North/South Aspect
-72                                    Plan curvature
-73                                 Profile curvature
-75                                 Distance to shore
-76                                 Bathymetric slope
-77                                         Concavity
-78                Sea surface salinity (annual mean)
-79            Sea surface salinity (monthly minimum)
-80            Sea surface salinity (monthly maximum)
-81               Sea surface salinity (annual range)
-82            Sea surface salinity (annual variance)
-83             Sea surface temperature (annual mean)
-84  Sea surface temperature (coldest ice-free month)
-85  Sea surface temperature (warmest ice-free month)
-86                   Sea surface temperature (range)
-87                Sea surface temperature (variance)
-88                    Sea surface salinity (january)
-89                   Sea surface salinity (february)
-90                      Sea surface salinity (march)
-91                      Sea surface salinity (april)
-92                        Sea surface salinity (may)
-93                       Sea surface salinity (june)
-94                       Sea surface salinity (july)
-95                     Sea surface salinity (august)
-96                  Sea surface salinity (september)
-97                    Sea surface salinity (october)
-98                   Sea surface salinity (november)
-99                   Sea surface salinity (december)
-100                Sea surface temperature (january)
-101               Sea surface temperature (february)
-102                  Sea surface temperature (march)
-103                  Sea surface temperature (april)
-104                    Sea surface temperature (may)
-105                   Sea surface temperature (june)
-106                   Sea surface temperature (july)
-107                 Sea surface temperature (august)
-108              Sea surface temperature (september)
-109                Sea surface temperature (october)
-110               Sea surface temperature (november)
-111               Sea surface temperature (december)
-                                                                                                                                                                                                                                                                             description
-69                                                                                                                                                                                                                                                                 Depth of the seafloor
-70                                                                                                                                                                                                                                             East/West Aspect (sin(aspect in radians))
-71                                                                                                                                                                                                                                           North/South Aspect (cos(aspect in radians))
-72                                                                                        Plan curvature is the curvature in the direction perpendicular to the maximum slope and indicates whether flow across a surface would diverge (positive values) or converge (negative values).
-73                                                                                     Profile curvature is the curvature in the direction parallel to the maximum slope and indicates whether flow across a surface would accelerate (positive values) or decelerate (negative values).
-75                                                                                                                                                                                                                                                                                    ''
-76                                                                                                                                                                                 Bathymetric slope was measured in degrees ranging from 0??? (flat surface) to 90??? (vertical slope).
-77                                                                                          Concavity is the second derivative of the bathymetry layer (or the slope of the slope) and represents whether a raster cell is on a hill (negative values) or in a valley (positive values).
-78                                                                                                              Measurements of sea surface salinity (SSS) were obtained from in situ oceanographic observations compiled by NOAA?s World Ocean Atlas 2009 (WOA09, Antonov et al. 2010).
-79                                                                                                              Measurements of sea surface salinity (SSS) were obtained from in situ oceanographic observations compiled by NOAA?s World Ocean Atlas 2009 (WOA09, Antonov et al. 2010).
-80                                                                                                              Measurements of sea surface salinity (SSS) were obtained from in situ oceanographic observations compiled by NOAA?s World Ocean Atlas 2009 (WOA09, Antonov et al. 2010).
-81                                                                                                              Measurements of sea surface salinity (SSS) were obtained from in situ oceanographic observations compiled by NOAA?s World Ocean Atlas 2009 (WOA09, Antonov et al. 2010).
-82                                                                                                              Measurements of sea surface salinity (SSS) were obtained from in situ oceanographic observations compiled by NOAA?s World Ocean Atlas 2009 (WOA09, Antonov et al. 2010).
-83  Satellite measures of sea surface temperature (SST) were obtained at a 2.5 arc-minute resolution (approximately 4 km_) from Aqua-MODIS 4-micron nighttime SST Level 3 standard mapped image products, downloaded from NASA's Ocean Color website (http://oceancolor.gsfc.nasa.gov/).
-84  Satellite measures of sea surface temperature (SST) were obtained at a 2.5 arc-minute resolution (approximately 4 km_) from Aqua-MODIS 4-micron nighttime SST Level 3 standard mapped image products, downloaded from NASA's Ocean Color website (http://oceancolor.gsfc.nasa.gov/).
-85  Satellite measures of sea surface temperature (SST) were obtained at a 2.5 arc-minute resolution (approximately 4 km_) from Aqua-MODIS 4-micron nighttime SST Level 3 standard mapped image products, downloaded from NASA's Ocean Color website (http://oceancolor.gsfc.nasa.gov/).
-86  Satellite measures of sea surface temperature (SST) were obtained at a 2.5 arc-minute resolution (approximately 4 km_) from Aqua-MODIS 4-micron nighttime SST Level 3 standard mapped image products, downloaded from NASA's Ocean Color website (http://oceancolor.gsfc.nasa.gov/).
-87  Satellite measures of sea surface temperature (SST) were obtained at a 2.5 arc-minute resolution (approximately 4 km_) from Aqua-MODIS 4-micron nighttime SST Level 3 standard mapped image products, downloaded from NASA's Ocean Color website (http://oceancolor.gsfc.nasa.gov/).
-88                                                                                                                                                                                                                                   Average sea surface salinity for the month january.
-89                                                                                                                                                                                                                                  Average sea surface salinity for the month february.
-90                                                                                                                                                                                                                                      Average sea surface salinity for the month march
-91                                                                                                                                                                                                                                     Average sea surface salinity for the month april.
-92                                                                                                                                                                                                                                       Average sea surface salinity for the month may.
-93                                                                                                                                                                                                                                      Average sea surface salinity for the month june.
-94                                                                                                                                                                                                                                      Average sea surface salinity for the month july.
-95                                                                                                                                                                                                                                    Average sea surface salinity for the month august.
-96                                                                                                                                                                                                                                 Average sea surface salinity for the month september.
-97                                                                                                                                                                                                                                   Average sea surface salinity for the month october.
-98                                                                                                                                                                                                                                  Average sea surface salinity for the month november.
-99                                                                                                                                                                                                                                  Average sea surface salinity for the month december.
-100                                                                                                                                                                                                                               Average sea surface temperature for the month january.
-101                                                                                                                                                                                                                              Average sea surface temperature for the month february.
-102                                                                                                                                                                                                                                  Average sea surface temperature for the month march
-103                                                                                                                                                                                                                                 Average sea surface temperature for the month april.
-104                                                                                                                                                                                                                                   Average sea surface temperature for the month may.
-105                                                                                                                                                                                                                                  Average sea surface temperature for the month june.
-106                                                                                                                                                                                                                                  Average sea surface temperature for the month july.
-107                                                                                                                                                                                                                                Average sea surface temperature for the month august.
-108                                                                                                                                                                                                                             Average sea surface temperature for the month september.
-109                                                                                                                                                                                                                               Average sea surface temperature for the month october.
-110                                                                                                                                                                                                                              Average sea surface temperature for the month november.
-111                                                                                                                                                                                                                              Average sea surface temperature for the month december.
-    terrestrial marine freshwater cellsize_equalarea cellsize_lonlat      units
-69        FALSE   TRUE      FALSE               7000      0.08333333     meters
-70        FALSE   TRUE      FALSE               7000      0.08333333    radians
-71        FALSE   TRUE      FALSE               7000      0.08333333    radians
-72        FALSE   TRUE      FALSE               7000      0.08333333   unitless
-73        FALSE   TRUE      FALSE               7000      0.08333333   unitless
-75        FALSE   TRUE      FALSE               7000      0.08333333 kilometers
-76        FALSE   TRUE      FALSE               7000      0.08333333    degrees
-77        FALSE   TRUE      FALSE               7000      0.08333333    degrees
-78        FALSE   TRUE      FALSE               7000      0.08333333        psu
-79        FALSE   TRUE      FALSE               7000      0.08333333        psu
-80        FALSE   TRUE      FALSE               7000      0.08333333        psu
-81        FALSE   TRUE      FALSE               7000      0.08333333        psu
-82        FALSE   TRUE      FALSE               7000      0.08333333        psu
-83        FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-84        FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-85        FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-86        FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-87        FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-88        FALSE   TRUE      FALSE               7000      0.08333333        psu
-89        FALSE   TRUE      FALSE               7000      0.08333333        psu
-90        FALSE   TRUE      FALSE               7000      0.08333333        psu
-91        FALSE   TRUE      FALSE               7000      0.08333333        psu
-92        FALSE   TRUE      FALSE               7000      0.08333333        psu
-93        FALSE   TRUE      FALSE               7000      0.08333333        psu
-94        FALSE   TRUE      FALSE               7000      0.08333333        psu
-95        FALSE   TRUE      FALSE               7000      0.08333333        psu
-96        FALSE   TRUE      FALSE               7000      0.08333333        psu
-97        FALSE   TRUE      FALSE               7000      0.08333333        psu
-98        FALSE   TRUE      FALSE               7000      0.08333333        psu
-99        FALSE   TRUE      FALSE               7000      0.08333333        psu
-100       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-101       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-102       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-103       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-104       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-105       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-106       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-107       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-108       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-109       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-110       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-111       FALSE   TRUE      FALSE               7000      0.08333333    Celsius
-                                     primary_type primary_spatial_resolution
-69                               Satellite (SRTM)               30 arcsecond
-70                               Satellite (SRTM)               30 arcsecond
-71                               Satellite (SRTM)               30 arcsecond
-72                               Satellite (SRTM)               30 arcsecond
-73                               Satellite (SRTM)               30 arcsecond
-75                                             ''                         ''
-76                               Satellite (SRTM)               30 arcsecond
-77                               Satellite (SRTM)               30 arcsecond
-78    in situ measurements, monthly climatologies                1 arcdegree
-79    in situ measurements, monthly climatologies                1 arcdegree
-80    in situ measurements, monthly climatologies                1 arcdegree
-81    in situ measurements, monthly climatologies                1 arcdegree
-82    in situ measurements, monthly climatologies                1 arcdegree
-83  Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-84  Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-85  Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-86  Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-87  Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-88    in situ measurements, monthly climatologies                1 arcdegree
-89    in situ measurements, monthly climatologies                1 arcdegree
-90    in situ measurements, monthly climatologies                1 arcdegree
-91    in situ measurements, monthly climatologies                1 arcdegree
-92    in situ measurements, monthly climatologies                1 arcdegree
-93    in situ measurements, monthly climatologies                1 arcdegree
-94    in situ measurements, monthly climatologies                1 arcdegree
-95    in situ measurements, monthly climatologies                1 arcdegree
-96    in situ measurements, monthly climatologies                1 arcdegree
-97    in situ measurements, monthly climatologies                1 arcdegree
-98    in situ measurements, monthly climatologies                1 arcdegree
-99    in situ measurements, monthly climatologies                1 arcdegree
-100 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-101 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-102 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-103 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-104 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-105 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-106 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-107 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-108 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-109 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-110 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-111 Satellite (Aqua-MODIS), monthly climatologies              2.5 arcminute
-                                                                                         primary_source
-69  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-70  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-71  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-72  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-73  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-75    GSHHS v2.1 reference:Wessel and Smith 1996 URL:http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html
-76  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-77  SRTM30_PLUS V6.0 reference: Becker et al. 2009 URL: http://topex.ucsd.edu/WWW_html/srtm30_plus.html
-78                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-79                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-80                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-81                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-82                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-83                            Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-84                            Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-85                            Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-86                            Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-87                            Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-88                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-89                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-90                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-91                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-92                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-93                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-94                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-95                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-96                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-97                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-98                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-99                                                 World Ocean Atlas 2009 reference:Antonov et al. 2010
-100                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-101                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-102                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-103                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-104                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-105                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-106                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-107                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-108                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-109                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-110                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-111                           Reference: (Feldman &amp; McClain 2010) URL: http://oceancolor.gsfc.nasa.gov/
-    start_year start_month start_day end_year end_month end_day
-69        2009           1         1     2009        12      31
-70        2009           1         1     2009        12      31
-71        2009           1         1     2009        12      31
-72        2009           1         1     2009        12      31
-73        2009           1         1     2009        12      31
-75        2009           1         1     2009        12      31
-76        2009           1         1     2009        12      31
-77        2009           1         1     2009        12      31
-78        1955           1         1     2006        12      31
-79        1955           1         1     2006        12      31
-80        1955           1         1     2006        12      31
-81        1955           1         1     2006        12      31
-82        1955           1         1     2006        12      31
-83        2002           1         1     2010        12      31
-84        2002           1         1     2010        12      31
-85        2002           1         1     2010        12      31
-86        2002           1         1     2010        12      31
-87        2002           1         1     2010        12      31
-88        1955           1         1     2006        12      31
-89        1955           1         1     2006        12      31
-90        1955           1         1     2006        12      31
-91        1955           1         1     2006        12      31
-92        1955           1         1     2006        12      31
-93        1955           1         1     2006        12      31
-94        1955           1         1     2006        12      31
-95        1955           1         1     2006        12      31
-96        1955           1         1     2006        12      31
-97        1955           1         1     2006        12      31
-98        1955           1         1     2006        12      31
-99        1955           1         1     2006        12      31
-100       2002           1         1     2010        12      31
-101       2002           1         1     2010        12      31
-102       2002           1         1     2010        12      31
-103       2002           1         1     2010        12      31
-104       2002           1         1     2010        12      31
-105       2002           1         1     2010        12      31
-106       2002           1         1     2010        12      31
-107       2002           1         1     2010        12      31
-108       2002           1         1     2010        12      31
-109       2002           1         1     2010        12      31
-110       2002           1         1     2010        12      31
-111       2002           1         1     2010        12      31
-                                          derivation month is_surface version
-69                                                ''    NA       TRUE      10
-70  derived from bathymetry (sin(aspect in radians))    NA       TRUE      10
-71  derived from bathymetry (cos(aspect in radians))    NA       TRUE      10
-72                            derived from bathmetry    NA       TRUE      10
-73                            derived from bathmetry    NA       TRUE      10
-75                      derived from GSHHS Coastline    NA       TRUE      10
-76                            derived from bathmetry    NA       TRUE      10
-77                            derived from bathmetry    NA       TRUE      10
-78                        mean, spline interpolation    NA       TRUE      10
-79                     minimum, spline interpolation    NA       TRUE      10
-80                     maximum, spline interpolation    NA       TRUE      10
-81                       range, spline interpolation    NA       TRUE      10
-82                    variance, spline interpolation    NA       TRUE      10
-83                                              mean    NA       TRUE      10
-84                                           minimum    NA       TRUE      10
-85                                           maximum    NA       TRUE      10
-86                                             range    NA       TRUE      10
-87                                          variance    NA       TRUE      10
-88                                              mean     1       TRUE      10
-89                                              mean     2       TRUE      10
-90                                              mean     3       TRUE      10
-91                                              mean     4       TRUE      10
-92                                              mean     5       TRUE      10
-93                                              mean     6       TRUE      10
-94                                              mean     7       TRUE      10
-95                                              mean     8       TRUE      10
-96                                              mean     9       TRUE      10
-97                                              mean    10       TRUE      10
-98                                              mean    11       TRUE      10
-99                                              mean    12       TRUE      10
-100                                             mean     1       TRUE      10
-101                                             mean     2       TRUE      10
-102                                             mean     3       TRUE      10
-103                                             mean     4       TRUE      10
-104                                             mean     5       TRUE      10
-105                                             mean     6       TRUE      10
-106                                             mean     7       TRUE      10
-107                                             mean     8       TRUE      10
-108                                             mean     9       TRUE      10
-109                                             mean    10       TRUE      10
-110                                             mean    11       TRUE      10
-111                                             mean    12       TRUE      10
-                                                                             layer_url
-69                       https://www.lifewatch.be/sdmpredictors/MS_bathy_5m_lonlat.tif
-70          https://www.lifewatch.be/sdmpredictors/MS_biogeo01_aspect_EW_5m_lonlat.tif
-71          https://www.lifewatch.be/sdmpredictors/MS_biogeo02_aspect_NS_5m_lonlat.tif
-72     https://www.lifewatch.be/sdmpredictors/MS_biogeo03_plan_curvature_5m_lonlat.tif
-73  https://www.lifewatch.be/sdmpredictors/MS_biogeo04_profile_curvature_5m_lonlat.tif
-75         https://www.lifewatch.be/sdmpredictors/MS_biogeo05_dist_shore_5m_lonlat.tif
-76        https://www.lifewatch.be/sdmpredictors/MS_biogeo06_bathy_slope_5m_lonlat.tif
-77          https://www.lifewatch.be/sdmpredictors/MS_biogeo07_concavity_5m_lonlat.tif
-78           https://www.lifewatch.be/sdmpredictors/MS_biogeo08_sss_mean_5m_lonlat.tif
-79            https://www.lifewatch.be/sdmpredictors/MS_biogeo09_sss_min_5m_lonlat.tif
-80            https://www.lifewatch.be/sdmpredictors/MS_biogeo10_sss_max_5m_lonlat.tif
-81          https://www.lifewatch.be/sdmpredictors/MS_biogeo11_sss_range_5m_lonlat.tif
-82       https://www.lifewatch.be/sdmpredictors/MS_biogeo12_sss_variance_5m_lonlat.tif
-83           https://www.lifewatch.be/sdmpredictors/MS_biogeo13_sst_mean_5m_lonlat.tif
-84            https://www.lifewatch.be/sdmpredictors/MS_biogeo14_sst_min_5m_lonlat.tif
-85            https://www.lifewatch.be/sdmpredictors/MS_biogeo15_sst_max_5m_lonlat.tif
-86          https://www.lifewatch.be/sdmpredictors/MS_biogeo16_sst_range_5m_lonlat.tif
-87       https://www.lifewatch.be/sdmpredictors/MS_biogeo17_sst_variance_5m_lonlat.tif
-88                       https://www.lifewatch.be/sdmpredictors/MS_sss01_5m_lonlat.tif
-89                       https://www.lifewatch.be/sdmpredictors/MS_sss02_5m_lonlat.tif
-90                       https://www.lifewatch.be/sdmpredictors/MS_sss03_5m_lonlat.tif
-91                       https://www.lifewatch.be/sdmpredictors/MS_sss04_5m_lonlat.tif
-92                       https://www.lifewatch.be/sdmpredictors/MS_sss05_5m_lonlat.tif
-93                       https://www.lifewatch.be/sdmpredictors/MS_sss06_5m_lonlat.tif
-94                       https://www.lifewatch.be/sdmpredictors/MS_sss07_5m_lonlat.tif
-95                       https://www.lifewatch.be/sdmpredictors/MS_sss08_5m_lonlat.tif
-96                       https://www.lifewatch.be/sdmpredictors/MS_sss09_5m_lonlat.tif
-97                       https://www.lifewatch.be/sdmpredictors/MS_sss10_5m_lonlat.tif
-98                       https://www.lifewatch.be/sdmpredictors/MS_sss11_5m_lonlat.tif
-99                       https://www.lifewatch.be/sdmpredictors/MS_sss12_5m_lonlat.tif
-100                      https://www.lifewatch.be/sdmpredictors/MS_sst01_5m_lonlat.tif
-101                      https://www.lifewatch.be/sdmpredictors/MS_sst02_5m_lonlat.tif
-102                      https://www.lifewatch.be/sdmpredictors/MS_sst03_5m_lonlat.tif
-103                      https://www.lifewatch.be/sdmpredictors/MS_sst04_5m_lonlat.tif
-104                      https://www.lifewatch.be/sdmpredictors/MS_sst05_5m_lonlat.tif
-105                      https://www.lifewatch.be/sdmpredictors/MS_sst06_5m_lonlat.tif
-106                      https://www.lifewatch.be/sdmpredictors/MS_sst07_5m_lonlat.tif
-107                      https://www.lifewatch.be/sdmpredictors/MS_sst08_5m_lonlat.tif
-108                      https://www.lifewatch.be/sdmpredictors/MS_sst09_5m_lonlat.tif
-109                      https://www.lifewatch.be/sdmpredictors/MS_sst10_5m_lonlat.tif
-110                      https://www.lifewatch.be/sdmpredictors/MS_sst11_5m_lonlat.tif
-111                      https://www.lifewatch.be/sdmpredictors/MS_sst12_5m_lonlat.tif</code></pre>
-</div>
-</div>
-<p>We will use bathymetry data, so the <code>MS_bathy_5m</code> layer suits our needs. We can use any layer that will not have NAs. We will load this data and crop it using our bounding box.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Loading bathymetry</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>env_stack <span class="ot">&lt;-</span> <span class="fu">load_layers</span>(<span class="st">"MS_bathy_5m"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Cropping to our area of interest</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crop</span>(extent_polygon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Now we can plot the cropped bathymetry to ensure it matches our study region.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(env_stack)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(env_stack)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="02_Background_Data_files/figure-html/plot_bathy-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>We can see the outline of African and Asian continents, which matches our area of interest. Now we can continue with creating our background points.</p>
+<p>We can see the outline of our area of interest. Now we can continue with creating our background points.</p>
 </section>
 <section id="sample-points-from-bathymetry-layer" class="level3">
 <h3 class="anchored" data-anchor-id="sample-points-from-bathymetry-layer">Sample points from bathymetry layer</h3>
 <p>Using the <code>dismo</code> package, we will create random points over the bathymetry layer that we will use as background points. In this example, we have chosen to produce 1000 background points.</p>
 <p>It is worth noting that the distribution and number of background points has a strong influence on SDM results. See the <code>README</code> file for resources discussing this issue.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting seed for reproducibility</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting number of background points required</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>nsamp <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Create background points</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>background <span class="ot">&lt;-</span> <span class="fu">randomPoints</span>(env_stack, nsamp) <span class="sc">%&gt;%</span> </span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Transform to tibble</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Transform to shapefile</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting seed for reproducibility</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting number of background points required</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>nsamp <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Create background points</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>background <span class="ot">&lt;-</span> <span class="fu">randomPoints</span>(env_stack, nsamp) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Transform to tibble</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Transform to sf object</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="plotting-results" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-results">Plotting results</h3>
-<p>We will plot results to make sure our background points are in the ocean only.</p>
+<p>We will plot results to make sure our background points are in the ocean only. Here we use an alternate why to plot points on a map.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(background, <span class="at">col.regions =</span> <span class="st">"gray"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(background, <span class="at">col.regions =</span> <span class="st">"gray"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in cbind(`Feature ID` = fid, mat): number of rows of result is not a
 multiple of vector length (arg 1)</code></pre>
@@ -985,11 +515,11 @@ multiple of vector length (arg 1)</code></pre>
 </section>
 <section id="saving-background-samples" class="level3">
 <h3 class="anchored" data-anchor-id="saving-background-samples">Saving background samples</h3>
-<p>There are no background points on land. We can now save the background locations to our local machine.</p>
+<p>We can now save the background locations to our local machine.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>absence_geo <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="st">"absence.geojson"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>pts_absence_csv <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="st">"pts_absence.csv"</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(background, pts_absence_csv, <span class="at">layer_options =</span> <span class="st">"GEOMETRY=AS_XY"</span>, <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>absence_geo <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="st">"absence.geojson"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>pts_absence_csv <span class="ot">&lt;-</span> <span class="fu">file.path</span>(dir_data, <span class="st">"pts_absence.csv"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(background, pts_absence_csv, <span class="at">layer_options =</span> <span class="st">"GEOMETRY=AS_XY"</span>, <span class="at">append =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Deleting layer `pts_absence' using driver `CSV'
 Writing layer `pts_absence' to data source 
