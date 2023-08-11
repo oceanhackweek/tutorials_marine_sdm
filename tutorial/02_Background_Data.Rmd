@@ -28,6 +28,7 @@ library(robis)
 #SDM
 library(sdmpredictors)
 library(dismo)
+library(ggspatial)
 ```
 
 ## Set-up
@@ -95,7 +96,7 @@ background <- occurrence(geometry = pol_geometry, wrims = TRUE,
 ```
 
 ### Saving background data
-```{r save_bg}
+```{r save_bg, eval=FALSE}
 #Setting full file path to save background information
 file_path_out <- file.path(dir_data, "io-background.csv")
 
@@ -106,7 +107,7 @@ write_csv(background, file_path_out)
 ### (Optional) Load background data
 If you have previously downloaded the background data, you can simply load the data to the environment instead of downloading it again. To do this, you can use the code below.  
   
-```{r load_bg}
+```{r load_bg, eval=FALSE}
 #Find background file in our biological data folder
 file_path_bg <- list.files(dir_data, pattern = "background", full.names = TRUE)
 
@@ -120,6 +121,7 @@ We will create a map with all the observations we obtained from OBIS within our 
 ```{r plot_bg1}
 #Extracting labels for countries in base map
 world_points <- world %>% 
+  st_make_valid(world) %>%
   #Getting centroids for all polygons in the world base map
   st_centroid(geometry) %>% 
   #Getting coordinates for each centroid
@@ -132,7 +134,7 @@ plt <- ggplot()+
   #Add world base map and change land colour
   geom_sf(data = world, fill = "antiquewhite")+
   #Add background points
-  geom_point(data = background_1, 
+  geom_point(data = background, 
              #Point to coordinates for background points
              aes(x = decimalLongitude, y = decimalLatitude), 
              #Changing color and size of points for background data
