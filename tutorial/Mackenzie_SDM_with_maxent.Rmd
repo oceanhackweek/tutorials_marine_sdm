@@ -18,12 +18,9 @@ You will need to install a new version of maxnet for this tutorial.
 devtools::install_github("BigelowLab/maxnet")
 ```
 
-<<<<<<< HEAD
-```{r, warning=F}
-=======
+
 ```{r, warning=FALSE}
 suppressPackageStartupMessages({
->>>>>>> 24641da453d589319595340e48eca999159b9d22
 library(maxnet)
 library(dplyr)
 library(maxnet)
@@ -228,11 +225,7 @@ ggplot() +
 
 
 ```{r, warning=F}
-<<<<<<< HEAD
 # ggplot - with occurrence (purple) and absence (green) data points
-=======
-# ggplot - with occurrence and absence data points
->>>>>>> 24641da453d589319595340e48eca999159b9d22
 
 ggplot() +
   geom_stars(data = predicted) +
