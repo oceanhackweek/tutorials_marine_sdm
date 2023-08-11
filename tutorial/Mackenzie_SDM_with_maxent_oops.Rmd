@@ -13,13 +13,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Pre-SDM
 ### Set-up
 
-You will need to install a new version of maxnet for this tutorial.
-```{r, eval=FALSE}
+You will need to install a new version of maxnet.
+```{r, echo=FALSE}
 devtools::install_github("BigelowLab/maxnet")
 ```
 
-```{r, warning=FALSE}
-suppressPackageStartupMessages({
+```{r, warning=F}
 library(maxnet)
 library(dplyr)
 library(maxnet)
@@ -34,7 +33,6 @@ library(ggplot2)
 library(cmocean)
 library(janitor)
 library(DT)
-})
 ```
 
 ### Load data in
@@ -186,7 +184,7 @@ ggplot() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
+  labs(title = "Loggerhead and green sea turtle species distribution model in the Arabian Sea",
        x = "Longitude",
        y = "Latitude",
        fill = "Probability",
@@ -199,7 +197,7 @@ ggplot() +
 # ggsave("SDM_loggerhead_green_w points.pdf", height = 6, width = 8.5)
 ```
 
-```{r, warning=FALSE}
+```{r, warning=F}
 # ggplot - without occurrence data points
 
 ggplot() +
@@ -209,7 +207,7 @@ ggplot() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
+  labs(title = "Loggerhead and green sea turtle species distribution model in the Arabian Sea",
        x = "Longitude",
        y = "Latitude",
        fill = "Probability",
@@ -233,7 +231,7 @@ ggplot() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
+  labs(title = "Loggerhead and green sea turtle species distribution model in the Arabian Sea",
        x = "Longitude",
        y = "Latitude",
        fill = "Probability",
