@@ -45,13 +45,12 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
 1. Presence Data
    -- obtain Loggerhead sea turtle (*C. caretta*) presence data from OBIS via `robis` 
 2. Background Points
-   -- obtain random occurrences within our area of interest using `robis`
+   -- shows two methods to create random background points within our area of interest 
 3. Environmental Data
    -- obtain environmental predictors of interest using `SDMpredictors`
 4. Model
    -- run species distribution model and predict using `maxnet`
 6. Data Visualizations
-
 
 ## References
 - Bosch S, Fernandez S (2022). sdmpredictors: Species Distribution Modelling Predictor Datasets. R package version 0.2.14, [http://lifewatch.github.io/sdmpredictors/](http://lifewatch.github.io/sdmpredictors/).  
@@ -75,9 +74,8 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
 - [Ben Tupper](https://github.com/btupper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
 
 ---
-
-
-## Who this tutorial is intended
+  
+## Who this tutorial is intended for
 Some experience programming in `R` is needed to make the most of this tutorial. To run this tutorial make sure you clone this repository into your local machine by creating a new project that uses version control (`git`).  
   
 The tutorial content was developed in a `R` version 4.2.2 for Linux. Full session information is included below:  
