@@ -16,16 +16,17 @@ Here we explore 2 approaches.
 library(sf)
 #Base maps and plotting spatial data
 library(rnaturalearth)
-# library(ggspatial)
 library(mapview)
-# library(rnaturalearthdata)
-# library(raster)
+library(raster)
 #Data visualisation and manipulation
 library(tidyverse)
 #Find files easily
 library(here)
 #Access to OBIS
 library(robis)
+#SDM
+library(sdmpredictors)
+library(dismo)
 ```
   
 # Setting base directories
@@ -167,50 +168,80 @@ plt
   
 As you can see from the map above, this approach is not truly random. This is why we are including a second method to create background samples.
 
-## Approach 2. Random samples
+# Approach 2. Random points as samples
+This section has been adapted from  [this online tutorial](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html).  
+  
+## Loading raster layer for area of interest
+We need to load a raster layer so we can have a sample grid from where we can generate random points for our background samples.  
+  
+Environmental data is downloaded using the `sdmpredictors` library.
 
-This is adapted from [here](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html).
-
-### Get a marine raster layer
-
-We just need one because we use this to sample lat/lons from the marine environment.
-
-```{r}
-# set a default data directory
+```{r load_env}
+#Set default directory for environmental data
 options(sdmpredictors_datadir = dir_env)
 
-# choosing marine
-env_datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
-env_layers <- sdmpredictors::list_layers("MARSPEC")
-env_stack <- sdmpredictors::load_layers("MS_bathy_5m")
-env_stack <- env_stack %>% raster::crop(ext)
+#Getting datasets available through sdmpredictors
+list_datasets(terrestrial = FALSE, marine = TRUE)
 ```
-
-Now we can plot the bathymetry in our study region.
-
-```{r}
+  
+We will use the `MARSPEC` dataset to get some environmental data. We will now check what layers are available there.  
+  
+```{r marine_lyr}
+list_layers("MARSPEC")
+```
+  
+We will use bathymetry data, so the `MS_bathy_5m` layer suits our needs. We will load this data and crop it using our bounding box.  
+  
+```{r load_bathy}
+#Loading bathymetry
+env_stack <- load_layers("MS_bathy_5m") %>% 
+  #Cropping to our area of interest
+  crop(extent_polygon)
+```
+  
+Now we can plot the cropped bathymetry to ensure it matches our study region.
+  
+```{r plot_bathy}
 plot(env_stack)
 ```
   
-### Next we sample points from this
+We can see the outline of African and Asian continents, which matches our area of interest. Now we can continue with creating our background points.
+  
+# Sample points from bathymetry layer
+Using the `dismo` package, we will create random points over the bathymetry layer that we will use as background points. In this example, we have chosen to produce 1000 background points.  
+  
+It is worth noting that the distribution and number of background points has a strong influence on SDM results. See the `README` file for resources discussing this issue.   
+  
+```{r bg_samp}
+#Setting seed for reproducibility
+set.seed(42)
 
-
-```{r}
+#Setting number of background points required
 nsamp <- 1000
-absence <- dismo::randomPoints(env_stack[[1]], nsamp) %>% 
-    as_tibble() %>% 
-    st_as_sf(coords = c("x", "y"), crs = 4326)
+
+#Create background points
+background <- randomPoints(env_stack, nsamp) %>% 
+  #Transform to tibble
+  as_tibble() %>% 
+  #Transform to shapefile
+  st_as_sf(coords = c("x", "y"), crs = 4326)
 ```
 
-```{r}
-mapview(absence, col.regions = "gray")
+## Plotting results
+We will plot results to make sure our background points are in the ocean only.  
+  
+```{r plot_bg_2}
+mapview(background, col.regions = "gray")
 ```
-
-Save the absence locations to a file.
-
-```{r save-absence}
+    
+# Saving background samples
+There are no background points on land. We can now save the background locations to our local machine.  
+    
+```{r save_absence}
 absence_geo <- file.path(dir_data, "absence.geojson")
 pts_absence_csv <- file.path(dir_data, "pts_absence.csv")
-st_write(absence, pts_absence_csv, layer_options = "GEOMETRY=AS_XY", append=FALSE)
+st_write(background, pts_absence_csv, layer_options = "GEOMETRY=AS_XY", append = FALSE)
 ```
-
+  
+The next notebook will show you how to get environmental data that we will use as inputs in our SDM from the `sdmpredictors` package.  
+  

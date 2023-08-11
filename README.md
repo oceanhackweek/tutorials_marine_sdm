@@ -15,6 +15,10 @@ For a review of the performance of different SDM algorithms, see the following p
   
 - Elith et al (2006). Novel methods improve prediction of species’ distributions from occurrence data. DOI: [10.1111/j.2006.0906-7590.04596.x](https://doi.org/10.1111/j.2006.0906-7590.04596.x)  
   
+For a discussion on the impact of background data on SDMs see: Phillips et al (2009). Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. DOI: [10.1890/07-2153.1](https://doi.org/10.1890/07-2153.1).  
+  
+For a background sample generation refer to work by [Valavi](https://rvalavi.github.io/SDMwithRFs/#generating-background-samples).  
+  
 --ADD MORE SOON--  
   
 ## Goals
