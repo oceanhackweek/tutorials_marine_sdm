@@ -13,12 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Pre-SDM
 ### Set-up
 
-You will need to install a new version of maxnet.
-```{r, echo=FALSE}
+You will need to install a new version of maxnet for this tutorial.
+```{r, eval=FALSE}
 devtools::install_github("BigelowLab/maxnet")
 ```
 
-```{r, echo=F}
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
 library(maxnet)
 library(dplyr)
 library(maxnet)
@@ -33,6 +34,7 @@ library(ggplot2)
 library(cmocean)
 library(janitor)
 library(DT)
+})
 ```
 
 ### Load data in
