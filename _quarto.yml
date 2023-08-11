@@ -59,6 +59,8 @@ website:
             href: tutorial/02_Background_Data.Rmd
           - text: "Environmental Variables"
             href: tutorial/03_sdmpredictors-variables.Rmd
+          - text: "Models"
+            href: tutorial/04_models.md
       - section: Our workflow
         contents:
           - text: "Presence Data"
@@ -67,9 +69,6 @@ website:
             href: tutorial/background.Rmd
           - text: "Environmental Data"
             href: tutorial/occ_env.Rmd
-          - text: "Model"
-            href: tutorial/maxent-sdm.Rmd
-          - text: "Visualization"
       - section: Turtle SDMs!!
         contents:
           - text: "SDM"
