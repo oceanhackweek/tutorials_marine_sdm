@@ -40,9 +40,8 @@ However, for this tutorial example model, we will focus on Loggerhead sea turtle
 ### **Environmental Data**
 This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the `SMDpredictor` R package and includes:  
 
--ENTER ALL FINAL PREDICTORS INCLUDED HERE
+- (https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/03_sdmpredictors-variables.html) 
 
-- paulo working on background--link to
 
 ## Workflow/Roadmap
 This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://github.com/BigelowLab/maxnet/wiki/stars), and highlights modeling presence-only data via `maxnet` R package.
