@@ -74,7 +74,7 @@ This tutorial is based on the [notes by Ben Tupper (Biglow Lab, Maine)](https://
 - [Caitlin O'Brien](https://github.com/caitobrien): Research Scientist, [Columbia Basin Research](https://www.cbr.washington.edu/people), School of Aquatic Fishery and Sciences, University of Washington
 - [Collins Ongore] () 
 - [Mary Solokas](https://github.com/marysolokas): John A. Knauss Marine Policy Fellow, National Oceanic and Atmospheric Administration
-- [Laura Tsang](https://github.com/lauratsang):
+- [Laura Tsang](https://github.com/lauratsang): Recent Master's graduate from Northeastern University
 - [Ben Tupper](https://github.com/btupper):
 
 ---
