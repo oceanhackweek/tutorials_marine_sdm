@@ -184,7 +184,7 @@ ggplot() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  labs(title = "Loggerhead and green sea turtle species distribution model in the Arabian Sea",
+  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
        x = "Longitude",
        y = "Latitude",
        fill = "Probability",
@@ -208,7 +208,7 @@ ggplot() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  labs(title = "Loggerhead and green sea turtle species distribution model in the Arabian Sea",
+  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
        x = "Longitude",
        y = "Latitude",
        fill = "Probability",
@@ -232,7 +232,7 @@ ggplot() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  labs(title = "Loggerhead and green sea turtle species distribution model in the Arabian Sea",
+  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
        x = "Longitude",
        y = "Latitude",
        fill = "Probability",
