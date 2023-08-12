@@ -3,6 +3,7 @@ project:
   resources: 
     - "SDM-team.mp3"
   output-dir: docs
+  citation: CITATION.cff
   render:
     - "*.*"
     - "!individual-folders/ben/*"
@@ -15,6 +16,7 @@ project:
     - "!individual-folders/Mary/*"
     - "!individual-folders/Paulo/*"
     - "!tutorial/Subset*"
+    - "!tutorial/Mackenzie_SDM_with_maxent_oops.Rmd"
     - "maxnet/*"
 
 execute:
@@ -50,19 +52,19 @@ website:
       - text: "Welcome"
         href: index.md
       - section: Background
+        href: tutorial/Roadmap.Rmd
         contents:
-          - text: "Roadmap"
-            href: tutorial/Roadmap.Rmd
-          - text: "Region"
+          - text: "Specify the Region"
             href: tutorial/00_Region.Rmd
-          - text: "Marine Presence Data"
+          - text: "Obtain Presence Data"
             href: tutorial/01_Presence_Data.Rmd
-          - text: "Absence Data"
+          - text: "Create Absence Data"
             href: tutorial/02_Background_Data.Rmd
-          - text: "Environmental Variables"
+          - text: "Extract Variables"
             href: tutorial/03_sdmpredictors-variables.Rmd
-          - text: "Models"
+          - text: "Fit Models"
             href: tutorial/04_models.md
+          - text: "Visualize"
       - section: Our workflow
         contents:
           - text: "Presence Data"
