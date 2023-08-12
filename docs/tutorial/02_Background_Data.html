@@ -181,7 +181,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Background</a>
+            <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Background</a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -189,34 +189,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
+  <a href="../tutorial/00_Region.html" class="sidebar-item-text sidebar-link">Specify the Region</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/00_Region.html" class="sidebar-item-text sidebar-link">Region</a>
+  <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link">Obtain Presence Data</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link">Marine Presence Data</a>
+  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link active">Create Absence Data</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link active">Absence Data</a>
+  <a href="../tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Extract Variables</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Environmental Variables</a>
+  <a href="../tutorial/04_models.html" class="sidebar-item-text sidebar-link">Fit Models</a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../tutorial/04_models.html" class="sidebar-item-text sidebar-link">Models</a>
-  </div>
-</li>
+  Visualize
+  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -350,8 +348,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>These directories contain the biological data (i.e., presence locations of loggerhead sea turtles) and environmental data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Setting directories containing input data</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dir_data <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">here</span>(), <span class="st">"data/raw-bio"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dir_env <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">here</span>(), <span class="st">"data/env"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dir_data <span class="ot">&lt;-</span> <span class="fu">file.path</span>(here<span class="sc">::</span><span class="fu">here</span>(), <span class="st">"data/raw-bio"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dir_env <span class="ot">&lt;-</span> <span class="fu">file.path</span>(here<span class="sc">::</span><span class="fu">here</span>(), <span class="st">"data/env"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="loading-bounding-box-for-region-of-interest" class="level3">
@@ -744,12 +742,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../tutorial/01_Presence_Data.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Marine Presence Data</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Obtain Presence Data</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../tutorial/03_sdmpredictors-variables.html" class="pagination-link">
-        <span class="nav-page-text">Environmental Variables</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Extract Variables</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

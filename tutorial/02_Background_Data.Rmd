@@ -39,8 +39,8 @@ These directories contain the biological data (i.e., presence locations of logge
   
 ```{r base_dir}
 #Setting directories containing input data
-dir_data <- file.path(here(), "data/raw-bio")
-dir_env <- file.path(here(), "data/env")
+dir_data <- file.path(here::here(), "data/raw-bio")
+dir_env <- file.path(here::here(), "data/env")
 ```
 
 ### Loading bounding box for region of interest

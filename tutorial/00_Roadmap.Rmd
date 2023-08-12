@@ -1,25 +1,31 @@
 ---
-title: "SDM Workflow"
+title: "SDM Roadmap"
 ---
 
-## SDM Workflow/Roadmap
+This section (Background) discusses the steps of the Species Distribution Model (SDM) Workflow and shows some different approaches that you might take.
+
+## SDM Workflow
 
 Creating a Species Distribution Model (SDM) has five steps. In the "Background" section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the "Our workflow" section, we show the specific approaches that we used in OHW23. Then in the "Turtle SDMs" section, we show the SDMs created by the team.
 
-1. Presence Data
+1. Specify the region
 
-   -- obtain Loggerhead sea turtle (*C. caretta*) presence data from OBIS via `robis` 
+   -- shows how to create a bounding box for the region and some base maps
    
-2. Background Points
+2. Obtain presence Data
 
-   -- discusses three methods to create random background points within our area of interest 
+   -- shows how to obtain sea turtle presence data from OBIS via `robis` 
    
-3. Environmental Data
+3. Create Absence (also called background) Points
+
+   -- discusses three methods to create random background points within a area of interest 
+   
+4. Extract environmental variables
 
    -- shows how to obtain environmental predictors of interest using `sdmpredictors`
    
-4. Model
+4. Models
 
-   -- run species distribution model and predict using `maxnet`
+   -- discusses different SDM modeling options and discusses the maxent model that we use in this tutorial
    
 5. Data Visualizations

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>2023 Ocean Hackweek - SDM Workflow</title>
+<title>2023 Ocean Hackweek - SDM Roadmap</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,7 @@ ul.task-list{list-style: none;}
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">SDM Workflow</h1>
+      <h1 class="quarto-secondary-nav-title">SDM Roadmap</h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -99,7 +99,7 @@ ul.task-list{list-style: none;}
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">Background</a>
+            <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Background</a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -107,34 +107,32 @@ ul.task-list{list-style: none;}
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/Roadmap.html" class="sidebar-item-text sidebar-link">Roadmap</a>
+  <a href="../tutorial/00_Region.html" class="sidebar-item-text sidebar-link">Specify the Region</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/00_Region.html" class="sidebar-item-text sidebar-link">Region</a>
+  <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link">Obtain Presence Data</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/01_Presence_Data.html" class="sidebar-item-text sidebar-link">Marine Presence Data</a>
+  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link">Create Absence Data</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/02_Background_Data.html" class="sidebar-item-text sidebar-link">Absence Data</a>
+  <a href="../tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Extract Variables</a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../tutorial/03_sdmpredictors-variables.html" class="sidebar-item-text sidebar-link">Environmental Variables</a>
+  <a href="../tutorial/04_models.html" class="sidebar-item-text sidebar-link">Fit Models</a>
   </div>
 </li>
           <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../tutorial/04_models.html" class="sidebar-item-text sidebar-link">Models</a>
-  </div>
-</li>
+  Visualize
+  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -186,7 +184,7 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sdm-workflowroadmap" id="toc-sdm-workflowroadmap" class="nav-link active" data-scroll-target="#sdm-workflowroadmap">SDM Workflow/Roadmap</a></li>
+  <li><a href="#sdm-workflow" id="toc-sdm-workflow" class="nav-link active" data-scroll-target="#sdm-workflow">SDM Workflow</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/edit/main/tutorial/00_Roadmap.Rmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/oceanhackweek/ohw23_proj_marinesdms/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -195,7 +193,7 @@ ul.task-list{list-style: none;}
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">SDM Workflow</h1>
+<h1 class="title d-none d-lg-block">SDM Roadmap</h1>
 </div>
 
 
@@ -209,18 +207,21 @@ ul.task-list{list-style: none;}
 
 </header>
 
-<section id="sdm-workflowroadmap" class="level2">
-<h2 class="anchored" data-anchor-id="sdm-workflowroadmap">SDM Workflow/Roadmap</h2>
+<p>This section (Background) discusses the steps of the Species Distribution Model (SDM) Workflow and shows some different approaches that you might take.</p>
+<section id="sdm-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="sdm-workflow">SDM Workflow</h2>
 <p>Creating a Species Distribution Model (SDM) has five steps. In the “Background” section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the “Our workflow” section, we show the specific approaches that we used in OHW23. Then in the “Turtle SDMs” section, we show the SDMs created by the team.</p>
 <ol type="1">
-<li><p>Presence Data</p>
-<p>– obtain Loggerhead sea turtle (<em>C. caretta</em>) presence data from OBIS via <code>robis</code></p></li>
-<li><p>Background Points</p>
-<p>– discusses three methods to create random background points within our area of interest</p></li>
-<li><p>Environmental Data</p>
+<li><p>Specify the region</p>
+<p>– shows how to create a bounding box for the region and some base maps</p></li>
+<li><p>Obtain presence Data</p>
+<p>– shows how to obtain sea turtle presence data from OBIS via <code>robis</code></p></li>
+<li><p>Create Absence (also called background) Points</p>
+<p>– discusses three methods to create random background points within a area of interest</p></li>
+<li><p>Extract environmental variables</p>
 <p>– shows how to obtain environmental predictors of interest using <code>sdmpredictors</code></p></li>
-<li><p>Model</p>
-<p>– run species distribution model and predict using <code>maxnet</code></p></li>
+<li><p>Models</p>
+<p>– discusses different SDM modeling options and discusses the maxent model that we use in this tutorial</p></li>
 <li><p>Data Visualizations</p></li>
 </ol>
 

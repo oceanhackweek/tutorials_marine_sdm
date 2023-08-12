@@ -96,9 +96,16 @@ occ.points <- occ.points %>%
 
 ### SDM predictors
 
+```{r load-layers}
+#Setting directories containing input data
+dir_env <- file.path(here::here(), "data/env")
+#Set default directory for environmental data
+options(sdmpredictors_datadir = dir_env)
+```
+
 Loading in
 
-```{r, warning=F}
+```{r, warning=FALSE}
 datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
 
 layers <- list_layers(datasets)
