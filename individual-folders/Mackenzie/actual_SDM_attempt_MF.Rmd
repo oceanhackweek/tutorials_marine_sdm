@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 You will need to install a new version of maxnet.
 ```{r eval=FALSE}
-devtools::install_github(“BigelowLab/maxnet”)
+devtools::install_github("BigelowLab/maxnet", force = TRUE)
 ```
 
 ```{r}
@@ -40,9 +40,9 @@ suppressPackageStartupMessages(
 ### Load data in
 
 ```{r}
-pts.abs <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/pts_absence.csv") # X is lon and Y is lat
+pts.abs <- read.csv("data/raw-bio/pts_absence.csv") # X is lon and Y is lat
 
-io.turtles <- read.csv("/home/jovyan/R/ohw23_proj_marinesdms/data/raw-bio/io-sea-turtles.csv") 
+io.turtles <- read.csv("data/raw-bio/io-sea-turtles.csv") 
 ```
 
 ### Format occurrence data
@@ -177,7 +177,8 @@ responses <- plot(sdm.model, type = "cloglog")
 ```{r}
 clamp <- TRUE       # see ?predict.maxnet for details
 type <- "cloglog"
-predicted <- predict(sdm.model, env.stars %>% sf::st_crop(bb), clamp = clamp, type = type)
+predicted <- predict(sdm.model, env.stars %>% 
+                       sf::st_crop(bb), clamp = clamp, type = type)
 predicted
 ```
 

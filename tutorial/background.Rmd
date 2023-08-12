@@ -1,0 +1,94 @@
+---
+title: "Get background data"
+---
+
+We used the random samples within our region of interest to generate a file with the locations for our absences.
+
+## Set up
+
+```{r}
+library(ggplot2)
+library(sf)
+library("rnaturalearth")
+library("rnaturalearthdata")
+library(raster)
+library(tidyverse)
+```
+
+```{r}
+dir_data <- file.path(here::here(), "data", "raw-bio")
+dir_env <- file.path(here::here(), "data", "env")
+redo <- TRUE
+```
+
+## Define the region of interest
+
+```{r}
+# lon, lon, lat, lat
+library(sf)
+lats <- c(-0.125, 32.125)
+lons <- c(41.875, 65.125)
+# raster extent is defined by west lon, east lon, south lat, north lat
+ext <- raster::extent(lons[1], lons[2], lats[1], lats[2])
+extent_polygon <- as(ext, "SpatialPolygons") %>% st_as_sf()
+# we need to assign a coordinate system; 4326 is the default for maps in sf
+sf::st_crs(extent_polygon)<-4326
+# convert to a WKT format
+wkt_geometry <- extent_polygon$geometry %>% st_as_text()
+wkt_geometry
+```
+
+Make a map of our region so we know we have the right area.
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+ggplot(data = world) + geom_sf() +
+  geom_sf(data = extent_polygon, color = "red", fill=NA)
+```
+
+## Random samples
+
+This is adapted from [here](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html).
+
+### Get a marine raster layer
+
+We just need one because we use this to sample lat/lons from the marine environment.
+
+```{r}
+# set a default data directory
+options(sdmpredictors_datadir = dir_env)
+
+# choosing marine
+env_datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
+env_layers <- sdmpredictors::list_layers("MARSPEC")
+env_stack <- sdmpredictors::load_layers("MS_bathy_5m")
+env_stack <- env_stack %>% raster::crop(ext)
+```
+
+Plot to check that the layer looks ok. This is bathymetry.
+
+```{r}
+plot(env_stack)
+```
+  
+### Next we sample points from this
+
+
+```{r}
+nsamp <- 1000
+absence <- dismo::randomPoints(env_stack[[1]], nsamp) %>% 
+    as_tibble() %>% 
+    st_as_sf(coords = c("x", "y"), crs = 4326)
+```
+
+```{r}
+mapview::mapview(absence, col.regions = "gray")
+```
+
+Save the absence locations to a file.
+
+```{r save-absence}
+absence_geo <- file.path(dir_data, "absence.geojson")
+pts_absence_csv <- file.path(dir_data, "pts_absence.csv")
+st_write(absence, pts_absence_csv, layer_options = "GEOMETRY=AS_XY", append=FALSE)
+```
+

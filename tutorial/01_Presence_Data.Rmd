@@ -1,15 +1,11 @@
 ---
 title: "Obtaining presence data for loggerhead turtles from OBIS"
-output:
-  md_document:
-    variant: markdown_github
-date: "2023-08-10"
 ---
 
 In this section, we will explore [Loggerhead sea turtle (*Caretta caretta*)](https://www.iucnredlist.org/species/3897/119333622) data from 2000 until present from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/). We will use the `robis` package to search the OBIS library and download relevant data.  We will then check for quality control flags and remove problematic observations from the data (i.e., sea turtle observations on land).
   
-# Loading libraries
-```{r libraries, warning = F, message = F}
+## Load libraries
+```{r libraries, warning = FALSE, message = FALSE}
 #Dealing with spatial data
 library(sf)
 #Getting base maps
@@ -21,26 +17,20 @@ library(tidyverse)
 library(janitor)
 ```
 
-# Create a bounding box
-We will use a bounding box for the region of our interest (Arabian Sea and the Bay of Bengal) to extract *C. caretta* data relevant to our study area.  
-  
-```{r bounding_box}
-#We create a bounding box using minimum and maximum coordinate pairs
-extent_polygon <- st_bbox(c(xmin = 41.875, xmax = 65.125, 
-                            ymax = -0.125, ymin = 32.125), 
-                          #Assign reference system
-                          crs = st_crs(4326)) %>% 
-  #Turn into sf object
-  st_as_sfc()
+## Load the region data
+We defined our region and bounding box in the [Region](tutorial/Region.html) page.
+
+Load the bounding box.
+```{r}
+#Loading bounding box for the area of interest
+fil <- here::here("data", "region", "BoundingBox.shp")
+extent_polygon <- read_sf(fil)
 
 #Extract polygon geometry 
-pol_geometry <- st_as_text(extent_polygon[[1]])
-
-#Saving bounding box for future use
-write_sf(extent_polygon, "../data/BoundingBox.shp")
+pol_geometry <- st_as_text(extent_polygon$geometry)
 ```
   
-# Get Observations
+## Get Observations
 We will use the `robis` package to find observations of Loggerhead sea turtles (*C. caretta*) published in OBIS.  
 
 ```{r obis_search}
@@ -107,24 +97,18 @@ caretta_obs %>%
 ```
   
 We will now plot our dataset on a map and use the information in the `flags` column to color code the observations. This can help us decide whether we should include or exclude them from further analyses. 
+
+First we will load the region map that was saved in the [Region page](tutorial/00_Region.Rmd)
+```{r}
+fil <- here::here("data", "region", "region_map_label.rda")
+load(fil)
+```
   
 ```{r plot_qc}
-#Getting a world base map
-world <- ne_countries(scale = "medium", returnclass = "sf")
-
-#Starting a plot
-ggplot()+
-  #Adding base layer (world map)
-  geom_sf(data = world)+
-  #Adding sea turtle observations
+region_map_label +
   geom_point(data = caretta_obs, 
              #Using coordinates to plot and color based on value in flags column
-             aes(decimalLongitude, decimalLatitude, color = flags))+
-  #Constraining map to original bounding box
-  lims(x = c(st_bbox(extent_polygon)$xmin, st_bbox(extent_polygon)$xmax),
-       y = c(st_bbox(extent_polygon)$ymin, st_bbox(extent_polygon)$ymax))+
-  #Applying theme without background
-  theme_bw()
+             aes(decimalLongitude, decimalLatitude, color = flags))
 ```
   
 From the plot above, we should consider removing at least some of the observations classified as `NO_DEPTH,ON_LAND`. This is because loggerhead sea turtles are not present inland. Instead, they are found in temperate and subtropical ocean waters and in sandy beaches.  
@@ -164,12 +148,11 @@ caretta_obs <- caretta_obs %>%
   filter(!str_detect(occurrenceRemarks, "degree"))
 ```
   
-# Saving clean data
+## Saving clean data
 Now that we have removed the problematic observations, we can save the new dataset into our local machine. We will save this under the `data` folder.  
 
 ```{r save_data}
-write_csv(caretta_obs, "../data/raw-bio/loggerhead-robis.csv")
+fil <- here::here("data", "raw-bio", "loggerhead-robis.csv")
+write_csv(caretta_obs, fil)
 ```
   
-# Next steps
-Now that we have explored and save the OBIS data, we can focus on importing the environmental variables that we will use as inputs for the species distribution model. For next steps, see `Workflow/Roadmap` section in the [`README`](../README.md) file.

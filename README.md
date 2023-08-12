@@ -1,5 +1,3 @@
-# **ohw23_proj_marinesdms**
-
 ## Marine Species Distribution Model (SDM) Tutorial
 
 ## Overview
@@ -65,16 +63,16 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
   
 ## Tutorial developers
 - [Catherine Courtier](https://github.com/cacourtier):
-- [Mackenzie Fiss](https://github.com/mackenziefiss): Third-year PhD student at Northeastern University studying marine biogeochemistry (DOM) and microbial ecology.
+- [Mackenzie Fiss](https://github.com/mackenziefiss): Fifth-year PhD student at Northeastern University studying carbon cycling and microbial interactions in salt marshes.
 - [Denisse Fierro Arcos](https://github.com/lidefi87): PhD candidate at the [Institute for Marine and Antarctic Studies (IMAS)](https://www.imas.utas.edu.au/) and Data Officer at the [Integrated Marine Observing System (IMOS)](https://imos.org.au/)   
 - [Paulo Freire](https://github.com/Pfreire29): PhD candidate at the University of North Carolina at Charlotte (UNCC) studying marine microbial ecology.
 - [Eli Holmes](https://github.com/eeholmes): Research Fisheries Biologist, Northwest Fisheries Science Center, NOAA Fisheries.  
-- [Jade Hong](https://github.com/sjhong0117): 
+- [Jade Hong](https://github.com/sjhong0117): Recently finished ungraduate studies majoring Biology and Marine Science at Boston University.  
 - [Tylar Murray](https://github.com/7yl4r): USF IMaRS Software Engineer - code whisperer, data viz enthusiast, scientific generalist, compulsive overengineerer, & UX PhD  
 - [Caitlin O'Brien](https://github.com/caitobrien): Research Scientist, [Columbia Basin Research](https://www.cbr.washington.edu/people), School of Aquatic Fishery and Sciences, University of Washington
 - Collins Ongore
 - [Mary Solokas](https://github.com/marysolokas): John A. Knauss Marine Policy Fellow, National Oceanic and Atmospheric Administration
-- [Laura Tsang](https://github.com/lauratsang):
+- [Laura Tsang](https://github.com/lauratsang): Recent Master's graduate from Northeastern University
 - [Ben Tupper](https://github.com/btupper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
 
 ---
