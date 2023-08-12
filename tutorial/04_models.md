@@ -1,12 +1,19 @@
 ---
 title: "Marine Species Distribution Models"
-author: "ChatGPT"
+author: "Mostly ChatGPT"
 ---
 
 
 ## Models
 
-Species distribution modeling (SDM) involves various statistical and machine learning techniques to predict the spatial distribution of species based on environmental variables. Some of the main models used for SDMs include:
+Species distribution modeling (SDM) involves various statistical and machine learning techniques to predict the spatial distribution of species based on environmental variables. The classic SDM model takes the form:
+
+Probability of observation at location x = $p_x$
+Probability of absence at location x = $1-p_x$
+
+$p_x$ is some, perhaps complex, function of the values of the variables at location x. The goal is to find the best function that explains the observations and absences.
+
+Some of the main models used for SDMs include:
 
 1. **Maxent (Maximum Entropy Model):**
    Maxent is a widely used model for SDMs. It aims to find the distribution that is the most spread out (has the highest entropy) while satisfying the constraints of observed species presences and environmental variables. It's particularly useful when dealing with presence-only data. [More on Maxent](https://support.bccvl.org.au/support/solutions/articles/6000083216-maxent)
