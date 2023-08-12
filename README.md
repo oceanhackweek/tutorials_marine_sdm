@@ -77,7 +77,7 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
 
 ---
   
-## Who this tutorial is intended for
+## Who is this tutorial intended for?
 Some experience programming in `R` is needed to make the most of this tutorial. To run this tutorial make sure you clone this repository into your local machine by creating a new project that uses version control (`git`).  
   
 The tutorial content was developed in a `R` version 4.2.2 for Linux. Full session information is included below:  
