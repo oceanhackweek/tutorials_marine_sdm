@@ -62,8 +62,10 @@ website:
             href: tutorial/02_Background_Data.Rmd
           - text: "Extract Variables"
             href: tutorial/03_sdmpredictors-variables.Rmd
-          - text: "Fit Models"
+          - text: "Types of Models"
             href: tutorial/04_models.md
+          - text: "Fit Models"
+            href: tutorial/05_fit_models.Rmd
           - text: "Visualize"
       - section: Our workflow
         contents:
