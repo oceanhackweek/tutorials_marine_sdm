@@ -1,5 +1,5 @@
 ---
-title: "Marine Species Distribution Models"
+title: "Species Distribution Models"
 author: "Mostly ChatGPT"
 ---
 
