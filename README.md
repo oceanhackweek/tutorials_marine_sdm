@@ -13,32 +13,22 @@ For a review of the performance of different SDM algorithms, see the following p
   
 - Elith et al (2006). Novel methods improve prediction of species’ distributions from occurrence data. DOI: [10.1111/j.2006.0906-7590.04596.x](https://doi.org/10.1111/j.2006.0906-7590.04596.x)  
   
-For a discussion on the impact of background data on SDMs see: Phillips et al (2009). Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. DOI: [10.1890/07-2153.1](https://doi.org/10.1890/07-2153.1).  
-  
-For a background sample generation refer to work by [Valavi](https://rvalavi.github.io/SDMwithRFs/#generating-background-samples).  
-  
---ADD MORE SOON--  
-  
-## Goals
-Many tutorials exist to run SDM models, however, most readily available tutorials focus on terrestrial-based models. Our goal through this tutorial is to highlight a marine-based SDM tutorial.  
-  
-## Datasets
+For a discussion on the impact of background data on SDMs see: Phillips et al (2009). Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. DOI: [10.1890/07-2153.1](https://doi.org/10.1890/07-2153.1).   For a background sample generation refer to work by [Valavi](https://rvalavi.github.io/SDMwithRFs/#generating-background-samples).  
+      
+## Datasets used in the tutorial
 
 ### **Biological Data**
+
 Our area of interest is the Indian Ocean, where four species of sea turtles have been reported to occupy this area:  
 - Loggerhead, *Caretta caretta*
 - Green, *Chelonia mydas*
 - Olive Ridley, *Lepidochelys olivacea*
 - Hawksbill, *Eretmochelys imbricata*
   
-For this tutorial, we will focus on predicting the areas occupied by Loggerhead sea turtles. To do this, we will use presence-only data from 2000 until present, which have been sourced from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/) via the `robis` package.  
+For this tutorial, we will focus on predicting the areas occupied by loggerhead sea turtles. To do this, we will use presence-only data from 2000 until present, which have been sourced from the [Ocean Biodiversity Information System (OBIS)](https://obis.org/) via the `robis` package.  
   
 ### **Environmental Data**
-This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the `SMDpredictor` R package and includes:  
-
--ENTER ALL FINAL PREDICTORS INCLUDED HERE
-
-- paulo working on background--link to
+This tutorial focuses on regions in the northern Indian Sea, specifically the western Arabian Sea, Persian Gulf, Gulf of Oman, Gulf of Aden and Red Sea. Environmental predictor variables were sourced via the [sdmpredictors R package](http://lifewatch.github.io/sdmpredictors/). The package give access to the https://bio-oracle.org/ and http://marspec.org/ high-resolution layers of various marine variables. Note these variables are location specific but not time specific: they are average values over time periods.
 
 ## Workflow/Roadmap
 This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https://github.com/BigelowLab/maxnet/wiki/stars), and highlights modeling presence-only data via `maxnet` R package.
@@ -62,15 +52,14 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
 - Steven J. Phillips, Miroslav Dudík, Robert E. Schapire. [Internet] Maxent software for modeling species niches and distributions (Version 3.4.1). Available from url: [http://biodiversityinformatics.amnh.org/open_source/maxent/](http://biodiversityinformatics.amnh.org/open_source/maxent/). Accessed on 2023-08-10.  
   
 ## Tutorial developers
+- [Eli Holmes](https://github.com/eeholmes): Research Fisheries Biologist, Northwest Fisheries Science Center, NOAA Fisheries.  
 - [Catherine Courtier](https://github.com/cacourtier):
 - [Mackenzie Fiss](https://github.com/mackenziefiss): Fifth-year PhD student at Northeastern University studying carbon cycling and microbial interactions in salt marshes.
 - [Denisse Fierro Arcos](https://github.com/lidefi87): PhD candidate at the [Institute for Marine and Antarctic Studies (IMAS)](https://www.imas.utas.edu.au/) and Data Officer at the [Integrated Marine Observing System (IMOS)](https://imos.org.au/)   
 - [Paulo Freire](https://github.com/Pfreire29): PhD candidate at the University of North Carolina at Charlotte (UNCC) studying marine microbial ecology.
-- [Eli Holmes](https://github.com/eeholmes): Research Fisheries Biologist, Northwest Fisheries Science Center, NOAA Fisheries.  
 - [Jade Hong](https://github.com/sjhong0117): Recently finished ungraduate studies majoring Biology and Marine Science at Boston University.  
 - [Tylar Murray](https://github.com/7yl4r): USF IMaRS Software Engineer - code whisperer, data viz enthusiast, scientific generalist, compulsive overengineerer, & UX PhD  
 - [Caitlin O'Brien](https://github.com/caitobrien): Research Scientist, [Columbia Basin Research](https://www.cbr.washington.edu/people), School of Aquatic Fishery and Sciences, University of Washington
-- Collins Ongore
 - [Mary Solokas](https://github.com/marysolokas): John A. Knauss Marine Policy Fellow, National Oceanic and Atmospheric Administration
 - [Laura Tsang](https://github.com/lauratsang): Recent Master's graduate from Northeastern University
 - [Ben Tupper](https://github.com/btupper): Senior Research Associate at [Bigelow Laboratory for Ocean Science](https://github.com/BigelowLab)
@@ -80,7 +69,10 @@ This tutorial is based on the [notes by Ben Tupper (Bigelow Lab, Maine)](https:/
 ## Who is this tutorial intended for?
 Some experience programming in `R` is needed to make the most of this tutorial. To run this tutorial make sure you clone this repository into your local machine by creating a new project that uses version control (`git`).  
   
-The tutorial content was developed in a `R` version 4.2.2 for Linux. Full session information is included below:  
+The tutorial content was developed in a `R` version 4.2.2 for Linux. 
+
+<!--
+Full session information is included below:  
 ```
 R version 4.2.2 (2022-10-31)
 Platform: x86_64-conda-linux-gnu (64-bit)
@@ -101,10 +93,11 @@ attached base packages:
 loaded via a namespace (and not attached):
 [1] compiler_4.2.2 tools_4.2.2   
 ```
+-->
   
 ## Additional resources
 If you need additional support with `R` programming, you can check the following resources:  
+- [Ben Best's labs on SDMs](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html)
 - [`R` for Data Science - 2nd edition](https://r4ds.hadley.nz/) by Wickham, Çetinkaya-Rundel and Grolemund.  
-- [Data analysis and visualisation in `R` for ecologists](https://datacarpentry.org/R-ecology-lesson/)  
-  
-For information on how to use `git` and `GitHub` with `R`, [Happy Git and GitHub for the useR](https://happygitwithr.com/) by Jenny Bryan is a great resource.  
+- [Data analysis and visualisation in `R` for ecologists](https://datacarpentry.org/R-ecology-lesson/)
+- For information on how to use `git` and `GitHub` with `R`, [Happy Git and GitHub for the useR](https://happygitwithr.com/) by Jenny Bryan is a great resource.  
