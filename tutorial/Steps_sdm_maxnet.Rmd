@@ -1,0 +1,213 @@
+---
+title: "Fit SDM"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will use the presence and absence data and the environmental layers that we created in the previous steps to assemble the data frames needed to fit our SDM model.
+
+## Pre-SDM Set-up
+
+You will need to install a new version of maxnet for this tutorial. No need to do this on the JupyterHub. It is already installed.
+```{r, eval=FALSE}
+devtools::install_github("BigelowLab/maxnet")
+install.packages(c("dplyr", "sf", "stars", "geodata",
+                   "dismo", "lubridate", "sdmpredictors", 
+                   "ggplot2", "cmocean", "janitor", "DT",
+                   "here"))
+```
+
+Load the needed packages.
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+library(maxnet)
+library(dplyr)
+library(sf)
+library(stars)
+library(geodata)
+library(dismo)
+library(lubridate)
+library(sdmpredictors)
+#library(zoon)
+library(ggplot2)
+library(cmocean)
+library(janitor)
+library(DT)
+})
+```
+
+Set the file location.
+```{r}
+here::i_am("tutorial/Steps_sdm_maxnet.Rmd")
+```
+
+Load region files. We created our region objects in a separate file [Region data](./tutorial/00_Region.html) and saved these in `data/region`. We will load these now.
+
+Load the bounding box polygon and create a bounding box.
+```{r}
+#Loading bounding box for the area of interest
+fil <- here::here("data", "region", "BoundingBox.shp")
+extent_polygon <- sf::read_sf(fil)
+bbox <- sf::st_bbox(extent_polygon)
+```
+
+## Load occurence data
+
+Here we load the data prepared in the previous step.
+
+```{r, warning=F}
+# presence data
+fil <- here::here("data", "raw-bio", "io-sea-turtles-clean.csv")
+occ.sub <- read.csv(fil)
+```
+
+Create sf_points data frame.
+
+```{r, warning=FALSE}
+occ.points <- sf::st_as_sf(occ.sub, coords = c("lon", "lat"), crs = 4326)
+head(occ.points)
+```
+
+## Load background data
+
+```{r, warning=F}
+# absence data
+fil <- here::here("data", "raw-bio", "pts_absence.csv")
+pts.abs <- read.csv(fil) # X is lon and Y is lat
+```
+
+Check column names.
+
+```{r}
+colnames(pts.abs)
+```
+
+Change columns names to lon and lat and remove any NAs in the data.
+```{r, warning=F}
+colnames(pts.abs) <- c("lon","lat")
+pts.abs <- na.omit(pts.abs)
+```
+
+Convert to sf_points object. Set the crs to 4326.
+```{r}
+abs.points <- sf::st_as_sf(pts.abs, coords = c("lon", "lat"), crs = 4326)
+```
+
+## Get the environment for the lat/lon locations
+
+Here we create the data frame with the environmental variables for our presence and absence locations.
+
+### Load environmental layers
+
+Set the location of the data directory.
+```{r}
+dir_env <- here::here("data", "env")
+options(sdmpredictors_datadir = dir_env)
+```
+
+Specify the layers that we want. The layers were saved to the `data/env` directory.
+```{r, warning=FALSE}
+layercodes <- c("BO_sstmean", "BO_bathymean", "BO22_ph", "BO2_dissoxmean_bdmean", "BO2_salinitymean_ss", "BO2_chlomean_ss", "BO21_nitratemean_ss")
+```
+
+Load the layers into the `env` object. We want to set rasterstack equal true to get one file for our variables.
+```{r}
+env <- sdmpredictors::load_layers(layercodes, rasterstack = TRUE)
+```
+
+### Create a stars object
+
+There are a few ways that we can get the values of the environmental variables in our raster stack for the lat/lon locations. We will use the stars and terra functions as these are the new (2023) packages in R for this purpose. You will find older approaches if you search and possibly AI will suggest older approaches.
+
+Step one is to convert our raster stack to a stars object and split the stars object into layers.
+
+```{r}
+env.stars <- stars::st_as_stars(env) # convert to stars object
+env.stars <- terra::split(env.stars)
+```
+
+### Extract the variables for our points
+
+Now we can extract the variables for our presence and absence points.
+```{r}
+occ.env <- stars::st_extract(env.stars, sf::st_coordinates(occ.points)) %>%
+  dplyr::as_tibble()
+
+abs.env <- stars::st_extract(env.stars, sf::st_coordinates(abs.points)) %>% 
+  dplyr::as_tibble()
+```
+
+Now we have a data frame with the variables for presence and absence.
+```{r}
+head(abs.env)
+```
+
+Let's check the sizes. They should have the same number of rows. 
+```{r}
+dim(occ.points)
+dim(occ.env)
+```
+
+Let's check the sizes. They should have the same number of rows. 
+```{r}
+dim(abs.points)
+dim(abs.env)
+```
+
+Our environmental data have some NAs. We need to remove these.
+```{r}
+any(is.na(occ.env))
+any(is.na(abs.env))
+```
+
+Remove the NAs.
+```{r}
+occ.env <- na.omit(occ.env)
+abs.env <- na.omit(abs.env)
+```
+
+## SDM Model
+
+We will fit with MaxEnt using the maxnet package. The function is
+```
+mod <- maxnet::maxnet(pres, env_df)
+```
+`env_df` is a data frame of environmental data (in columns) for each location (in rows) of the presences and absences. pres` is a string of 0s and 1s specifying if the row in `environ` is a presence (1) or absence (0).
+
+### Set up the `env_df`
+
+We combining the two data frames with `rbind()`.
+```{r}
+env_df <- rbind(occ.env, abs.env)
+```
+
+### Set up the `pres` string
+
+The rows of `occ.env` are all 1 (presence) and the rows of `abs.env` are all 0 (absent).
+
+```{r}
+pres <- c(rep(1, nrow(occ.env)), rep(0, nrow(abs.env)))
+```
+
+## Run the model
+
+```{r, warning=F}
+sdm.model <- maxnet::maxnet(pres, env_df)
+```
+
+### Model metrics
+
+```{r, warning=F}
+responses <- plot(sdm.model, type = "cloglog")
+```
+
+## Save model
+
+```{r, warning=F}
+env.stars.crop <- env.stars %>% sf::st_crop(bbox)
+fil <- here::here("data", "models", "io-turtle.RData")
+save(sdm.model, env.stars.crop, occ.points, abs.points, file=fil)
+```

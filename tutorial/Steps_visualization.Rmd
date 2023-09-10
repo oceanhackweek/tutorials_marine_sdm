@@ -1,0 +1,125 @@
+---
+title: "Visualization"
+output: html_document
+---
+
+## Set up
+
+Load the needed packages.
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(cmocean)
+library(maxnet)
+library(stars)
+})
+```
+
+Set the file location.
+```{r}
+here::i_am("tutorial/Steps_visualization.Rmd")
+```
+
+## Load the model
+
+We saved this in the previous step. Has the `sdm.model`, `occ.points`, `abs.points`, and `env.stars.crop`.
+
+```{r, warning=F}
+fil <- here::here("data", "models", "io-turtle.RData")
+load(fil)
+```
+
+Load region files. We created our region objects in a separate file [Region data](./tutorial/00_Region.html) and saved these in `data/region`. We will load these now.
+
+Load the bounding box polygon and create a bounding box.
+```{r}
+#Loading bounding box for the area of interest
+fil <- here::here("data", "region", "BoundingBox.shp")
+extent_polygon <- sf::read_sf(fil)
+bbox <- sf::st_bbox(extent_polygon)
+```
+
+
+
+## Predicting
+
+```{r, warning=F}
+clamp <- TRUE       # see ?predict.maxnet for details
+type <- "cloglog"
+predicted <- predict(sdm.model, env.stars.crop, clamp = clamp, type = type)
+predicted
+```
+
+## Visualization
+
+```{r, warning=F}
+ggplot() +
+  geom_stars(data = predicted) +
+  scale_fill_cmocean(name = "ice", direction = -1, guide = guide_colorbar(barwidth = 1, barheight = 10, ticks = FALSE, nbin = 1000, frame.colour = "black"), limits = c(0, 1)) +
+  theme_linedraw() +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Probability",
+       shape = "Species (presence)",
+       subtitle = "Environmental predictors: mean SS temp, mean SS salinity, mean bathymetry, \nmean pH, mean DO, mean SS chlorophyll-a, mean SS nitrate") +
+  geom_point(occ.points, mapping = aes(shape = common.name, geometry = geometry), stat = "sf_coordinates", alpha = 0.3, color = "purple") +
+  #scale_x_continuous(breaks = seq(40, 70, 10), limits = c(42, 70))+
+  scale_y_continuous(breaks = seq(0, 30, 10))
+```
+
+```{r}
+# ggsave("SDM_loggerhead_green_w points.pdf", height = 6, width = 8.5)
+```
+
+```{r, warning=FALSE}
+# ggplot - without occurrence data points
+
+ggplot() +
+  geom_stars(data = predicted) +
+  scale_fill_cmocean(name = "ice", direction = -1, guide = guide_colorbar(barwidth = 1, barheight = 10, ticks = FALSE, nbin = 1000, frame.colour = "black"), limits = c(0, 1)) +
+  theme_linedraw() +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Probability",
+       shape = "Species (presence)",
+       subtitle = "Environmental predictors: mean SS temp, mean SS salinity, mean bathymetry,\nmean pH, mean DO, mean SS chlorophyll-a, mean SS nitrate") +
+  #geom_point(occ.points, mapping = aes(shape = common.name, geometry = geometry), stat = "sf_coordinates", alpha = 0.3, color = "purple") +
+  #scale_x_continuous(breaks = seq(40, 70, 10), limits = c(42, 70))+
+  scale_y_continuous(breaks = seq(0, 30, 10))
+
+# ggsave("SDM_loggerhead_green.pdf", height = 6, width = 8.5)
+```
+
+
+```{r, warning=F}
+# ggplot - with occurrence (purple) and absence (green) data points
+
+ggplot() +
+  geom_stars(data = predicted) +
+  scale_fill_cmocean(name = "ice", direction = -1, guide = guide_colorbar(barwidth = 1, barheight = 10, ticks = FALSE, nbin = 1000, frame.colour = "black"), limits = c(0, 1)) +
+  theme_linedraw() +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  labs(title = "Loggerhead and green sea turtle SDM in the Arabian Sea",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Probability",
+       shape = "Species (presence)",
+       subtitle = "Environmental predictors: mean SS temp, mean SS salinity, mean bathymetry, \nmean pH, mean DO, mean SS chlorophyll-a, mean SS nitrate") +
+  geom_point(occ.points, mapping = aes(shape = common.name, geometry = geometry), stat = "sf_coordinates", alpha = 0.3, color = "purple") +
+  #scale_x_continuous(breaks = seq(40, 70, 10), limits = c(42, 70))+
+  scale_y_continuous(breaks = seq(0, 30, 10)) +
+  geom_point(abs.points, mapping = aes(geometry = geometry), stat = "sf_coordinates", alpha = 0.3, color = "green") # adding in absence data
+```
+

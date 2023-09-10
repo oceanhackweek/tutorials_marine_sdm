@@ -1,1 +1,1 @@
-Sitemap: https://oceanhackweek.org/sitemap.xml
+Sitemap: https://oceanhackweek.org/ohw23_proj_marinesdms/sitemap.xml

@@ -1,0 +1,175 @@
+---
+title: "Get turtle data"
+output: html_document
+---
+
+Here we download from OBIS using the robis package.
+
+## Set up
+
+```{r}
+library(ggplot2)
+library(sf)
+library("rnaturalearth")
+library("rnaturalearthdata")
+library(raster)
+library(tidyverse)
+library(robis)
+```
+
+## Load the region info
+
+Load the bounding box polygon and create a bounding box.
+```{r}
+#Loading bounding box for the area of interest
+fil <- here::here("data", "region", "BoundingBox.shp")
+extent_polygon <- sf::read_sf(fil)
+bbox <- sf::st_bbox(extent_polygon)
+wkt_geometry <- extent_polygon$geometry %>% st_as_text()
+```
+
+Make a map of our region so we know we have the right area.
+```{r}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+ggplot(data = world) + geom_sf() +
+  geom_sf(data = extent_polygon, color = "red", fill=NA)
+```
+
+## Get occurrence data from robis
+
+We will download data for four sea turtles found in the Arabian sea and save to one file. We will use the `occurrence()` function in the robis package.
+
+```{r eval = FALSE}
+spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea")
+
+obs <- robis::occurrence(spp, startdate = as.Date("2000-01-01"), geometry = wkt_geometry)
+```
+
+This has many columns that we don't need. We reduced to fewer columns.
+```{r eval = FALSE}
+cols.to.use <- c("occurrenceID", "scientificName", 
+                 "dateIdentified", "eventDate", 
+                 "decimalLatitude", "decimalLongitude", "coordinateUncertaintyInMeters",
+                 "individualCount","lifeStage", "sex",
+                 "bathymetry",  "shoredistance", "sst", "sss")
+obs <- obs[,cols.to.use]
+```
+
+We also added a cleaner date with YYYY-MM-DD format.
+```{r eval = FALSE}
+obs$date <- as.Date(obs$eventDate)
+```
+
+## Save our data
+
+Set up the file names
+```{r eval = FALSE}
+dir_data <- here::here("data", "raw-bio")
+filname <- "io-sea-turtles"
+obs_csv <- file.path(dir_data, paste0(filname, ".csv"))
+obs_geo <- file.path(dir_data, paste0(filname, ".geojson"))
+obs_gpkg <- file.path(dir_data, paste0(filname, ".gpkg"))
+```
+
+Change the data frame to a sf dataframe.
+```{r eval = FALSE}
+obs_sf <- obs %>% 
+    sf::st_as_sf(
+      coords = c("decimalLongitude", "decimalLatitude"),
+      crs = st_crs(4326))
+```
+
+Save files in different formats to facilitate loading into geospatial packages.
+```{r eval = FALSE}
+redo   <- TRUE
+
+if (!file.exists(obs_csv) | redo)  readr::write_csv(obs, obs_csv)
+if (!file.exists(obs_geo) | redo)  sf::write_sf(obs_sf, obs_geo, delete_dsn=TRUE)
+if (!file.exists(obs_gpkg) | redo)  sf::write_sf(obs_sf, obs_gpkg, delete_dsn=TRUE)
+```
+
+Later we can reload our data as
+```{r eval = FALSE}
+tmp <- sf::read_sf(obs_gpkg)
+class(tmp)
+```
+
+## Clean and prep data
+
+Here we clean and prepare the data for our model and save to a new file name.
+
+### Load data in
+
+```{r, warning=F}
+# presence data
+fil <- here::here("data", "raw-bio", "io-sea-turtles.csv")
+io.turtles <- read.csv(fil)
+```
+
+### Clean the data
+
+Select species.
+```{r, warning=F}
+# turtle species we're interested in
+spp <- c("Chelonia mydas", "Caretta caretta", "Eretmochelys imbricata", "Lepidochelys olivacea", "Natator depressus", "Dermochelys coriacea") 
+
+# subsetting all the occurence data to just those turtles 
+occ <- io.turtles %>% 
+  subset(scientificName == spp) 
+
+# subset the occurences to include just those in the water
+occ <- occ %>% 
+  subset(bathymetry > 0 & shoredistance > 0 & coordinateUncertaintyInMeters < 200)
+
+# seeing how often each species occurs
+table(occ$scientificName) 
+```
+
+After cleaning we discover that we only have loggerhead and green sea turtles.
+
+### Select the needed columns
+
+Select columns and add a common name column.
+
+```{r}
+colnames(occ)
+```
+
+We want these. The last two are sea surface temperature and salinity.
+```{r}
+cols <- c("scientificName", "eventDate", "decimalLatitude", "decimalLongitude", "lifeStage", "bathymetry", "sst", "sss")
+```
+
+Subset the columns.
+```{r}
+occ.sub <- occ %>% dplyr::select(all_of(cols))
+```
+
+Fix the event date to a date format.
+```{r}
+occ.sub$eventDate <- lubridate::ymd_hms(occ.sub$eventDate) 
+```
+
+Change the column names.
+```{r}
+colnames(occ.sub) <- c("sci.name", "obsv.datetime", "lat", "lon", "life.stage", "bathy", "SST", "SSS")
+```
+
+Add common.name column.
+```{r}
+occ.sub <- occ.sub %>% 
+  mutate(common.name = case_when(sci.name == "Caretta caretta" ~ "Loggerhead",
+                                 sci.name == "Chelonia mydas" ~ "Green"))
+```
+
+### Save the cleaned file
+
+## Save our data
+
+Set up the file names
+```{r}
+dir_data <- here::here("data", "raw-bio")
+fil <- "io-sea-turtles-clean.csv"
+obs_csv <- here::here(dir_data, fil)
+if (!file.exists(obs_csv))  readr::write_csv(occ.sub, obs_csv)
+```

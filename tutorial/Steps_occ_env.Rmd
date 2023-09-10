@@ -1,0 +1,72 @@
+---
+title: "Get environmental data for the occurrence locations"
+---
+
+We are going to download environment data layers using sdmpredictors R package. We need to specify the directory where we will do this. We created the env directory in the data directory for this purpose.
+
+Ultimately we need to get a data frame with the environmental data for the occurrence and absence lat/lon locations.
+
+## Set up
+
+```{r}
+library(ggplot2)
+library(sdmpredictors)
+library(DT)
+library(sf)
+library(raster)
+```
+
+Set the directory where we will save environmental data layers.
+
+```{r}
+dir_env <- here::here("data", "env")
+options(sdmpredictors_datadir = dir_env)
+```
+
+## Add datasets
+
+We will use the sdmpredictors R package which has marine data layers.
+
+```{r}
+# choose marine
+env_datasets <- sdmpredictors::list_datasets(terrestrial = FALSE, marine = TRUE)
+```
+
+## Show the available variables
+
+The dataframe is large. We will use the DT package to make the table pretty in html.
+```{r}
+env_layers <- sdmpredictors::list_layers(env_datasets$dataset_code)
+DT::datatable(env_layers)
+```
+
+## Variables
+
+See the [Background discussion](./tuturials/03_sdmpredictors-variables.Rmd) on how we decided on the environmental variables that we would use from the sdmpredictors R package.
+
+```{r, warning=FALSE}
+layercodes <- c("BO_sstmean", "BO_bathymean", "BO22_ph", "BO2_dissoxmean_bdmean", "BO2_salinitymean_ss", "BO2_chlomean_ss", "BO21_nitratemean_ss")
+```
+
+### Load layers
+
+We want to set rasterstack equal true to get one file for our variables. This will save the files to `data/env` and we can load the files in later steps.
+```{r}
+env <- sdmpredictors::load_layers(layercodes, rasterstack = TRUE)
+```
+
+## Visualize the environment data
+
+Load the bounding box.
+
+```{r}
+#Loading bounding box for the area of interest
+fil <- here::here("data", "region", "BoundingBox.shp")
+extent_polygon <- read_sf(fil)
+```
+
+Make a plot of all the layers cropped to our bounding box.
+```{r}
+io.rast <- raster::crop(env, raster::extent(extent_polygon))
+plot(io.rast) 
+```

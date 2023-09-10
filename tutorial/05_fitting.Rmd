@@ -1,0 +1,31 @@
+---
+title: "Fitting models"
+---
+
+## Data frame
+
+In general, when fitting any SDM in R, one uses a data frame where each row is an observation or absence. The first column is typically a presence/absence column (0/1). This is followed by columns of the environmental variables for each presence/absence. For debugging, it is probably wise to keep the lat/lon columns and date values associated with the points and perhaps a id column. In the turtorial, we did not do that.
+
+## Fitting
+
+Once one has the data frame, fitting will generally look like
+
+```
+fun(pres ~ ., data = df)
+```
+
+For example,
+```
+mod <- gam(pres ~ ., data = df)
+```
+To fit a generalized additive model.
+
+Thus presence is defined as a function of all the variables in the data frame and `fun()` specifies the model.
+
+For maxnet, format is slightly different:
+
+```
+mod <- maxnet(pres, df %>% select(-pres))
+```
+
+Thus the 0/1 for each row is the first argument and the second argument is the environmental variables only.
