@@ -1,7 +1,7 @@
 ## Marine Species Distribution Model (SDM) Tutorial
 
 ## Overview
-This tutorial was developed during [OceanHackWeek2023](https://oceanhackweek.org/) to provide a simple workflow to developing a marine Species Distribution Model (SDM) using `R` programming. 
+This tutorial was developed during [OceanHackWeek2023](https://oceanhackweek.org/) to provide a simple workflow to developing a marine Species Distribution Model (SDM) using `R` programming. To see the OHW23 project at the end of OHW23, go to the ohw23_proj branch or see the ohw23_proj release. 
   
 ## Background
 Species Distribution Modelling (SDM) also known as niche/environmental/ecological modelling uses an algorithm to predict the distribution of a species across space and time using environmental data. An understanding of the relationship between the species of interest and the physical environment they occupy will inform the selection of relevant environmental factors that will be included in the model.  
