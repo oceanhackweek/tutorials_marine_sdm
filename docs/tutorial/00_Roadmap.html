@@ -210,6 +210,23 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
+ <span class="menu-text">Full SDM</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../SDM/Turtle_maxnet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Maxnet</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -248,7 +265,8 @@ ul.task-list li input[type="checkbox"] {
 <p>This section (Background) discusses the steps of the Species Distribution Model (SDM) Workflow and shows some different approaches that you might take.</p>
 <section id="sdm-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="sdm-workflow">SDM Workflow</h2>
-<p>Creating a Species Distribution Model (SDM) has five steps. In the “Background” section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the “SDM Steps” section, we show the specific approaches that we use in the sea turtle SDM.</p>
+<p>Creating a Species Distribution Model (SDM) has general steps: 1) plan, 2) data preparation, 3) model fitting, 4) assessment and 5) predictions. These are the same for all SDMs independent of the particular algorithm used.</p>
+<p>In this tutorial, we discuss these steps in the context of marine SDMs using the example of the sea turtles in the Arabian Sea. In the “SDM Steps” section, we show the specific approaches that we use in the sea turtle SDM tutorial. This is a tutorial to get you more comfortable with the steps. They actual sea turtle model we produce is a “toy” example.</p>
 <ol type="1">
 <li><p>Specify the region</p>
 <p>– shows how to create a bounding box for the region and some base maps</p></li>

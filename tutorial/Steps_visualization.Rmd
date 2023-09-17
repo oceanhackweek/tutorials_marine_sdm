@@ -59,6 +59,7 @@ ggplot() +
   geom_stars(data = predicted) +
   scale_fill_cmocean(name = "ice", direction = -1, guide = guide_colorbar(barwidth = 1, barheight = 10, ticks = FALSE, nbin = 1000, frame.colour = "black"), limits = c(0, 1)) +
   theme_linedraw() +
+  coord_equal() +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +

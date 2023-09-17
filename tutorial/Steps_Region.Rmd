@@ -1,5 +1,5 @@
 ---
-title: "Savng region files"
+title: "Saving region files"
 ---
 
 As a preliminary, we will define some shape files and plots of our region that we will use in later steps.
@@ -17,28 +17,26 @@ library(ggspatial)
 
 Our interest is the Persian Gulf and northern Arabian Sea.  
   
-We create a bounding box using minimum and maximum coordinate pairs and assign a standared WGS 84 coordinate reference system.
+We create a bounding box using minimum and maximum coordinate pairs and assign a standared WGS 84 coordinate reference system. We will turn this into a polygon and then an sf object.
 
 ```{r bounding_box}
-# this creats a sfs_POLYGON
-extent_polygon <- sf::st_bbox(c(xmin = 41.875, xmax = 65.125, 
-                            ymax = -0.125, ymin = 32.125), 
-                          crs = sf::st_crs(4326)) %>% 
-  #Turn into sf object
-  sf::st_as_sfc()
+bbox <- sf::st_bbox(c(xmin = 41.875, xmax = 65.125, ymax = -0.125, ymin = 32.125), 
+                          crs = sf::st_crs(4326))
+# this creates a sf object with a sfs_POLYGON from which we can get a polygon string
+extent_polygon <-  bbox %>% sf::st_as_sfc() %>% st_sf()
 ```
 
 ### Save
 
-Saving bounding box for future use.
+Saving the bounding box for future use.
 ```{r}
 fil <- here::here("data", "region", "BoundingBox.shp")
 write_sf(extent_polygon, fil)
 ```
 
-We will also save the polygon in string format.
+We will also save the polygon in string format. The polygon text is the first element in the object.
 ```{r}
-pol_geometry <- st_as_text(extent_polygon[[1]])
+pol_geometry <-  extent_polygon$geometry %>% sf::st_as_text()
 fil <- here::here("data", "region", "pol_geometry.txt")
 writeLines(pol_geometry, fil)
 ```
@@ -158,7 +156,7 @@ fil <- here::here("data", "region", "BoundingBox.shp")
 extent_polygon <- read_sf(fil)
 ```
 
-We often will need a sf bbox (bounding box object). To create that use
+We often will need a sf bbox (bounding box object). To create that from the sf polygon object use
 ```{r}
 bbox <- sf::st_bbox(extent_polygon)
 ```

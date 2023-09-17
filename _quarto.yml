@@ -82,6 +82,11 @@ website:
             href: tutorial/Steps_sdm_maxnet.Rmd
           - text: "Visualization"
             href: tutorial/Steps_visualization.Rmd
+      - section: Full SDM
+        contents:
+          - text: "Maxnet"
+            href: SDM/Turtle_maxnet.Rmd
+        
 
 format:
   html:

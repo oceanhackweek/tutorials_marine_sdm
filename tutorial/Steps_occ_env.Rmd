@@ -70,3 +70,64 @@ Make a plot of all the layers cropped to our bounding box.
 io.rast <- raster::crop(env, raster::extent(extent_polygon))
 plot(io.rast) 
 ```
+
+## Environmental predictors for points
+
+We will use the `stars` package to sample from our raster layers.
+
+Load in our point data as data frames.
+```{r, warning=FALSE}
+# presence data
+fil <- here::here("data", "raw-bio", "io-sea-turtles-clean.csv")
+df.occ <- read.csv(fil) 
+
+# absence data
+fil <- here::here("data", "raw-bio", "pts_absence.csv")
+df.abs <- read.csv(fil)
+colnames(df.abs) <- c("lon", "lat")
+```
+
+Convert data frames to sf points objects. This is what `stars` needs.
+```{r, warning=F}
+df.abs <- na.omit(df.abs) # just in case
+sf.abs <- sf::st_as_sf(df.abs, coords = c("lon", "lat"), crs = 4326)
+sf.occ <- sf::st_as_sf(df.occ, coords = c("lon", "lat"), crs = 4326)
+```
+
+Convert the raster stack to a stars object.
+```{r}
+env.stars <- stars::st_as_stars(env) # convert to stars object
+env.stars <- terra::split(env.stars)
+```
+
+Get environment values for the absence points. Each row in `sf.abs` is a row in `env.abs`.
+```{r, warning=FALSE}
+env.abs <- stars::st_extract(env.stars, sf::st_coordinates(sf.abs)) %>% 
+  dplyr::as_tibble() %>% 
+  na.omit()
+
+head(env.abs)
+```
+
+Get environment values for the occurence points. Each row in `sf.occ` is a row in `env.occ`.
+```{r, warning=FALSE}
+env.occ <- stars::st_extract(env.stars, sf::st_coordinates(sf.occ)) %>% 
+  dplyr::as_tibble() %>% 
+  na.omit()
+
+head(env.occ)
+```
+
+Now make this into one data frame with a `pa` column for 1 is a occurrence row and 0 if an absence row.
+
+```{r}
+pres <- c(rep(1, nrow(env.occ)), rep(0, nrow(env.abs)))
+sdm_data <- data.frame(pa = pres, rbind(env.occ, env.abs))
+head(sdm_data)
+```
+
+Save to a file. We will use for other models.
+```{r}
+fil <- here::here("data", "raw-bio", "sdm_data.csv")
+write.csv(sdm_data, row.names = FALSE, file=fil)
+```
