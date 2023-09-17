@@ -6,7 +6,9 @@ This section (Background) discusses the steps of the Species Distribution Model 
 
 ## SDM Workflow
 
-Creating a Species Distribution Model (SDM) has five steps. In the "Background" section, we discuss these steps in the context of marine SDMs using the example of the Loggerhead sea turtle in the Arabian Sea. In the "Our workflow" section, we show the specific approaches that we used in OHW23. Then in the "Turtle SDMs" section, we show the SDMs created by the team.
+Creating a Species Distribution Model (SDM) has general steps: 1) plan, 2) data preparation, 3) model fitting, 4) assessment and 5) predictions. These are the same for all SDMs independent of the particular algorithm used. 
+
+In this tutorial, we discuss these steps in the context of marine SDMs using the example of the sea turtles in the Arabian Sea. In the "SDM Steps" section, we show the specific approaches that we use in the sea turtle SDM tutorial. This is a tutorial to get you more comfortable with the steps. They actual sea turtle model we produce is a "toy" example.
 
 1. Specify the region
 
@@ -29,3 +31,7 @@ Creating a Species Distribution Model (SDM) has five steps. In the "Background" 
    -- discusses different SDM modeling options and discusses the maxent model that we use in this tutorial
    
 5. Data Visualizations
+
+## References
+
+* The zoon project has a [nice summary](https://zoonproject.github.io/zoontutorials/articles/Introduction.html) of the steps to preparing a SDM.

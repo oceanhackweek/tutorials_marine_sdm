@@ -3,7 +3,6 @@ project:
   resources: 
     - "SDM-team.mp3"
   output-dir: docs
-  citation: CITATION.cff
   render:
     - "*.*"
     - "!individual-folders/ben/*"
@@ -18,19 +17,20 @@ project:
     - "!tutorial/Subset*"
     - "!tutorial/Mackenzie_SDM_with_maxent_oops.Rmd"
     - "maxnet/*"
+    - "!tutorial/Steps_Env.Rmd"
 
 execute:
   freeze: auto
   
 website:
   page-navigation: true  
-  title: "2023 Ocean Hackweek"
-  site-url: https://oceanhackweek.org/
+  title: "Marine SDMs"
+  site-url: https://oceanhackweek.org/ohw23_proj_marinesdms
   
   repo-url: https://github.com/oceanhackweek/ohw23_proj_marinesdms
   repo-actions: [edit, issue]
   
-  page-footer: "2023 OceanHackWeek" 
+  page-footer: "OceanHackWeek Tutorial" 
  
   sidebar:
     logo: https://oceanhackweek.org/_static/logo.png
@@ -52,33 +52,41 @@ website:
       - text: "Welcome"
         href: index.md
       - section: Background
-        href: tutorial/Roadmap.Rmd
+        href: tutorial/00_Roadmap.Rmd
         contents:
-          - text: "Specify the Region"
+          - text: "Region"
             href: tutorial/00_Region.Rmd
-          - text: "Obtain Presence Data"
+          - text: "Presence data"
             href: tutorial/01_Presence_Data.Rmd
-          - text: "Create Absence Data"
+          - text: "Absence data"
             href: tutorial/02_Background_Data.Rmd
-          - text: "Extract Variables"
+          - text: "Environmental data"
             href: tutorial/03_sdmpredictors-variables.Rmd
-          - text: "Types of Models"
-            href: tutorial/04_models.md
-          - text: "Fit Models"
-            href: tutorial/05_fit_models.Rmd
-          - text: "Visualize"
-      - section: Our workflow
+          - text: "Link envionment"
+            href: tutorial/05_Link_env_to_pts.Rmd
+          - text: "Types of models"
+            href: tutorial/05_models.md
+          - text: "Fitting models"
+            href: tutorial/05_fitting.Rmd
+      - section: SDM Steps
         contents:
-          - text: "Presence Data"
-            href: tutorial/seaturtle_robis.Rmd
-          - text: "Absence Data"
-            href: tutorial/background.Rmd
+          - text: "Save region objects"
+            href: tutorial/Steps_Region.Rmd
+          - text: "Save presence data"
+            href: tutorial/Steps_occurences.Rmd
+          - text: "Save absence aata"
+            href: tutorial/Steps_background.Rmd
           - text: "Environmental Data"
-            href: tutorial/occ_env.Rmd
-      - section: Turtle SDMs!!
+            href: tutorial/Steps_occ_env.Rmd
+          - text: "Fit with Maxnet"
+            href: tutorial/Steps_sdm_maxnet.Rmd
+          - text: "Visualization"
+            href: tutorial/Steps_visualization.Rmd
+      - section: Full SDM
         contents:
-          - text: "SDM"
-            href: tutorial/Mackenzie_SDM_with_maxent.Rmd
+          - text: "Maxnet"
+            href: SDM/Turtle_maxnet.Rmd
+        
 
 format:
   html:

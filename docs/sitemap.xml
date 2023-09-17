@@ -1,55 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://oceanhackweek.org/index.html</loc>
-    <lastmod>2023-08-12T15:45:09.163Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/SDM/Turtle_maxnet.html</loc>
+    <lastmod>2023-09-17T18:25:42.762Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/00_Region.html</loc>
-    <lastmod>2023-08-12T15:45:10.473Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/index.html</loc>
+    <lastmod>2023-09-17T18:25:43.285Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/00_Roadmap.html</loc>
-    <lastmod>2023-08-12T15:45:11.636Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/**_Extracting_environmental_data.html</loc>
+    <lastmod>2023-09-17T18:25:43.965Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/01_Presence_Data.html</loc>
-    <lastmod>2023-08-12T15:45:12.422Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/00_Region.html</loc>
+    <lastmod>2023-09-17T18:25:44.625Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/02_Background_Data.html</loc>
-    <lastmod>2023-08-12T15:45:13.231Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/00_Roadmap.html</loc>
+    <lastmod>2023-09-17T18:25:45.013Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/03_sdmpredictors-variables.html</loc>
-    <lastmod>2023-08-12T15:45:14.124Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/01_Presence_Data.html</loc>
+    <lastmod>2023-09-17T18:25:45.784Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/04_models.html</loc>
-    <lastmod>2023-08-12T15:45:14.565Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/02_Background_Data.html</loc>
+    <lastmod>2023-09-17T18:25:46.560Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/Mackenzie_SDM_with_maxent.html</loc>
-    <lastmod>2023-08-12T15:45:15.428Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/03_sdmpredictors-variables.html</loc>
+    <lastmod>2023-09-17T18:25:47.471Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/Roadmap.html</loc>
-    <lastmod>2023-08-12T15:45:15.875Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/05_Link_env_to_pts.html</loc>
+    <lastmod>2023-09-17T18:25:47.790Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/background.html</loc>
-    <lastmod>2023-08-12T15:45:16.608Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/05_fitting.html</loc>
+    <lastmod>2023-09-17T18:25:48.120Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/maxent-sdm.html</loc>
-    <lastmod>2023-08-12T15:45:17.332Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/05_models.html</loc>
+    <lastmod>2023-09-17T18:25:48.554Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/occ_env.html</loc>
-    <lastmod>2023-08-12T15:45:18.042Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/Steps_Region.html</loc>
+    <lastmod>2023-09-17T18:25:59.868Z</lastmod>
   </url>
   <url>
-    <loc>https://oceanhackweek.org/tutorial/seaturtle_robis.html</loc>
-    <lastmod>2023-08-12T15:45:18.720Z</lastmod>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/Steps_background.html</loc>
+    <lastmod>2023-09-17T18:26:00.433Z</lastmod>
+  </url>
+  <url>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/Steps_occ_env.html</loc>
+    <lastmod>2023-09-17T18:26:01.186Z</lastmod>
+  </url>
+  <url>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/Steps_occurences.html</loc>
+    <lastmod>2023-09-17T18:26:01.814Z</lastmod>
+  </url>
+  <url>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/Steps_sdm_maxnet.html</loc>
+    <lastmod>2023-09-17T18:26:02.474Z</lastmod>
+  </url>
+  <url>
+    <loc>https://oceanhackweek.org/ohw23_proj_marinesdms/tutorial/Steps_visualization.html</loc>
+    <lastmod>2023-09-17T18:26:03.094Z</lastmod>
   </url>
 </urlset>

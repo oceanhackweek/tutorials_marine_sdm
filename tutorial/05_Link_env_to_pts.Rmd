@@ -1,0 +1,5 @@
+---
+title: "Link environmental layer to points"
+---
+
+See the "Fit with Maxnet" for an example.

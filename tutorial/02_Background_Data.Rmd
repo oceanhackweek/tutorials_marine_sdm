@@ -186,7 +186,6 @@ st_write(background, pts_absence_csv, layer_options = "GEOMETRY=AS_XY", append =
 ## Approach 3. Random points a convex hull
 This section has been adapted from  [this online tutorial](https://bbest.github.io/eds232-ml/lab1a_sdm-explore.html) and [this online tutorial](https://github.com/BigelowLab/maxnet/wiki/stars).
 
-NEED TO ADD
 
 The next notebook will discuss how to get environmental data that we will use as inputs in our SDM from the `sdmpredictors` package.  
   
