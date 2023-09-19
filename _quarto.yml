@@ -28,7 +28,7 @@ website:
   site-url: https://oceanhackweek.org/ohw23_proj_marinesdms
   
   repo-url: https://github.com/oceanhackweek/ohw23_proj_marinesdms
-  repo-actions: [edit, issue]
+  repo-actions: [edit, issue, source]
   
   page-footer: "OceanHackWeek Tutorial" 
  
