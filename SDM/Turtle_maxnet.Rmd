@@ -265,7 +265,7 @@ table(occ$scientificName)
 After cleaning we discover that we only have loggerhead and green sea turtles. Also there are only juvenile loggerheads and we do not know the life-stage of the green turtles.
 
 ```{r}
-table(occ$life.stage, occ$common.name, useNA="ifany")
+table(occ$lifeStage, occ$scientificName, useNA="ifany")
 ```
 
 Select columns and add a common name column.
@@ -372,13 +372,23 @@ layercodes = c("BO_sstmean", "BO_bathymean", "BO22_ph", "BO2_dissoxmean_bdmean",
 Download layers.
 ```{r}
 env <- sdmpredictors::load_layers(layercodes, rasterstack = TRUE)
+env_crop <- env %>% raster::crop(extent_polygon)
 ```
 
 Look at our layers.
 ```{r}
-plot(env %>% raster::crop(extent_polygon))
+plot(env_crop)
 ```
 
+Save the raster brick for later reloading.
+```{r}
+env.stars <- stars::st_as_stars(env_crop) # convert to stars object
+fil <- here::here(sdm_dir,  "sdm_data", "env_stack.tif")
+stars::write_stars(env.stars, fil)
+#y <- stars::read_stars(fil)
+# We need to do this for sampling
+env.stars <- terra::split(env.stars)
+```
 
 ## Environmental predictors for points
 
@@ -400,12 +410,6 @@ Convert data frames to sf points objects. This is what `stars` needs.
 df.abs <- na.omit(df.abs) # just in case
 sf.abs <- sf::st_as_sf(df.abs, coords = c("lon", "lat"), crs = 4326)
 sf.occ <- sf::st_as_sf(df.occ, coords = c("lon", "lat"), crs = 4326)
-```
-
-Convert the raster stack to a stars object.
-```{r}
-env.stars <- stars::st_as_stars(env) # convert to stars object
-env.stars <- terra::split(env.stars)
 ```
 
 Get environment values for the absence points. Each row in `sf.abs` is a row in `env.abs`.
