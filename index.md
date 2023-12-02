@@ -1,5 +1,7 @@
 ## Marine Species Distribution Model (SDM) Tutorial
 
+Authors: Catherine Courtier, Mackenzie Fiss, Denisse Fierro Arcos, Paulo Freire, Jade Hong, Caitlin O’Brien, Mary Solokas, Laura Tsang, Eli Holmes, Tylar Murray, Ben Tupper
+
 Click to hear our song! Inspired by Myranda and AI!
 
 <audio controls>

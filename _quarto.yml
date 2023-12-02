@@ -18,6 +18,7 @@ project:
     - "!tutorial/Mackenzie_SDM_with_maxent_oops.Rmd"
     - "maxnet/*"
     - "!tutorial/Steps_Env.Rmd"
+    - "!SDM/Turtle_GAM.Rmd"
 
 execute:
   freeze: auto
@@ -86,6 +87,8 @@ website:
         contents:
           - text: "Maxnet"
             href: SDM/Turtle_maxnet.Rmd
+#          - text: "GAM"
+#            href: SDM/Turtle_GAM.Rmd
         
 
 format:

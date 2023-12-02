@@ -29,6 +29,7 @@ library(ecospat)
 library(sp)
 library(raster)
 library(dismo)
+library(dplyr)
 ```
 
 ### Load the data and GLM models
