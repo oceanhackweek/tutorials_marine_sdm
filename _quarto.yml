@@ -27,7 +27,7 @@ website:
   page-navigation: true  
   title: "Marine SDMs"
   site-url: https://oceanhackweek.org/ohw23_proj_marinesdms
-  favicon: https://oceanhackweek.org/_static/logo.png
+  favicon: "images/turtle.png"
   
   repo-url: https://github.com/oceanhackweek/ohw23_proj_marinesdms
   repo-actions: [edit, issue, source]
