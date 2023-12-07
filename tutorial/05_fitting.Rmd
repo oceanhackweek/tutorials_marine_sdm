@@ -25,7 +25,7 @@ Thus presence is defined as a function of all the variables in the data frame an
 For maxnet, format is slightly different:
 
 ```
-mod <- maxnet(pres, df %>% select(-pres))
+mod <- maxnet(df$pres, df %>% select(-pres))
 ```
 
-Thus the 0/1 for each row is the first argument and the second argument is the environmental variables only.
+Thus the 0/1 for each row is the first argument (as a vector of 0s and 1s) and the second argument is the environmental variables only.
